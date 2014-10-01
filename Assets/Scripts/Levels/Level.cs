@@ -7,6 +7,7 @@ using Assets.Scripts.Map.Items;
 using Assets.Scripts.Missions;
 using UnityEngine;
 using UnityEngine.UI;
+using Target = Assets.Scripts.Map.Items.Target;
 
 namespace Assets.Scripts.Levels
 {
@@ -160,6 +161,49 @@ namespace Assets.Scripts.Levels
             }
         }
 
+        private void ValidateSolution()
+        {
+            if (Solution == null) Solution = FindObjectOfType<LevelSolution>();
+
+
+        }
+        private void ValidateMission()
+        {
+
+            if (Mission == null)
+            {
+                var mission = FindObjectOfType<LevelMission>();
+                if (mission == null)
+                {
+                    var missionGO = new GameObject("Mission");
+
+                    if (LevelMap.FindItemsOfType<Map.Items.Target>().Any())
+                    {
+                        Mission = missionGO.AddComponent<EnterTargetMission>();
+                    }
+                    else
+                    {
+                        Mission =  missionGO.AddComponent<DestroyAllWallsMission>();
+                    }
+
+
+                    Debug.LogWarning("ValidateMission(): Mission for level not found. Initializing mission by temp value (" + Mission.GetType().Name + ")");
+
+                }
+                else Mission = mission;
+
+            }
+            
+                if (Mission is DestroyAllWallsMission && LevelMap.FindItemsOfType<Map.Items.Target>().Any())
+                {
+                    Debug.LogWarning("ValidateMission(): Unexpected target found.");
+                }
+                else if (Mission is EnterTargetMission && !LevelMap.FindItemsOfType<Map.Items.Target>().Any())
+                {
+                    Debug.LogWarning("ValidateMission(): For EnterTargetMission target not found");
+                }
+        }
+
         protected void Start()
         {
 
@@ -169,24 +213,17 @@ namespace Assets.Scripts.Levels
                 Debug.LogWarning("Level.Map == null");
             }
 
-            if (Solution == null) Solution = FindObjectOfType<LevelSolution>();
-
-            if (Mission == null)
-            {
-                var mission = FindObjectOfType<LevelMission>();
-                if (mission == null)
-                {
-                    var missionGO = new GameObject("Mission");
-                    Mission = missionGO.AddComponent<EnterTargetMission>();
-                }
-                else Mission = mission;
-            }
-
+#if UNITY_EDITOR
+            ValidateSolution();
+            ValidateMission();
+            ValidateSteps();
+#endif
             Play();
 
             CurrentStar = StarsCount.ThreeStar;
             CurrentStepsTarget = GetStepsTargetForStar(StarsCount.ThreeStar);
             ResetScore();
+
             InvalidateLevelElements();
 
             foreach (var levelElement in GetLevelElements())

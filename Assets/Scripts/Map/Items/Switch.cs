@@ -91,6 +91,12 @@ namespace Assets.Scripts.Map.Items
             }
         }
 
+        public void ApplyStartPosition()
+        {
+
+
+        }
+
         private void SwapPosition(MapItem activator = null)
         {
 

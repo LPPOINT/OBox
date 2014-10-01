@@ -10,6 +10,15 @@ namespace Assets.Editor
             EditorApplication.OpenScene("Assets/Scenes/Levels/Level" + levelNumber + ".unity");
         }
 
+
+         [MenuItem("Levels/New Level")]
+        public static void NewLevel()
+        {
+            LevelBuilder.CreateNewLevel();
+            LevelBuilder.PopulateLevel();
+            LevelBuilder.SaveCurrentLevel();
+        }
+
         [MenuItem("Levels/Level 1")]
         public static void Level1()
         {

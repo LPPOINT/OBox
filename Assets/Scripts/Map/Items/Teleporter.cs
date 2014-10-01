@@ -21,6 +21,22 @@ namespace Assets.Scripts.Map.Items
         private float currentWaitTime;
         private bool isWaiting;
 
+        public enum TeleporterStyle
+        {
+            Style1,
+            Style2,
+            Style3
+        }
+
+        public TeleporterStyle Style;
+
+        public void ApplyStyle()
+        {
+            if (Style == TeleporterStyle.Style1) transform.rotation = Quaternion.Euler(0, 0, 0);
+            else if (Style == TeleporterStyle.Style2) transform.rotation = Quaternion.Euler(0, 0, 45);
+            else if (Style == TeleporterStyle.Style3) transform.rotation = Quaternion.Euler(0, 0, 15);
+        }
+
         public void MakeTeleportation(Player player, Direction direction)
         {
 
@@ -69,7 +85,7 @@ namespace Assets.Scripts.Map.Items
 
             if (Other == null)
             {
-                Other = GameMap.FindItemsOfType<Teleporter>().FirstOrDefault(teleporter => teleporter != this);
+                Other = GameMap.FindItemsOfType<Teleporter>().FirstOrDefault(teleporter => teleporter != this && teleporter.Style == Style);
             }
 
         }
