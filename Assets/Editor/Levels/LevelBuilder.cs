@@ -1,6 +1,6 @@
 ﻿using Assets.Scripts.Meta.Model;
 
-namespace Assets.Editor
+namespace Assets.Editor.Levels
 {
     public static class LevelBuilder
     {

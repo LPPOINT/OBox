@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Assets.Editor
+namespace Assets.Editor.Levels
 {
     public class SceneHelper : ScriptableObject
     {

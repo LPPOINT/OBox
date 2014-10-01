@@ -1,8 +1,7 @@
 ﻿using Assets.Scripts.Map.Items;
 using UnityEditor;
-using UnityEngine;
 
-namespace Assets.Editor
+namespace Assets.Editor.ItemsEditors
 {
     [CustomEditor(typeof(Switch))]
     public class SwitchEditor : UnityEditor.Editor

@@ -1,7 +1,7 @@
 ﻿using Assets.Scripts.Map.Items;
 using UnityEditor;
 
-namespace Assets.Editor
+namespace Assets.Editor.ItemsEditors
 {
     [CustomEditor(typeof(Teleporter))]
     public class TeleporterEditor : UnityEditor.Editor
