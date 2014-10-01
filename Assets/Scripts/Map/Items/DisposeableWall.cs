@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using Assets.Scripts.Levels;
 using Assets.Scripts.Map.Collision;
-using Assets.Scripts.Map.Serialization;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -20,6 +20,36 @@ namespace Assets.Scripts.Map.Items
         public float MaxTimeBeforeTransmission;
         public float TimeBeforeTransmission { get; private set; }
         private bool isTransmitted;
+
+        public class DisposeableWallStatusChangedEvent : LevelEvent
+        {
+            public DisposeableWallStatusChangedEvent(DisposeableWallStatus oldStatus, DisposeableWallStatus newStatus)
+            {
+                NewStatus = newStatus;
+                OldStatus = oldStatus;
+            }
+
+
+            public DisposeableWallStatus OldStatus { get; private set; }
+            public DisposeableWallStatus NewStatus { get; private set; }
+        }
+
+        public class DisposeableWallActivatedEvent : DisposeableWallStatusChangedEvent
+        {
+            public DisposeableWallActivatedEvent() : base(DisposeableWallStatus.NotActivated, DisposeableWallStatus.Activated)
+            {
+            }
+        }
+
+        public class DisposeableWallDestroyedEvent : DisposeableWallStatusChangedEvent
+        {
+            public DisposeableWallDestroyedEvent()
+                : base(DisposeableWallStatus.Activated, DisposeableWallStatus.Done)
+            {
+            }
+        }
+
+
 
         private void UpdateTransmissionTime()
         {
@@ -55,10 +85,17 @@ namespace Assets.Scripts.Map.Items
 
         public float CurrentTime { get; private set; }
 
+        public override void OnLevelStateChanged(LevelState oldState, LevelState newState)
+        {
+            if(newState == LevelState.Playing && Status == DisposeableWallStatus.Paused) Status = DisposeableWallStatus.Activated;
+            else if(newState == LevelState.Paused && Status == DisposeableWallStatus.Activated) Status = DisposeableWallStatus.Paused;
+        }
+
         public enum DisposeableWallStatus
         {
             NotActivated,
             Activated,
+            Paused,
             Done
         }
         public DisposeableWallStatus Status { get; private set; }
@@ -112,6 +149,7 @@ namespace Assets.Scripts.Map.Items
         {
             gameObject.GetComponent<Animator>().Play("WallDone");
             Status = DisposeableWallStatus.Done;
+            FireEvent(new DisposeableWallDestroyedEvent());
         }
 
 
@@ -150,27 +188,33 @@ namespace Assets.Scripts.Map.Items
             {
                 Activate(other);
             }
-            //else if (Status == DisposeableWallStatus.Activated && ( other == Activator || Activator is DisposeableWall))
-            //{
-            //    ForceActivationEnd();
+
+            else if (Status == DisposeableWallStatus.Activated 
+                && (other == Activator || Activator is DisposeableWall) 
+                && other.GetActiveMove() is EmptyItemMove)
+            {
 
 
-            //        switch (collision)
-            //        {
-            //            case MapItemCollision.TouchLeft:
-            //                player.Move(Direction.Right);
-            //                break;
-            //            case MapItemCollision.TouchRight:
-            //                player.Move(Direction.Left);
-            //                break;
-            //            case MapItemCollision.TouchTop:
-            //                player.Move(Direction.Bottom);
-            //                break;
-            //            case MapItemCollision.TouchBottom:
-            //                player.Move(Direction.Top);
-            //                break;
-            //        }
-            //}
+
+                ForceActivationEnd();
+
+
+                switch (collisionType)
+                {
+                    case MapItemCollisionType.TouchLeft:
+                        player.Move(Direction.Right);
+                        break;
+                    case MapItemCollisionType.TouchRight:
+                        player.Move(Direction.Left);
+                        break;
+                    case MapItemCollisionType.TouchTop:
+                        player.Move(Direction.Bottom);
+                        break;
+                    case MapItemCollisionType.TouchBottom:
+                        player.Move(Direction.Top);
+                        break;
+                }
+            }
         }
 
         public void Activate(MapItem other)
@@ -179,6 +223,7 @@ namespace Assets.Scripts.Map.Items
             CurrentTime = 0;
             TimeUI.gameObject.SetActive(true);
             Activator = other;
+            FireEvent(new DisposeableWallActivatedEvent());
         }
 
         public override void OnLevelReset()

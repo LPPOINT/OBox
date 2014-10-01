@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.Map
 {
-    public class TipText : MonoBehaviour
+    public class TipTextManager : MonoBehaviour
     {
         public void Reset()
         {

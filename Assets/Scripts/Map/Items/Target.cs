@@ -16,7 +16,6 @@ namespace Assets.Scripts.Map.Items
             if (collisionType == MapItemCollisionType.Inside)
             {
                 FireEvent(new LevelEvent("TargetCollision", null));
-                Level.Current.EndLevel();
             }
         }
     }

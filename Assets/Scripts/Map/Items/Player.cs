@@ -13,6 +13,8 @@ namespace Assets.Scripts.Map.Items
 
 
 
+
+
         private Direction lastDirection;
 
         public Direction GetLastDirection()

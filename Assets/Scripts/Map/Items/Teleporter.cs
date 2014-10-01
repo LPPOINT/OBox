@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Map.Collision;
-using Assets.Scripts.Map.Serialization;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Items

@@ -4,6 +4,7 @@ using System.Linq;
 using Assets.Scripts.Camera;
 using Assets.Scripts.Map;
 using Assets.Scripts.Map.Items;
+using Assets.Scripts.Missions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,7 @@ namespace Assets.Scripts.Levels
         }
 
         public LevelSolution Solution;
+        public LevelMission Mission;
 
         public GameMap LevelMap;
         public LevelTopUI TopUI;
@@ -169,12 +171,28 @@ namespace Assets.Scripts.Levels
 
             if (Solution == null) Solution = FindObjectOfType<LevelSolution>();
 
+            if (Mission == null)
+            {
+                var mission = FindObjectOfType<LevelMission>();
+                if (mission == null)
+                {
+                    var missionGO = new GameObject("Mission");
+                    Mission = missionGO.AddComponent<EnterTargetMission>();
+                }
+                else Mission = mission;
+            }
+
             Play();
 
             CurrentStar = StarsCount.ThreeStar;
             CurrentStepsTarget = GetStepsTargetForStar(StarsCount.ThreeStar);
             ResetScore();
             InvalidateLevelElements();
+
+            foreach (var levelElement in GetLevelElements())
+            {
+                levelElement.OnLevelStarted();
+            }
         }
 
         protected void Update()
@@ -328,6 +346,10 @@ namespace Assets.Scripts.Levels
                 if(moveEvent.State == MapItem.MapItemMoveEvent.MoveState.Started) RegesterPlayerMoveBegin(moveEvent.Move);
                 else RegisterPlayerMoveEnd(moveEvent.Move);
 
+            }
+            else if (e is LevelMission.MissionDoneEvent)
+            {
+                EndLevel();
             }
 
             foreach (var element in GetLevelElements())

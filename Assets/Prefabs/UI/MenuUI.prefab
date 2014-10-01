@@ -359,7 +359,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11400028}
+      - m_Target: {fileID: 0}
         m_MethodName: OnMainMenuButton
         m_Mode: 1
         m_Arguments:
@@ -612,7 +612,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 100018}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e90d0af69a2fae42a118b6d197357f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 56273228dbf72ed41bae155a567ada19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MenuBorder: {fileID: 22400014}

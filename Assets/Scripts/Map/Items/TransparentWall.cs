@@ -1,7 +1,6 @@
 ﻿
 using System.Collections.Generic;
 using Assets.Scripts.Map.Collision;
-using Assets.Scripts.Map.Serialization;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Items

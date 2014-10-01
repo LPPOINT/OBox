@@ -15,7 +15,7 @@ namespace Assets.Scripts.Levels
 
         }
 
-        [LevelEventHandler(typeof(MapItem.MapItemMoveEvent))]
+        [LevelEventFilter(typeof(MapItem.MapItemMoveEvent), typeof(Player))]
         private void OnPlayerMove(MapItem.MapItemMoveEvent playerMove)
         {
 

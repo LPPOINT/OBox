@@ -26,7 +26,7 @@ namespace Assets.Scripts.Levels
                                GetType()
                                    .GetMethods()
                                    .Where(
-                                       info => info.GetCustomAttributes(typeof (LevelEventHandlerAttribute), true).Any())));
+                                       info => info.GetCustomAttributes(typeof (LevelEventFilter), true).Any())));
             }
         }
 
@@ -73,6 +73,16 @@ namespace Assets.Scripts.Levels
         public void FireEvent(LevelEvent e)
         {
             e.Element = this;
+            Level.ProcessEvent(e);
+        }
+
+        public void FireEvent(string eventName)
+        {
+            FireEvent(new LevelEvent(eventName, null));
+        }
+        public void FireEvent(string eventName, Dictionary<string, object> data)
+        {
+            FireEvent(new LevelEvent(eventName, data));
         }
 
         public virtual void OnLevelEvent(LevelEvent e)
@@ -81,9 +91,9 @@ namespace Assets.Scripts.Levels
         }
 
 
-        private LevelEventHandlerAttribute GetHandlerAttributeForMethod(MethodInfo m)
+        private LevelEventFilter GetHandlerAttributeForMethod(MethodInfo m)
         {
-            return m.GetCustomAttributes(typeof (LevelEventHandlerAttribute), true).FirstOrDefault() as LevelEventHandlerAttribute;
+            return m.GetCustomAttributes(typeof (LevelEventFilter), true).FirstOrDefault() as LevelEventFilter;
         }
 
         internal void ProcessEvent(LevelEvent e)

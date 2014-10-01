@@ -60,4 +60,15 @@ namespace Assets.Scripts.Map
         public TimeSpan TimeInOutside { get; set; }
     }
 
+    public class EmptyItemMove : MapItemMove
+    {
+        public EmptyItemMove(ToCellItemMove basedOn)
+        {
+            Direction = basedOn.Direction;
+            Source = basedOn.Source;
+            Speed = basedOn.Speed;
+            Item = basedOn.Item;
+        }
+    }
+
 }

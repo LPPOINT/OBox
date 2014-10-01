@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Map.Collision;
-using Assets.Scripts.Map.EventSystem;
 using Rotorz.Tile;
 using UnityEngine;
-using Event = Assets.Scripts.Map.EventSystem.Event;
+
 
 namespace Assets.Scripts.Map
 {
@@ -27,7 +27,15 @@ namespace Assets.Scripts.Map
 
         public bool IsOutside { get; set; }
 
-
+        public bool IsNear(TileIndex otherIndex)
+        {
+            return Math.Abs(Index.row - otherIndex.row) == 1
+                   || Math.Abs(Index.column - otherIndex.column) == 1;
+        }
+        public bool IsNear(MapItem other)
+        {
+            return IsNear(other.Index);
+        }
 
         public class MapItemMoveEvent : LevelEvent
         {
@@ -52,6 +60,7 @@ namespace Assets.Scripts.Map
 
         private MapItemMove currentMove;
         private MapItemMove lastMove;
+
 
         public bool IsMoving { get; private set; }
 
@@ -282,6 +291,7 @@ namespace Assets.Scripts.Map
                 var toCellMove = move as ToCellItemMove;
                 if (IsMoving || Index == toCellMove.To)
                 {
+                    lastMove = new EmptyItemMove(move as ToCellItemMove);
                     return move;
                 }
 
@@ -361,20 +371,6 @@ namespace Assets.Scripts.Map
             IsMoving = false;
         }
 
-        #region Event System (not impl)
-        public MapItemEventSystem EventSystem { get; private set; }
-
-        public virtual void OnEventInput(Event e)
-        {
-            
-        }
-
-        public virtual void OnEventOutput(Event e)
-        {
-
-        }
-
-        #endregion
 
     }
 }

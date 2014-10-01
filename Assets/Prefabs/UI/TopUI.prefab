@@ -373,7 +373,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 100012}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1967f25b4df47046b4d87551b2578cd, type: 3}
+  m_Script: {fileID: 11500000, guid: 44a7ef9deb95be046bf78bca06667978, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   StepsSlider: {fileID: 11400002}
