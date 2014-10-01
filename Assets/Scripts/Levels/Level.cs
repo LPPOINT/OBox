@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Camera;
 using Assets.Scripts.Map;
+using Assets.Scripts.Map.Items;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,9 +36,20 @@ namespace Assets.Scripts.Levels
         public int StepsForOneStar;
 
 
-        public IEnumerable<LevelElement> FindLevelElements()
+        private IEnumerable<LevelElement> elements;
+
+        public void InvalidateLevelElements()
         {
-            return FindObjectsOfType<LevelElement>();
+            elements = FindObjectsOfType<LevelElement>();
+        }
+
+        public IEnumerable<LevelElement> GetLevelElements()
+        {
+            if (elements == null)
+            {
+                InvalidateLevelElements();
+            }
+            return elements;
         }
 
         #region State controlling
@@ -49,7 +61,7 @@ namespace Assets.Scripts.Levels
             {
                 var oldState = value;
                 state = value;
-                foreach (var element in FindLevelElements())
+                foreach (var element in GetLevelElements())
                 {
                     element.OnLevelStateChanged(oldState, state);
                 }
@@ -162,6 +174,7 @@ namespace Assets.Scripts.Levels
             CurrentStar = StarsCount.ThreeStar;
             CurrentStepsTarget = GetStepsTargetForStar(StarsCount.ThreeStar);
             ResetScore();
+            InvalidateLevelElements();
         }
 
         protected void Update()
@@ -234,7 +247,7 @@ namespace Assets.Scripts.Levels
             }
         }
 
-        public void RegisterPlayerStep()
+        private void RegisterPlayerStep()
         {
 
             if (CurrentStar == StarsCount.None)
@@ -275,24 +288,54 @@ namespace Assets.Scripts.Levels
             }
 
         }
-        public void RegisterPlayerOutside()
+        private void RegisterPlayerOutside()
         {
             Reset();
         }
 
-        public void RegesterPlayerMoveBegin(MapItemMove move)
+        private void RegesterPlayerMoveBegin(MapItemMove move)
         {
-            foreach (var element in FindLevelElements())
+            foreach (var element in GetLevelElements())
             {
                 element.OnPlayerMoveBegin(LevelMap.Player, move);
             }
         }
 
-        public void RegisterPlayerMoveEnd(MapItemMove move)
+        private void RegisterPlayerMoveEnd(MapItemMove move)
         {
-            foreach (var element in FindLevelElements())
+            foreach (var element in GetLevelElements())
             {
                 element.OnPlayerMoveEnd(LevelMap.Player, move);
+            }
+        }
+
+        public void ProcessEvent(LevelEvent e)
+        {
+
+
+            if (e is Player.PlayerOutsideEvent)
+            {
+                RegisterPlayerOutside();
+            }
+            else if (e is Player.PlayerStepEvent)
+            {
+                RegisterPlayerStep();
+            }
+            else if (e is MapItem.MapItemMoveEvent && e.IsPlayer)
+            {
+                var moveEvent = e as MapItem.MapItemMoveEvent;
+
+                if(moveEvent.State == MapItem.MapItemMoveEvent.MoveState.Started) RegesterPlayerMoveBegin(moveEvent.Move);
+                else RegisterPlayerMoveEnd(moveEvent.Move);
+
+            }
+
+            foreach (var element in GetLevelElements())
+            {
+                if (e.Element != element)
+                {
+                    element.ProcessEvent(e);
+                }
             }
         }
 
@@ -304,7 +347,7 @@ namespace Assets.Scripts.Levels
                                                                               {
 
 
-                                                                                  foreach (var element in FindLevelElements())
+                                                                                  foreach (var element in GetLevelElements())
                                                                                   {
                                                                                       element.OnMenuOpen();
                                                                                   }
@@ -325,7 +368,7 @@ namespace Assets.Scripts.Levels
             Play();
             TopUI.RevertMode();
 
-            foreach (var element in FindLevelElements())
+            foreach (var element in GetLevelElements())
             {
                 element.OnMenuClosed();
             }
@@ -359,7 +402,7 @@ namespace Assets.Scripts.Levels
 
             CurrentSteps = 0;
 
-            foreach (var element in FindLevelElements())
+            foreach (var element in GetLevelElements())
             {
                 element.OnLevelReset();
             }
@@ -369,7 +412,7 @@ namespace Assets.Scripts.Levels
                                          ResetScore();
                                          LevelMap.Reset();
 
-                                         foreach (var e in FindLevelElements())
+                                         foreach (var e in GetLevelElements())
                                          {
                                              e.OnLevelStarted();
                                          }
@@ -387,7 +430,7 @@ namespace Assets.Scripts.Levels
             CameraFade.FadeOut(UnityEngine.Camera.main.backgroundColor, 0.3f, () =>
                                                                               {
 
-                                                                                  foreach (var element in FindLevelElements())
+                                                                                  foreach (var element in GetLevelElements())
                                                                                   {
                                                                                       element.OnLevelEnded();
                                                                                   }

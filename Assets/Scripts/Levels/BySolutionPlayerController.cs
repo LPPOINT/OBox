@@ -40,7 +40,6 @@ namespace Assets.Scripts.Levels
 
         private void Start()
         {
-            Player.MoveDone += PlayerOnMoveDone;
         }
 
         public override void OnLevelReset()
@@ -50,30 +49,32 @@ namespace Assets.Scripts.Levels
             isStarted = false;
         }
 
-        private void PlayerOnMoveDone(object sender, EventArgs eventArgs)
+
+        public override void OnLevelEvent(LevelEvent e)
         {
-            if(isDone)
-                return;
-            CurrentNodeIndex++;
-
-            if (CurrentNodeIndex > Solution.Nodes.Count - 1)
+            if (e is MapItem.MapItemMoveEvent && e.IsPlayer)
             {
-                isDone = true;
-                return;
+                if (isDone)
+                    return;
+                CurrentNodeIndex++;
+
+                if (CurrentNodeIndex > Solution.Nodes.Count - 1)
+                {
+                    isDone = true;
+                    return;
+                }
+
+
+                var node = Solution.Nodes[CurrentNodeIndex];
+
+                if (Player.Index != node.Index)
+                {
+                    CurrentNodeIndex--;
+                    return;
+                }
+
+                FollowSolution();
             }
-
-
-            var node = Solution.Nodes[CurrentNodeIndex];
-
-            if (Player.Index != node.Index)
-            {
-                CurrentNodeIndex--;
-                return;
-            }
-
-            FollowSolution();
         }
-
-
     }
 }

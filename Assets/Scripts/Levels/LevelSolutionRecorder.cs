@@ -6,23 +6,28 @@ namespace Assets.Scripts.Levels
 {
 
     [ExecuteInEditMode]
-    public class LevelSolutionRecorder : MonoBehaviour
+    public class LevelSolutionRecorder : LevelElement
     {
         public LevelSolution Solution;
-        public Player Player;
 
         private void Start()
         {
-            Player.MoveStarted += (sender, args) =>
-                                  {
-                                      var move = Player.GetCurrentMove();
-                                      if (move.Source == MoveSource.User)
-                                      {
-                                          Solution.Nodes.Add(new LevelSolution.LevelSolutionNode(move.From,
-                                              move.Direction));
-                                      }
-                                  };
+
         }
+
+        [LevelEventHandler(typeof(MapItem.MapItemMoveEvent))]
+        private void OnPlayerMove(MapItem.MapItemMoveEvent playerMove)
+        {
+
+                var move = playerMove.Move;
+                if (move.Source == MoveSource.User)
+                {
+                    Solution.Nodes.Add(new LevelSolution.LevelSolutionNode(move.From,
+                        move.Direction));
+                }
+
+        }
+
 
     }
 }

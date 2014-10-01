@@ -26,8 +26,21 @@ namespace Assets.Scripts.Map.Items
 
         private TileIndex startIndex;
 
-        public event EventHandler MoveStarted;
-        public event EventHandler MoveDone;
+        public class PlayerOutsideEvent : LevelEvent
+        {
+            public PlayerOutsideEvent(OutsideItemMove move)
+            {
+                Move = move;
+            }
+
+            public OutsideItemMove Move { get; private set; }
+        }
+
+
+        public class PlayerStepEvent : LevelEvent
+        {
+            
+        }
 
         protected override void Start()
         {
@@ -48,8 +61,7 @@ namespace Assets.Scripts.Map.Items
 
         public override void OnMoveStart(MapItemMove move)
         {
-            base.OnMoveStart(move);
-            Level.Current.RegesterPlayerMoveBegin(move);
+
             if (EnableShape)
             {
             var newShapePos = Vector3.zero;
@@ -76,16 +88,13 @@ namespace Assets.Scripts.Map.Items
                 Shape.transform.localPosition = newShapePos;
                 Shape.Play();
             }
-
-            var handler = MoveStarted;
-            if (handler != null) handler(this, EventArgs.Empty);
+            base.OnMoveStart(move);
 
         }
 
         public override void OnMoveDone(MapItemMove move)
         {
             var currentLevel = Level.Current;
-            Level.Current.RegisterPlayerMoveEnd(move);
             if (currentLevel == null)
             {
                 Debug.LogWarning("OnMoveDone(): cant register step: current level not found.");
@@ -94,10 +103,11 @@ namespace Assets.Scripts.Map.Items
 
             if (move is ToCellItemMove)
             {
+                base.OnMoveDone(move);
             }
             else if (move is OutsideItemMove)
             {
-                currentLevel.RegisterPlayerOutside();
+                FireEvent(new PlayerOutsideEvent(move as OutsideItemMove));
             }
 
             if (EnableShape)
@@ -106,8 +116,6 @@ namespace Assets.Scripts.Map.Items
                 Shape.Stop();
             }
 
-            var handler = MoveDone;
-            if (handler != null) handler(this, EventArgs.Empty);
 
         }
 
@@ -135,7 +143,7 @@ namespace Assets.Scripts.Map.Items
 
                 if (newIndex != Index)
                 {
-                    Level.Current.RegisterPlayerStep();
+                    FireEvent(new PlayerStepEvent());
 
                 }
                 else if(newIndex == Index)

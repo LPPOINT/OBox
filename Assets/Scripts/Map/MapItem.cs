@@ -27,6 +27,29 @@ namespace Assets.Scripts.Map
 
         public bool IsOutside { get; set; }
 
+
+
+        public class MapItemMoveEvent : LevelEvent
+        {
+
+
+            public enum MoveState
+            {
+                Started,
+                Done
+            }
+
+            public MapItemMoveEvent(MapItemMove move, MoveState state)
+            {
+                State = state;
+                Move = move;
+            }
+
+            public MapItemMove Move { get; private set; }
+            public MoveState State { get; private set; }
+        }
+
+
         private MapItemMove currentMove;
         private MapItemMove lastMove;
 
@@ -111,12 +134,12 @@ namespace Assets.Scripts.Map
 
         public virtual void OnMoveStart(MapItemMove move)
         {
-            
+            FireEvent(new MapItemMoveEvent(move, MapItemMoveEvent.MoveState.Started));
         }
 
         public virtual void OnMoveDone(MapItemMove move)
         {
-            
+            FireEvent(new MapItemMoveEvent(move, MapItemMoveEvent.MoveState.Done));
         }
 
         public virtual void OnItemCollisionEnter(MapItemCollisionType collisionType, MapItem other)

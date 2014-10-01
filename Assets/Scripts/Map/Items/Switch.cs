@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Levels;
 using Assets.Scripts.Map.Collision;
 using Assets.Scripts.Map.Serialization;
 using UnityEngine;
@@ -15,6 +16,21 @@ namespace Assets.Scripts.Map.Items
         private const string horizontalToVertical = "SwitchHToV";
         private const string verticalToHorizontal = "SwitchVToH";
 
+
+        public class SwitchEvent : LevelEvent
+        {
+            public SwitchEvent(MapItem activator, SwitchPosition newPosition)
+            {
+                NewPosition = newPosition;
+                OldPosition = newPosition == SwitchPosition.Horizontal ? SwitchPosition.Vertical : SwitchPosition.Horizontal;
+                Activator = activator;
+            }
+
+            public MapItem Activator { get; private set; }
+
+            public SwitchPosition OldPosition { get; private set; }
+            public SwitchPosition NewPosition { get; private set; }
+        }
 
         public override MapItemCollisionDetectionMode CollisionDetectionMode
         {
@@ -70,13 +86,13 @@ namespace Assets.Scripts.Map.Items
                 if (CurrentPosition == SwitchPosition.Horizontal && player.Index.row == Index.row
                     || CurrentPosition == SwitchPosition.Vertical && player.Index.column == Index.column)
                 {
-                    SwapPosition();
+                    SwapPosition(player);
                 }
 
             }
         }
 
-        private void SwapPosition()
+        private void SwapPosition(MapItem activator = null)
         {
 
             var animator = GetComponent<Animator>();
@@ -92,6 +108,9 @@ namespace Assets.Scripts.Map.Items
 
             if(CurrentPosition == SwitchPosition.Horizontal) CurrentPosition = SwitchPosition.Vertical;
             else if(CurrentPosition == SwitchPosition.Vertical) CurrentPosition = SwitchPosition.Horizontal;
+
+            FireEvent(new SwitchEvent(activator, CurrentPosition));
+
 
         }
         public override MapItemColliderType GetCollider(MapItem other)
