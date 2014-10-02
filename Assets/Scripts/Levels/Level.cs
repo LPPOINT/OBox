@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Camera;
+using Assets.Scripts.Levels.Model;
 using Assets.Scripts.Map;
 using Assets.Scripts.Map.Items;
 using Assets.Scripts.Missions;
 using UnityEngine;
-using UnityEngine.UI;
-using Target = Assets.Scripts.Map.Items.Target;
 
 namespace Assets.Scripts.Levels
 {
@@ -38,6 +37,7 @@ namespace Assets.Scripts.Levels
         public int StepsForTwoStars;
         public int StepsForOneStar;
 
+        private LevelsDatabase levelsDatabase;
 
         private IEnumerable<LevelElement> elements;
 
@@ -114,22 +114,13 @@ namespace Assets.Scripts.Levels
 
         public StarsCount CurrentStar { get; private set; }
 
-        public int LevelNumber
-        {
-            get
-            {
-                try
-                {
-                    return Convert.ToInt32(Application.loadedLevelName.Substring(5));
-                }
-                catch
-                {
-                    Debug.LogWarning("Cant detect level number!");
-                    return 0;
-                }
-            }
-        }
+        [SerializeField]public LevelIndex Index;
 
+        public Model.LevelModel CreateLevelModel()
+        {
+            return new Model.LevelModel(Index.GetScenePath(false), LevelMissionModel.EnterTarget, Index.WorldNumber,
+                Index.LevelNumber);
+        }
 
         private void ResetScore()
         {
@@ -161,6 +152,13 @@ namespace Assets.Scripts.Levels
             }
         }
 
+        private void ValidateLevelIndex()
+        {
+            if (Index.LevelNumber == 0)
+            {
+                Debug.LogWarning("Levent number or level world not found");
+            }
+        }
         private void ValidateSolution()
         {
             if (Solution == null) Solution = FindObjectOfType<LevelSolution>();
@@ -213,10 +211,18 @@ namespace Assets.Scripts.Levels
                 Debug.LogWarning("Level.Map == null");
             }
 
+            levelsDatabase = Resources.Load<LevelsDatabase>("LevelsDatabase");
+            if (levelsDatabase == null)
+            {
+                Debug.LogWarning("Level.levelsDatabase == null");
+            }
+            DontDestroyOnLoad(levelsDatabase);
+
 #if UNITY_EDITOR
             ValidateSolution();
             ValidateMission();
             ValidateSteps();
+            ValidateLevelIndex();
 #endif
             Play();
 
@@ -485,8 +491,9 @@ namespace Assets.Scripts.Levels
         {
             Pause();
             TopUI.CurrentMode = LevelTopUI.ShowMode.Hide;
+            var bgc = UnityEngine.Camera.main.backgroundColor;
 
-            CameraFade.FadeOut(UnityEngine.Camera.main.backgroundColor, 0.3f, () =>
+            CameraFade.FadeOut(new Color(bgc.r, bgc.g, bgc.b, 1), 0.5f, () =>
                                                                               {
 
                                                                                   foreach (var element in GetLevelElements())
@@ -508,7 +515,7 @@ namespace Assets.Scripts.Levels
 
         public void LoadNextLevel()
         {
-            Application.LoadLevel("Level" + (LevelNumber + 1));
+            Application.LoadLevel("Level" + (Index.LevelNumber + 1));
         }
 
         public void LoadLevel(int l)

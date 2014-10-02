@@ -80,7 +80,14 @@ namespace Assets.Scripts.Levels
         }
 
 
-        
+        public void OnResetClick()
+        {
+            Level.Current.Reset();
+        }
+        public void OnMenuClick()
+        {
+            Level.Current.OpenMenu();
+        }
 
     }
 }

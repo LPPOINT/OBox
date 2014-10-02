@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Map.Collision;
 using UnityEngine;
@@ -49,6 +51,15 @@ namespace Assets.Scripts.Map.Items
             }
         }
 
+        public override void OnDebugClick(IEnumerable<DebugClickModifers> modifers)
+        {
+            base.OnDebugClick(modifers);
+            if (!modifers.Any())
+            {
+                if(Status == DisposeableWallStatus.NotActivated) Activate(null);
+                else if(Status == DisposeableWallStatus.Activated) ForceActivationEnd();
+            }
+        }
 
 
         private void UpdateTransmissionTime()
