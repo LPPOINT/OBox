@@ -244,7 +244,7 @@ namespace Assets.Scripts.Map
             return new Vector2(xOffset, yOffset);
         }
 
-        public Direction SwapDirection(Direction sourceDirection)
+        public static Direction SwapDirection(Direction sourceDirection)
         {
             switch (sourceDirection)
             {

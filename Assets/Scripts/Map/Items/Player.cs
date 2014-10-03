@@ -23,8 +23,6 @@ namespace Assets.Scripts.Map.Items
         }
 
         public float Speed;
-        public ParticleSystem Shape;
-        public bool EnableShape;
 
         private TileIndex startIndex;
 
@@ -37,8 +35,6 @@ namespace Assets.Scripts.Map.Items
 
             public OutsideItemMove Move { get; private set; }
         }
-
-
         public class PlayerStepEvent : LevelEvent
         {
             
@@ -48,49 +44,12 @@ namespace Assets.Scripts.Map.Items
         {
             base.Start();
             startIndex = TileSystem.ClosestTileIndexFromWorld(transform.position);
-            if (!EnableShape)
-            {
-                Shape.gameObject.SetActive(false);
-            }
         }
 
         protected override void Update()
         {
 
 
-
-        }
-
-        public override void OnMoveStart(MapItemMove move)
-        {
-
-            if (EnableShape)
-            {
-            var newShapePos = Vector3.zero;
-            var offset = 5f;
-
-            switch (move.Direction)
-            {
-                case Direction.Left:
-                    newShapePos = new Vector3(offset, 0, Shape.transform.localPosition.z);
-                    break;
-                case Direction.Right:
-                    newShapePos = new Vector3(-offset, 0, Shape.transform.localPosition.z);
-                    break;
-                case Direction.Top:
-                    newShapePos = new Vector3(0, -offset, Shape.transform.localPosition.z);
-                    break;
-                case Direction.Bottom:
-                    newShapePos = new Vector3(0, offset, Shape.transform.localPosition.z);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-                Shape.transform.localPosition = newShapePos;
-                Shape.Play();
-            }
-            base.OnMoveStart(move);
 
         }
 
@@ -112,11 +71,6 @@ namespace Assets.Scripts.Map.Items
                 FireEvent(new PlayerOutsideEvent(move as OutsideItemMove));
             }
 
-            if (EnableShape)
-            {
-                Shape.transform.localPosition = new Vector3(0, 0, Shape.transform.localPosition.z);
-                Shape.Stop();
-            }
 
 
         }

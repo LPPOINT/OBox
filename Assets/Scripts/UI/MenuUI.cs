@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Levels;
+﻿using System;
+using Assets.Scripts.Levels;
 using UnityEngine;
 
 namespace Assets.Scripts.Map
@@ -11,9 +12,11 @@ namespace Assets.Scripts.Map
         public Level Level { get; set; }
 
         private bool isClosing;
+        private Action afterClosingAction;
 
-        public void Close()
+        public void Close(Action afterClosing)
         {
+            afterClosingAction = afterClosing;
             isClosing = true;
             MenuBorder.gameObject.GetComponent<Animator>().Play("MenuDisposing");
         }
@@ -22,6 +25,7 @@ namespace Assets.Scripts.Map
         {
             if (isClosing)
             {
+                afterClosingAction();
                 Destroy(gameObject);
             }
         }

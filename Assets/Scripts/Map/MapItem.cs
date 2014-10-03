@@ -60,8 +60,6 @@ namespace Assets.Scripts.Map
 
         private MapItemMove currentMove;
         private MapItemMove lastMove;
-
-
         public bool IsMoving { get; private set; }
 
         public MapItemMove GetActiveMove()

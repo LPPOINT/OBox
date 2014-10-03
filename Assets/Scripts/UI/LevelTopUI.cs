@@ -37,13 +37,13 @@ namespace Assets.Scripts.Levels
             OnlyMenu,
             Hide
         }
-        private void UpdateMode()
+        public void UpdateMode(ShowMode mode)
         {
-            if (CurrentMode == ShowMode.Hide)
+            if (mode == ShowMode.Hide)
             {
                 gameObject.SetActive(false);
             }
-            else if (CurrentMode == ShowMode.OnlyMenu)
+            else if (mode == ShowMode.OnlyMenu)
             {
                 gameObject.SetActive(true);
                 TryAgainButton.gameObject.SetActive(false);
@@ -54,7 +54,7 @@ namespace Assets.Scripts.Levels
                 StepsSlider.gameObject.SetActive(false);
                 MenuButton.gameObject.SetActive(true);
             }
-            else if (CurrentMode == ShowMode.ShowAll)
+            else if (mode == ShowMode.ShowAll)
             {
                 gameObject.SetActive(true);
                 TryAgainButton.gameObject.SetActive(true);
@@ -65,6 +65,16 @@ namespace Assets.Scripts.Levels
                 StepsSlider.gameObject.SetActive(true);
                 MenuButton.gameObject.SetActive(true);
             }
+        }
+
+        public void UpdateMode()
+        {
+            UpdateMode(CurrentMode);
+        }
+
+        public void ApplyStartMode()
+        {
+            UpdateMode(Mode);
         }
 
 

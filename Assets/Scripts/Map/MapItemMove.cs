@@ -1,5 +1,6 @@
 ﻿using System;
 using Rotorz.Tile;
+using UnityEngine;
 
 namespace Assets.Scripts.Map
 {
@@ -21,6 +22,34 @@ namespace Assets.Scripts.Map
 
         public Direction Direction { get; set; }
 
+
+        public int MoveLenght
+        {
+            get
+            {
+
+                var to = new TileIndex(From.row, From.column);
+
+                if (this is ToCellItemMove)
+                {
+                    to = (this as ToCellItemMove).To;
+                }
+                else if (this is EmptyItemMove)
+                {
+                    to = From;
+                }
+                else if (this is OutsideItemMove)
+                {
+                    to = From;
+                }
+
+                var moveVector = new Vector2(Math.Abs(From.column - to.column), Math.Abs(From.row - to.row));
+
+                if (moveVector.x > moveVector.y) return (int)moveVector.x;
+                else return (int)moveVector.y;
+
+            }
+        }
 
         public static ToCellItemMove ToCell(MapItem item, TileIndex to)
         {

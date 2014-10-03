@@ -116,9 +116,9 @@ namespace Assets.Scripts.Levels
 
         [SerializeField]public LevelIndex Index;
 
-        public Model.LevelModel CreateLevelModel()
+        public LevelModel CreateLevelModel()
         {
-            return new Model.LevelModel(Index.GetScenePath(false), LevelMissionModel.EnterTarget, Index.WorldNumber,
+            return new LevelModel(Index.GetScenePath(false), LevelMissionModel.EnterTarget, Index.WorldNumber,
                 Index.LevelNumber);
         }
 
@@ -408,20 +408,22 @@ namespace Assets.Scripts.Levels
         {
             Pause();
             TopUI.CurrentMode = LevelTopUI.ShowMode.Hide;
-            CameraFade.FadeOut(UnityEngine.Camera.main.backgroundColor, 0.3f, () =>
-                                                                              {
-
-
-                                                                                  foreach (var element in GetLevelElements())
-                                                                                  {
-                                                                                      element.OnMenuOpen();
-                                                                                  }
-
-                                                                                  currentMenu = Instantiate(MenuPrefab);
-                                                                                  currentMenu.GetComponent<MenuUI>()
-                                                                                      .Level = this;
-                                                                              });
+            CameraFade.FadeOut(UnityEngine.Camera.main.backgroundColor, 0.3f, OnMenuOpen);
         }
+
+        private void OnMenuOpen()
+        {
+
+            foreach (var element in GetLevelElements())
+            {
+                element.OnMenuOpen();
+            }
+
+            currentMenu = Instantiate(MenuPrefab);
+            currentMenu.GetComponent<MenuUI>()
+                .Level = this;
+        }
+
 
         public void CloseMenu()
         {
@@ -429,6 +431,15 @@ namespace Assets.Scripts.Levels
         }
 
         public void CloseMenu(Action afterClosed)
+        {
+
+            if (currentMenu != null)
+            {
+                currentMenu.GetComponent<MenuUI>().Close(OnMenuClosed);
+            }
+        }
+
+        private void OnMenuClosed()
         {
             Play();
             TopUI.RevertMode();
@@ -438,16 +449,19 @@ namespace Assets.Scripts.Levels
                 element.OnMenuClosed();
             }
 
-            if (currentMenu != null)
-            {
-                currentMenu.GetComponent<MenuUI>().Close();
-            }
         }
 
 
         public void Reset()
         {
 
+            OnLevelReset();
+            CameraFade.FadeOut(0.3f, OnLevelStarted);
+        }
+
+
+        private void OnLevelReset()
+        {
             if (LevelMap == null)
             {
                 Debug.LogWarning("Reset(): LevelMap == null");
@@ -471,20 +485,17 @@ namespace Assets.Scripts.Levels
             {
                 element.OnLevelReset();
             }
+        }
 
-            CameraFade.FadeOut(0.3f, () =>
-                                     {
-                                         ResetScore();
-                                         LevelMap.Reset();
+        private void OnLevelStarted()
+        {
+            ResetScore();
+            LevelMap.Reset();
 
-                                         foreach (var e in GetLevelElements())
-                                         {
-                                             e.OnLevelStarted();
-                                         }
-
-                                     });
-
-
+            foreach (var e in GetLevelElements())
+            {
+                e.OnLevelStarted();
+            }
         }
 
         public void EndLevel()
