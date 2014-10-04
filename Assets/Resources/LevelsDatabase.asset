@@ -15,6 +15,3 @@ MonoBehaviour:
   - MissionModel: 0
     WorldNumber: 1
     LevelNumber: 1
-  - MissionModel: 0
-    WorldNumber: 1
-    LevelNumber: 2

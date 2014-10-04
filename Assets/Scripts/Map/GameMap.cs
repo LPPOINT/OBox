@@ -49,11 +49,6 @@ namespace Assets.Scripts.Map
 
         }
 
-        public void Reset()
-        {
-
-        }
-
 
         private void Update()
         {

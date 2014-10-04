@@ -4,6 +4,7 @@ using System.Linq;
 using Assets.Scripts.Camera;
 using Assets.Scripts.Levels.Model;
 using Assets.Scripts.Map;
+using Assets.Scripts.Map.Decorations;
 using Assets.Scripts.Map.Items;
 using Assets.Scripts.Missions;
 using UnityEngine;
@@ -38,6 +39,13 @@ namespace Assets.Scripts.Levels
         public int StepsForOneStar;
 
         private LevelsDatabase levelsDatabase;
+
+        private DecorationShelduler decorationShelduler;
+
+        public DecorationShelduler DecorationShelduler
+        {
+            get { return decorationShelduler ?? (decorationShelduler = FindObjectOfType<DecorationShelduler>()); }
+        }
 
         private IEnumerable<LevelElement> elements;
 
@@ -138,6 +146,7 @@ namespace Assets.Scripts.Levels
             SetUIStar(CurrentStar);
         }
 
+        #region Validators
         private void ValidateSteps()
         {
             if (StepsForOneStar == 0
@@ -201,10 +210,10 @@ namespace Assets.Scripts.Levels
                     Debug.LogWarning("ValidateMission(): For EnterTargetMission target not found");
                 }
         }
+        #endregion
 
         protected void Start()
         {
-
 
             if (LevelMap == null)
             {
@@ -218,13 +227,13 @@ namespace Assets.Scripts.Levels
             }
             DontDestroyOnLoad(levelsDatabase);
 
+
 #if UNITY_EDITOR
             ValidateSolution();
             ValidateMission();
             ValidateSteps();
             ValidateLevelIndex();
 #endif
-            Play();
 
             CurrentStar = StarsCount.ThreeStar;
             CurrentStepsTarget = GetStepsTargetForStar(StarsCount.ThreeStar);
@@ -232,19 +241,7 @@ namespace Assets.Scripts.Levels
 
             InvalidateLevelElements();
 
-            foreach (var levelElement in GetLevelElements())
-            {
-                levelElement.OnLevelStarted();
-            }
-        }
-
-        protected void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                if (State != LevelState.Paused) Pause();
-                else Play();
-            }
+            OnLevelStarted();
         }
 
 
@@ -394,6 +391,19 @@ namespace Assets.Scripts.Levels
             {
                 EndLevel();
             }
+            else if (e is DecorationShelduler.DecorationsSheldulerEvent)
+            {
+                var se = e as DecorationShelduler.DecorationsSheldulerEvent;
+                if (se.Status == DecorationShelduler.DecorationsSheldulerEvent.DecorationSheldulerStatus.Done && se.PlayMode == DecorationPlaymode.In)
+                {
+                    OnInDecorationsEnd();
+                }
+                else if (se.Status == DecorationShelduler.DecorationsSheldulerEvent.DecorationSheldulerStatus.Done &&
+                         se.PlayMode == DecorationPlaymode.Out)
+                {
+                    OnOutDecorationsEnd();
+                }
+            }
 
             foreach (var element in GetLevelElements())
             {
@@ -463,7 +473,7 @@ namespace Assets.Scripts.Levels
         }
 
 
-        public void Reset()
+        public void Reset(bool playDecorations = false)
         {
 
             OnLevelReset();
@@ -501,37 +511,47 @@ namespace Assets.Scripts.Levels
         private void OnLevelStarted()
         {
             ResetScore();
-            LevelMap.Reset();
 
+            LockInput();
+            DecorationShelduler.Play(DecorationPlaymode.In);
+
+        }
+
+        private void OnInDecorationsEnd()
+        {
+            Play();
             foreach (var e in GetLevelElements())
             {
                 e.OnLevelStarted();
-            }
+            } 
         }
 
-        public void EndLevel()
+        private void OnOutDecorationsEnd()
         {
             Pause();
             TopUI.CurrentMode = LevelTopUI.ShowMode.Hide;
             var bgc = UnityEngine.Camera.main.backgroundColor;
 
             CameraFade.FadeOut(new Color(bgc.r, bgc.g, bgc.b, 1), 0.5f, () =>
-                                                                              {
+            {
 
-                                                                                  foreach (var element in GetLevelElements())
-                                                                                  {
-                                                                                      element.OnLevelEnded();
-                                                                                  }
+                foreach (var element in GetLevelElements())
+                {
+                    element.OnLevelEnded();
+                }
 
-                                                                                  currentLevelResults =
-                                                                                      Instantiate(LevelResultsPrefab);
-                                                                                  currentLevelResults
-                                                                                      .GetComponent<LevelResultsUI>()
-                                                                                      .Level = this;
-                                                                              });
+                currentLevelResults =
+                    Instantiate(LevelResultsPrefab);
+                currentLevelResults
+                    .GetComponent<LevelResultsUI>()
+                    .Level = this;
+            });
+        }
 
-
-
+        public void EndLevel()
+        {
+            LockInput();
+            DecorationShelduler.Play(DecorationPlaymode.Out);
         }
 
 

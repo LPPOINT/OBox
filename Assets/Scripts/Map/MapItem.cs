@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Map.Collision;
+using Assets.Scripts.Map.Decorations;
 using Rotorz.Tile;
 using UnityEngine;
 
@@ -58,6 +60,64 @@ namespace Assets.Scripts.Map
         }
 
 
+
+        private Decoration GetDecorationWithPlaymode(DecorationPlaymode playmode)
+        {
+            var parent =
+                GetComponentsInParent<Decoration>().FirstOrDefault(decoration => decoration.Playmode == playmode);
+            if (parent != null)
+            {
+                var native = GetComponents<Decoration>().FirstOrDefault(decoration => decoration.Playmode == playmode);
+                if (native == null && parent.CanBeRoot)
+                {
+                    return parent;
+                }
+                if (native != null)
+                    return native;
+                return null;
+            }
+            return GetComponents<Decoration>().FirstOrDefault(decoration => decoration.Playmode == playmode);
+        }
+
+
+        protected virtual void SetupDefaultDecoration(DecorationPlaymode playmode)
+        {
+            if (playmode == DecorationPlaymode.In)
+            {
+                var d = gameObject.AddComponent<ScaleFromDecoration>();
+                d.Playmode = DecorationPlaymode.In;
+            }
+            else if (playmode == DecorationPlaymode.Out)
+            {
+                var d = gameObject.AddComponent<ScaleToDecoration>();
+                d.Playmode = DecorationPlaymode.Out;
+            }
+        }
+
+        public Decoration InDecoration
+        {
+            get { return GetDecorationWithPlaymode(DecorationPlaymode.In); }
+        }
+        public Decoration OutDecoration
+        {
+            get
+            {
+                return GetDecorationWithPlaymode(DecorationPlaymode.Out); 
+            }
+        }
+
+        public void AddDecorationsIfNecessary()
+        {
+            if (InDecoration == null)
+            {
+                SetupDefaultDecoration(DecorationPlaymode.In);
+            }
+            if (OutDecoration == null)
+            {
+                SetupDefaultDecoration(DecorationPlaymode.Out);
+            }
+        }
+
         private MapItemMove currentMove;
         private MapItemMove lastMove;
         public bool IsMoving { get; private set; }
@@ -104,10 +164,17 @@ namespace Assets.Scripts.Map
         }
 
 
-        protected virtual void Start()
+
+        public void RefreshIndex()
         {
             Index = TileSystem.ClosestTileIndexFromWorld(transform.position);
             TileData = TileSystem.GetTile(Index);
+        }
+
+        protected virtual void Start()
+        {
+            RefreshIndex();
+            AddDecorationsIfNecessary();
         }
 
         protected virtual void Update()
