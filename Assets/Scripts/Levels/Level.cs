@@ -425,6 +425,8 @@ namespace Assets.Scripts.Levels
         }
 
 
+        private Action afterMenuClosedAction;
+
         public void CloseMenu()
         {
             CloseMenu(null);
@@ -432,6 +434,7 @@ namespace Assets.Scripts.Levels
 
         public void CloseMenu(Action afterClosed)
         {
+            afterMenuClosedAction = afterClosed;
 
             if (currentMenu != null)
             {
@@ -441,12 +444,20 @@ namespace Assets.Scripts.Levels
 
         private void OnMenuClosed()
         {
+
+
+
             Play();
             TopUI.RevertMode();
 
             foreach (var element in GetLevelElements())
             {
                 element.OnMenuClosed();
+            }
+
+            if (afterMenuClosedAction != null)
+            {
+                afterMenuClosedAction();
             }
 
         }

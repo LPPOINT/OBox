@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using Assets.Scripts.Map;
-using UnityEditor.VisualStudioIntegration;
 using Debug = UnityEngine.Debug;
 
 namespace Assets.Scripts.Levels

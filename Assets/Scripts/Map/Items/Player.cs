@@ -3,7 +3,6 @@ using System;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Map.Collision;
 using Rotorz.Tile;
-using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.Map.Items
