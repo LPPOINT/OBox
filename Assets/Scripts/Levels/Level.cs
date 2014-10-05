@@ -367,7 +367,7 @@ namespace Assets.Scripts.Levels
             }
         }
 
-        public void ProcessEvent(LevelEvent e)
+        public void ProcessEvent(LevelEvent e, params Type[] targets)
         {
 
 
@@ -407,7 +407,7 @@ namespace Assets.Scripts.Levels
 
             foreach (var element in GetLevelElements())
             {
-                if (e.Element != element)
+                if (e.Element != element && (targets == null || targets.Contains(element.GetType())))
                 {
                     element.ProcessEvent(e);
                 }

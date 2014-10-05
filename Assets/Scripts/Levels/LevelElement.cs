@@ -81,7 +81,13 @@ namespace Assets.Scripts.Levels
         public void FireEvent(LevelEvent e)
         {
             e.Element = this;
-            Level.ProcessEvent(e);
+            Level.ProcessEvent(e, null);
+        }
+
+        public void FireEvent(LevelEvent e, params Type[] targets)
+        {
+            e.Element = this;
+            Level.ProcessEvent(e, targets);
         }
 
         public void FireEvent(string eventName)
