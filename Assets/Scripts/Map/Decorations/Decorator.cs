@@ -38,6 +38,8 @@ namespace Assets.Scripts.Map.Decorations
         private bool isFirstRun = true;
         public bool Enabled = false;
 
+        private bool isDone;
+
         public DecorationPlaymode CurrentPlayMode { get; private set; }
 
         public IEnumerable<Decoration> GetDecorationsByIndex(int index, DecorationPlaymode playmode)
@@ -61,7 +63,7 @@ namespace Assets.Scripts.Map.Decorations
         }
 
 
-        public void Reset()
+        public void ResetDecorator()
         {
             foreach (var d in Decorations.Where(decoration => decoration.Playmode == CurrentPlayMode))
             {
@@ -71,20 +73,18 @@ namespace Assets.Scripts.Map.Decorations
 
         public void Play(DecorationPlaymode playMode)
         {
-
-
+            isDone = false;
             if (!Enabled)
             {
                 FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, playMode));
                 return;
             }
+            InvalidateDecorations();
 
             if(!isFirstRun)
-                 Reset();
+                 ResetDecorator();
 
             isFirstRun = false;
-
-            InvalidateDecorations();
             CurrentDecorationIndex = 0;
             CurrentPlayMode = playMode;
 
@@ -99,12 +99,18 @@ namespace Assets.Scripts.Map.Decorations
         private void PlayNextDecorations()
         {
 
+            if (isDone)
+            {
+                FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, CurrentPlayMode));
+                return;
+            }
+
             currentDecorations = GetDecorationsByIndex(CurrentDecorationIndex, CurrentPlayMode).ToList();
 
             if (!currentDecorations.Any())
             {
                 FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, CurrentPlayMode));
-
+                isDone = true;
             }
 
             foreach (var currentDecoration in currentDecorations)
@@ -118,9 +124,23 @@ namespace Assets.Scripts.Map.Decorations
         }
 
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, CurrentPlayMode));
+            }
+        }
+
         internal void RegisterDecorationDone(Decoration decoration)
         {
-            currentDecorations.Remove(decoration);
+            var removeResult = currentDecorations.Remove(decoration);
+
+            if (!removeResult)
+            {
+                Debug.LogWarning("RegisterDecorationDone(): decoration not found");
+            }
+
             if (!currentDecorations.Any())
             {
                 PlayNextDecorations();

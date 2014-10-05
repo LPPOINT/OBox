@@ -7,12 +7,25 @@ using Assets.Scripts.Map;
 using Assets.Scripts.Map.Decorations;
 using Assets.Scripts.Map.Items;
 using Assets.Scripts.Missions;
+using Assets.Scripts.UI;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels
 {
     public class Level : MonoBehaviour
     {
+
+
+        private void Start()
+        {
+
+            FetchCoreComponents();
+            LoadDatabase();
+            ValidateLevel();
+            ResetScore();
+            InvalidateLevelElements();
+            StartLevel();
+        }
 
         public static Level Current
         {
@@ -22,38 +35,122 @@ namespace Assets.Scripts.Levels
             }
         }
 
-        public LevelSolution Solution;
-        public LevelMission Mission;
+        [SerializeField]
+        public LevelIndex Index;
 
-        public GameMap LevelMap;
-        public LevelTopUI TopUI;
+        #region Level core components 
+        public LevelSolution Solution { get; private set; }
+        public LevelMission Mission { get; private set; }
 
+        public GameMap LevelMap { get; private set; }
+        public LevelTopUI TopUI { get; private set; }
+
+        public void FetchCoreComponents()
+        {
+            Solution = FindObjectOfType<LevelSolution>();
+            Mission = FindObjectOfType<LevelMission>();
+            LevelMap = FindObjectOfType<GameMap>();
+            TopUI = FindObjectOfType<LevelTopUI>();
+        }
+
+
+        #endregion
+
+        #region UI instances and prefabs
         public Canvas LevelResultsPrefab;
         private Canvas currentLevelResults;
 
         public Canvas MenuPrefab;
-        private Canvas currentMenu;
+        private Canvas currentPauseMenu;
+        #endregion
 
-        public int StepsForThreeStars;
-        public int StepsForTwoStars;
-        public int StepsForOneStar;
+        #region game progress management
+        private void RegisterLevelResults()
+        {
+            
+        }
+
+        #endregion
+
+        #region Database management
+
+        private void LoadDatabase()
+        {
+            levelsDatabase = Resources.Load<LevelsDatabase>("LevelsDatabase");
+
+            if (levelsDatabase == null)
+            {
+                Debug.LogWarning("Level.levelsDatabase == null");
+            }
+
+            DontDestroyOnLoad(levelsDatabase);
+        }
+
 
         private LevelsDatabase levelsDatabase;
+        public LevelModel CreateLevelModel()
+        {
+            return new LevelModel(Index.GetScenePath(false), LevelMissionModel.EnterTarget, Index.WorldNumber,
+                Index.LevelNumber);
+        }
+        #endregion
+
+        #region Decoration management
+        private enum DecorationsContext
+        {
+            Preplay,
+            Afterplay
+        }
+
+        private DecorationsContext currentDecorationsContext;
 
         private Decorator decorator;
-
         public Decorator Decorator
         {
             get { return decorator ?? (decorator = FindObjectOfType<Decorator>()); }
         }
 
-        private IEnumerable<LevelElement> elements;
+        private void StartDecorations(DecorationsContext context, DecorationPlaymode playmode)
+        {
+            currentDecorationsContext = context;
+            Decorator.Play(playmode);
+        }
 
+
+        #endregion
+
+        #region Fade management
+
+        private enum FadeContext
+        {
+            PlayStarted,
+            MenuOpen,
+            Reset
+        }
+
+        private FadeContext currentFadeContext;
+
+        private enum FadeType
+        {
+            In,
+            Out
+        }
+
+        private void StartFade(FadeContext fadeContext, FadeType fadeType)
+        {
+            currentFadeContext = fadeContext;
+            OnFadeEnd(fadeType, fadeContext);
+        }
+
+        #endregion
+
+        #region Level elements management
+
+        private IEnumerable<LevelElement> elements;
         public void InvalidateLevelElements()
         {
             elements = FindObjectsOfType<LevelElement>();
         }
-
         public IEnumerable<LevelElement> GetLevelElements()
         {
             if (elements == null)
@@ -63,38 +160,57 @@ namespace Assets.Scripts.Levels
             return elements;
         }
 
-        #region State controlling
-        private LevelState state;
-        public LevelState State
+        #endregion
+
+        #region State management
+
+        public class LevelStateChangedEvent : LevelEvent
         {
-            get { return state; }
-            private set
+            public LevelStateChangedEvent(LevelState oldState, LevelState newState)
             {
-                var oldState = value;
-                state = value;
-                foreach (var element in GetLevelElements())
-                {
-                    element.OnLevelStateChanged(oldState, state);
-                }
+                OldState = oldState;
+                NewState = newState;
             }
+
+            public LevelState OldState { get; private set; }
+            public LevelState NewState { get; private set; }
+        }
+
+        public LevelState State { get; private set; }
+
+        private void ChangeState(LevelState newState)
+        {
+            var oldState = State;
+            State = newState;
+
+            ProcessEvent(new LevelStateChangedEvent(oldState, State));
+                
+
         }
 
         public void Play()
         {
             State = LevelState.Playing;
+            ChangeState(LevelState.Playing);
         }
 
         public void LockInput()
         {
-            State = LevelState.NoInput;
+            ChangeState(LevelState.NoInput);
         }
 
         public void Pause()
         {
-            State = LevelState.Paused;
+            ChangeState(LevelState.Paused);
         }
 
         #endregion
+
+        #region Steps & stars management
+
+        public int StepsForThreeStars;
+        public int StepsForTwoStars;
+        public int StepsForOneStar;
 
         public int GetStepsTargetForStar(StarsCount star)
         {
@@ -111,23 +227,72 @@ namespace Assets.Scripts.Levels
             }
             return StepsForOneStar;
         }
-
         public int CurrentSteps { get; private set; }
         public int CurrentStepsTarget { get; private set; }
-
         public int RemainingSteps
         {
             get { return CurrentStepsTarget - CurrentSteps + 1; }
         }
-
         public StarsCount CurrentStar { get; private set; }
 
-        [SerializeField]public LevelIndex Index;
-
-        public LevelModel CreateLevelModel()
+        private void DecrementUIStar()
         {
-            return new LevelModel(Index.GetScenePath(false), LevelMissionModel.EnterTarget, Index.WorldNumber,
-                Index.LevelNumber);
+
+            if (CurrentStar == StarsCount.TwoStar)
+            {
+                TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
+            }
+            else if (CurrentStar == StarsCount.OneStar)
+            {
+                TopUI.SecondStar.GetComponent<Animator>().Play("StarDisposing");
+            }
+            else if (CurrentStar == StarsCount.None)
+            {
+                TopUI.FirstStar.GetComponent<Animator>().Play("StarDisposing");
+            }
+        }
+        private void IncrementUIStar()
+        {
+            if (CurrentStar == StarsCount.ThreeStar)
+            {
+                TopUI.ThirdStar.GetComponent<Animator>().Play("StarIdle");
+            }
+            else if (CurrentStar == StarsCount.TwoStar)
+            {
+                TopUI.SecondStar.GetComponent<Animator>().Play("StarIdle");
+            }
+            else if (CurrentStar == StarsCount.OneStar)
+            {
+                TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
+            }
+        }
+
+        private void SetUIStar(StarsCount count)
+        {
+            switch (count)
+            {
+                case StarsCount.None:
+                    TopUI.SecondStar.GetComponent<Animator>().Play("StarDisposing");
+                    TopUI.FirstStar.GetComponent<Animator>().Play("StarDisposing");
+                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
+                    break;
+                case StarsCount.OneStar:
+                    TopUI.SecondStar.GetComponent<Animator>().Play("StarDisposing");
+                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
+                    TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
+                    break;
+                case StarsCount.TwoStar:
+                    TopUI.SecondStar.GetComponent<Animator>().Play("StarIdle");
+                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
+                    TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
+                    break;
+                case StarsCount.ThreeStar:
+                    TopUI.SecondStar.GetComponent<Animator>().Play("StarIdle");
+                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarIdle");
+                    TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
+                    break;
+
+            }
         }
 
         private void ResetScore()
@@ -146,7 +311,26 @@ namespace Assets.Scripts.Levels
             SetUIStar(CurrentStar);
         }
 
+        #endregion
+
         #region Validators
+
+        private void ValidateLevel()
+        {
+#if UNITY_EDITOR
+
+
+            if (LevelMap == null)
+            {
+                Debug.LogWarning("Level.Map == null");
+            }
+
+            ValidateSolution();
+            ValidateMission();
+            ValidateSteps();
+            ValidateLevelIndex();
+#endif
+        }
         private void ValidateSteps()
         {
             if (StepsForOneStar == 0
@@ -212,98 +396,7 @@ namespace Assets.Scripts.Levels
         }
         #endregion
 
-        protected void Start()
-        {
-
-            if (LevelMap == null)
-            {
-                Debug.LogWarning("Level.Map == null");
-            }
-
-            levelsDatabase = Resources.Load<LevelsDatabase>("LevelsDatabase");
-            if (levelsDatabase == null)
-            {
-                Debug.LogWarning("Level.levelsDatabase == null");
-            }
-            DontDestroyOnLoad(levelsDatabase);
-
-
-#if UNITY_EDITOR
-            ValidateSolution();
-            ValidateMission();
-            ValidateSteps();
-            ValidateLevelIndex();
-#endif
-            LockInput();
-            CurrentStar = StarsCount.ThreeStar;
-            CurrentStepsTarget = GetStepsTargetForStar(StarsCount.ThreeStar);
-            ResetScore();
-
-            InvalidateLevelElements();
-
-            OnLevelStarted();
-        }
-
-
-        private void DecrementUIStar()
-        {
-
-            if (CurrentStar == StarsCount.TwoStar)
-            {
-                TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-            }
-            else if (CurrentStar == StarsCount.OneStar)
-            {
-                TopUI.SecondStar.GetComponent<Animator>().Play("StarDisposing");
-            }
-            else if (CurrentStar == StarsCount.None)
-            {
-                TopUI.FirstStar.GetComponent<Animator>().Play("StarDisposing");
-            }
-        }
-        private void IncrementUIStar()
-        {
-            if (CurrentStar == StarsCount.ThreeStar)
-            {
-                TopUI.ThirdStar.GetComponent<Animator>().Play("StarIdle");
-            }
-            else if (CurrentStar == StarsCount.TwoStar)
-            {
-                TopUI.SecondStar.GetComponent<Animator>().Play("StarIdle");
-            }
-            else if (CurrentStar == StarsCount.OneStar)
-            {
-                TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
-            }
-        }
-
-        private void SetUIStar(StarsCount count)
-        {
-            switch (count)
-            {
-                case StarsCount.None:
-                    TopUI.SecondStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.FirstStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                    break;
-                case StarsCount.OneStar:
-                    TopUI.SecondStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
-                    break;
-                case StarsCount.TwoStar:
-                    TopUI.SecondStar.GetComponent<Animator>().Play("StarIdle");
-                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
-                    break;
-                case StarsCount.ThreeStar:
-                    TopUI.SecondStar.GetComponent<Animator>().Play("StarIdle");
-                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarIdle");
-                    TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
-                    break;
-
-            }
-        }
+        #region Events management
 
         private void RegisterPlayerStep()
         {
@@ -348,23 +441,32 @@ namespace Assets.Scripts.Levels
         }
         private void RegisterPlayerOutside()
         {
-            Reset();
+            ResetLevel();
         }
 
-        private void RegesterPlayerMoveBegin(MapItemMove move)
+        public class LevelActionEvent : LevelEvent
         {
-            foreach (var element in GetLevelElements())
+            public LevelActionEvent(LevelActionEventType type)
             {
-                element.OnPlayerMoveBegin(LevelMap.Player, move);
+                Type = type;
             }
+
+            public enum LevelActionEventType
+            {
+                LevelStarted,
+                LevelReset,
+                LevelEnd,
+                PauseMenuOpen,
+                PauseMenuClosed,
+            }
+
+            public LevelActionEventType Type { get; private set; }
+
         }
 
-        private void RegisterPlayerMoveEnd(MapItemMove move)
+        private void FireAction(LevelActionEvent.LevelActionEventType actionType)
         {
-            foreach (var element in GetLevelElements())
-            {
-                element.OnPlayerMoveEnd(LevelMap.Player, move);
-            }
+            ProcessEvent(new LevelActionEvent(actionType));
         }
 
         public void ProcessEvent(LevelEvent e, params Type[] targets)
@@ -381,10 +483,6 @@ namespace Assets.Scripts.Levels
             }
             else if (e is MapItem.MapItemMoveEvent && e.IsPlayer)
             {
-                var moveEvent = e as MapItem.MapItemMoveEvent;
-
-                if(moveEvent.State == MapItem.MapItemMoveEvent.MoveState.Started) RegesterPlayerMoveBegin(moveEvent.Move);
-                else RegisterPlayerMoveEnd(moveEvent.Move);
 
             }
             else if (e is LevelMission.MissionDoneEvent)
@@ -394,178 +492,151 @@ namespace Assets.Scripts.Levels
             else if (e is Decorator.DecoratorEvent)
             {
                 var se = e as Decorator.DecoratorEvent;
-                if (se.Status == Decorator.DecoratorEvent.DecoratorStatus.Done && se.PlayMode == DecorationPlaymode.In)
+                if (se.Status == Decorator.DecoratorEvent.DecoratorStatus.Done)
                 {
-                    OnInDecorationsEnd();
+                    OnDecorationsEnd(se.PlayMode, currentDecorationsContext);
                 }
-                else if (se.Status == Decorator.DecoratorEvent.DecoratorStatus.Done &&
-                         se.PlayMode == DecorationPlaymode.Out)
-                {
-                    OnOutDecorationsEnd();
-                }
+
+
             }
 
             foreach (var element in GetLevelElements())
             {
-                if (e.Element != element && (targets == null || targets.Contains(element.GetType())))
+
+                if ((e.Element != element || e.Element == null))
                 {
                     element.ProcessEvent(e);
                 }
             }
         }
+        #endregion
 
-        public void OpenMenu()
-        {
-            Pause();
-            TopUI.CurrentMode = LevelTopUI.ShowMode.Hide;
-            CameraFade.FadeOut(UnityEngine.Camera.main.backgroundColor, 0.3f, OnMenuOpen);
-        }
-
-        private void OnMenuOpen()
-        {
-
-            foreach (var element in GetLevelElements())
-            {
-                element.OnMenuOpen();
-            }
-
-            currentMenu = Instantiate(MenuPrefab);
-            currentMenu.GetComponent<MenuUI>()
-                .Level = this;
-        }
-
-
-        private Action afterMenuClosedAction;
-
-        public void CloseMenu()
-        {
-            CloseMenu(null);
-        }
-
-        public void CloseMenu(Action afterClosed)
-        {
-            afterMenuClosedAction = afterClosed;
-
-            if (currentMenu != null)
-            {
-                currentMenu.GetComponent<MenuUI>().Close(OnMenuClosed);
-            }
-        }
-
-        private void OnMenuClosed()
-        {
-
-
-
-            Play();
-            TopUI.RevertMode();
-
-            foreach (var element in GetLevelElements())
-            {
-                element.OnMenuClosed();
-            }
-
-            if (afterMenuClosedAction != null)
-            {
-                afterMenuClosedAction();
-            }
-
-        }
-
-
-        public void Reset(bool playDecorations = false)
-        {
-
-            OnLevelReset();
-            LockInput();
-            CameraFade.FadeOut(0.3f, OnLevelStarted);
-        }
-
-
-        private void OnLevelReset()
-        {
-            if (LevelMap == null)
-            {
-                Debug.LogWarning("OnLevelReset(): LevelMap == null");
-                return;
-            }
-
-            Play();
-            TopUI.RevertMode();
-
-
-            if (currentLevelResults != null)
-            {
-                Destroy(currentLevelResults.gameObject);
-                currentLevelResults = null;
-            }
-
-
-            CurrentSteps = 0;
-
-            foreach (var element in GetLevelElements())
-            {
-                element.OnLevelReset();
-            }
-        }
-
-        private void OnLevelStarted()
-        {
-            ResetScore();
-
-            LockInput();
-            Decorator.Play(DecorationPlaymode.In);
-
-        }
-
-        private void OnInDecorationsEnd()
-        {
-
-            foreach (var e in GetLevelElements())
-            {
-                e.OnLevelStarted();
-            }
-            Play();
-        }
-
-        private void OnOutDecorationsEnd()
-        {
-            Pause();
-            TopUI.CurrentMode = LevelTopUI.ShowMode.Hide;
-            var bgc = UnityEngine.Camera.main.backgroundColor;
-
-            CameraFade.FadeOut(new Color(bgc.r, bgc.g, bgc.b, 1), 0.5f, () =>
-            {
-
-                foreach (var element in GetLevelElements())
-                {
-                    element.OnLevelEnded();
-                }
-
-                currentLevelResults =
-                    Instantiate(LevelResultsPrefab);
-                currentLevelResults
-                    .GetComponent<LevelResultsUI>()
-                    .Level = this;
-            });
-        }
-
+        #region Level actions (start, end, reset, open/close menu, results menu)
         public void EndLevel()
         {
             LockInput();
-            Decorator.Play(DecorationPlaymode.Out);
+            RegisterLevelResults();
+            StartDecorations(DecorationsContext.Afterplay, DecorationPlaymode.Out);
         }
 
-
-        public void LoadNextLevel()
+        public void StartLevel()
         {
-            Application.LoadLevel("Level" + (Index.LevelNumber + 1));
+            LockInput();
+            StartDecorations(DecorationsContext.Preplay, DecorationPlaymode.In);
         }
 
-        public void LoadLevel(int l)
+        public void ResetLevel()
         {
-            Application.LoadLevel("Level" + l);
+            LockInput();
+
+            if(currentPauseMenu != null)
+                ClosePauseMenu();
+            if (currentLevelResults != null)
+                CloseResultsMenu();
+
+            FireAction(LevelActionEvent.LevelActionEventType.LevelReset);
+
+            StartLevel();
+            
         }
+
+        public void OpenPauseMenuAndPause()
+        {
+            OpenPauseMenu();
+            Pause();
+        }
+
+        public void OpenPauseMenu()
+        {
+            StartFade(FadeContext.MenuOpen, FadeType.In);
+        }
+
+        public void ClosePauseMenu()
+        {
+            if (currentPauseMenu == null)
+            {
+                Debug.LogWarning("menu to close not found");
+                return;
+            }
+            Destroy(currentPauseMenu.gameObject);
+            FireAction(LevelActionEvent.LevelActionEventType.PauseMenuClosed);
+        }
+
+        public void ClosePauseMenuAndPlay()
+        {
+            ClosePauseMenu();
+            Play();
+        }
+
+        public void OpenResultsMenu(LevelResultsUIModel model)
+        {
+            if (currentLevelResults != null)
+            {
+                Debug.LogWarning("Results menu already opened");
+                return;
+            }
+
+            if (currentPauseMenu != null)
+            {
+                ClosePauseMenu();
+            }
+
+            currentLevelResults = Instantiate(LevelResultsPrefab);
+            var currentLevelResultsUI = currentLevelResults.GetComponent<LevelResultsUI>();
+
+            currentLevelResultsUI.Level = this;
+            currentLevelResultsUI.Model = model;
+
+        }
+
+        public void CloseResultsMenu()
+        {
+            if (currentLevelResults == null)
+            {
+                Debug.LogWarning("results menu not found");
+                return;
+            }
+
+            Destroy(currentLevelResults.gameObject);
+
+        }
+
+
+        #endregion
+
+        #region fade and decorations events management
+
+        private void OnDecorationsEnd(DecorationPlaymode playmode, DecorationsContext context)
+        {
+            if (context == DecorationsContext.Preplay)
+            {
+                FireAction(LevelActionEvent.LevelActionEventType.LevelStarted);
+                Play();
+            }
+            else if (context == DecorationsContext.Afterplay)
+            {
+                OpenResultsMenu(new LevelResultsUIModel());
+            }
+        }
+
+        private void OnFadeEnd(FadeType fadeType, FadeContext fadeContext)
+        {
+            if (fadeContext == FadeContext.MenuOpen)
+            {
+                if (currentPauseMenu != null)
+                {
+                    Debug.LogWarning("Menu already opened");
+                    return;
+                }
+                currentPauseMenu = Instantiate(MenuPrefab);
+                var menuUI = currentPauseMenu.GetComponent<MenuUI>();
+                menuUI.Level = this;
+
+                FireAction(LevelActionEvent.LevelActionEventType.PauseMenuOpen);
+            }
+        }
+
+        #endregion
 
     }
 }

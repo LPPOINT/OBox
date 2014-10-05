@@ -24,11 +24,6 @@ namespace Assets.Editor.Levels
         private LevelModel currentModel;
         private Texture2D currentModelPreview;
 
-        private bool world1Open = true;
-        private bool world2Open = false;
-        private bool world3Open = false;
-        private bool world4Open = false;
-
         private void Awake()
         {
 
@@ -43,8 +38,6 @@ namespace Assets.Editor.Levels
             const int offset = 10;
             var levelSelectWidth = w / 3 - offset;
             var levelSelectHeight = h - offset * 2;
-            var levelModelWidth = w - offset - levelSelectWidth;
-            var levelModelHeight = h - offset * 2;
 
             GUI.Box(new Rect(offset, offset, levelSelectWidth, levelSelectHeight), string.Empty);
 

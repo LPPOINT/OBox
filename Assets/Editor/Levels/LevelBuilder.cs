@@ -52,18 +52,11 @@ namespace Assets.Editor.Levels
             AddLevelObject("Camera", "MainCamera");
             AddLevelObject("EventSystem");
             var levelGO = AddLevelObject("Level");
-            var map = AddLevelObject("Map");
-            var mission = AddLevelObject("Mission");
-            var solution = AddLevelObject("Solution");
-            var topUI = AddLevelObject("TopUI");
 
             var level = levelGO.GetComponent<Level>();
 
             level.Index = index;
-            level.LevelMap = map.GetComponent<GameMap>();
-            level.Mission = mission.GetComponent<LevelMission>();
-            level.Solution = solution.GetComponent<LevelSolution>();
-            level.TopUI = topUI.GetComponent<LevelTopUI>();
+
 
             var model = level.CreateLevelModel();
 

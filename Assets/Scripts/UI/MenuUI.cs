@@ -33,12 +33,12 @@ namespace Assets.Scripts.Map
 
         public void OnContinueButton()
         {
-            Level.CloseMenu();
+            Level.ClosePauseMenuAndPlay();
         }
 
         public void OnResetButton()
         {
-            Level.CloseMenu(() => Level.Reset());
+            Level.ResetLevel();
         }
 
         public void OnMainMenuButton()

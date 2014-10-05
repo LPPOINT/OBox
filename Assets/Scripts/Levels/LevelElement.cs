@@ -48,12 +48,12 @@ namespace Assets.Scripts.Levels
             
         }
 
-        public virtual void OnMenuOpen()
+        public virtual void OnPauseMenuOpen()
         {
             
         }
 
-        public virtual void OnMenuClosed()
+        public virtual void OnPauseMenuClosed()
         {
             
         }
@@ -136,6 +136,44 @@ namespace Assets.Scripts.Levels
                 if (a.ShouldProcessInMainHandler)
                 {
                     OnLevelEvent(e);
+                }
+            }
+
+            var eventType = e.GetType();
+
+            if (eventType == typeof (Level.LevelStateChangedEvent))
+            {
+                var lsce = e as Level.LevelStateChangedEvent;
+                OnLevelStateChanged(lsce.OldState, lsce.NewState);
+            }
+            else if (eventType == typeof (MapItem.MapItemMoveEvent) && e.IsPlayer)
+            {
+                var me = e as MapItem.MapItemMoveEvent;
+                if(me.State == MapItem.MapItemMoveEvent.MoveState.Started)
+                    OnPlayerMoveBegin(me.Element as Player, me.Move);
+                else if (me.State == MapItem.MapItemMoveEvent.MoveState.Done)
+                    OnPlayerMoveEnd(me.Element as Player, me.Move);
+            }
+            else if (eventType == typeof (Level.LevelActionEvent))
+            {
+                var ae = e as Level.LevelActionEvent;
+                switch (ae.Type)
+                {
+                    case Level.LevelActionEvent.LevelActionEventType.LevelStarted:
+                        OnLevelStarted();
+                        break;
+                    case Level.LevelActionEvent.LevelActionEventType.LevelReset:
+                        OnLevelReset();
+                        break;
+                    case Level.LevelActionEvent.LevelActionEventType.LevelEnd:
+                        OnLevelEnded();
+                        break;
+                    case Level.LevelActionEvent.LevelActionEventType.PauseMenuOpen:
+                        OnPauseMenuOpen();
+                        break;
+                    case Level.LevelActionEvent.LevelActionEventType.PauseMenuClosed:
+                        OnPauseMenuClosed();
+                        break;
                 }
             }
         }

@@ -262,7 +262,6 @@ namespace Assets.Scripts.Map
 
             if (index == Index)
             {
-                Debug.LogWarning("SetIndex(): newIndex == oldIndex");
                 return;
             }
 

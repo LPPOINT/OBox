@@ -100,8 +100,19 @@ namespace Assets.Scripts.Map.Decorations
             OnDecorationStart();
         }
 
+        private bool ended;
+
         protected virtual void OnDecorationEnd()
         {
+
+
+            if (ended)
+            {
+                return;
+            }
+            ended = true;
+
+            
 
             if (RefreshTileIndexesAfterDone)
             {

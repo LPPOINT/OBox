@@ -340,9 +340,6 @@ namespace Assets.Scripts.Map
 
         public void ProcessCollisionExtends(MapItem item, TileIndex index, TileIndex oldIndex)
         {
-            var items =
-                Items.Where(
-                    mapItem => mapItem.CollisionDetectionMode == MapItemCollisionDetectionMode.AllTime);
 
             foreach (var i in GetItemsByIndex(index.column, index.row))
             {

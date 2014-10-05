@@ -10,7 +10,6 @@ namespace Assets.Scripts.Map.Decorations
         public Vector3 From;
         public float Time = 1;
 
-        private Vector3 startPosition;
 
         public override bool DisableRendererBeforePlaying
         {
@@ -19,11 +18,10 @@ namespace Assets.Scripts.Map.Decorations
 
         protected override void Start()
         {
-            startPosition = transform.position;
+
             base.Start();
         }
 
-        public Vector3 StartPosition { get; private set; }
 
         private void OnITweenAnimationEnd()
         {
@@ -33,7 +31,7 @@ namespace Assets.Scripts.Map.Decorations
         protected override void OnDecorationStart()
         {
             base.OnDecorationStart();
-            StartPosition = transform.position;
+
 
             foreach (var r in GetComponentsInChildren<SpriteRenderer>())
             {

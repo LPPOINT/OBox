@@ -94,7 +94,7 @@ namespace Assets.Scripts.Map.Items
                 var newIndex = wall.GetCollider(this) != MapItemColliderType.GoInside ? GameMap.GetItemStop(this, wall) : wall.Index;
 
 
-                var move = Move(newIndex, Speed, source);
+                 Move(newIndex, Speed, source);
 
                 if (newIndex != Index)
                 {
