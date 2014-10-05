@@ -40,11 +40,11 @@ namespace Assets.Scripts.Levels
 
         private LevelsDatabase levelsDatabase;
 
-        private DecorationShelduler decorationShelduler;
+        private Decorator decorator;
 
-        public DecorationShelduler DecorationShelduler
+        public Decorator Decorator
         {
-            get { return decorationShelduler ?? (decorationShelduler = FindObjectOfType<DecorationShelduler>()); }
+            get { return decorator ?? (decorator = FindObjectOfType<Decorator>()); }
         }
 
         private IEnumerable<LevelElement> elements;
@@ -234,7 +234,7 @@ namespace Assets.Scripts.Levels
             ValidateSteps();
             ValidateLevelIndex();
 #endif
-
+            LockInput();
             CurrentStar = StarsCount.ThreeStar;
             CurrentStepsTarget = GetStepsTargetForStar(StarsCount.ThreeStar);
             ResetScore();
@@ -391,14 +391,14 @@ namespace Assets.Scripts.Levels
             {
                 EndLevel();
             }
-            else if (e is DecorationShelduler.DecorationsSheldulerEvent)
+            else if (e is Decorator.DecoratorEvent)
             {
-                var se = e as DecorationShelduler.DecorationsSheldulerEvent;
-                if (se.Status == DecorationShelduler.DecorationsSheldulerEvent.DecorationSheldulerStatus.Done && se.PlayMode == DecorationPlaymode.In)
+                var se = e as Decorator.DecoratorEvent;
+                if (se.Status == Decorator.DecoratorEvent.DecoratorStatus.Done && se.PlayMode == DecorationPlaymode.In)
                 {
                     OnInDecorationsEnd();
                 }
-                else if (se.Status == DecorationShelduler.DecorationsSheldulerEvent.DecorationSheldulerStatus.Done &&
+                else if (se.Status == Decorator.DecoratorEvent.DecoratorStatus.Done &&
                          se.PlayMode == DecorationPlaymode.Out)
                 {
                     OnOutDecorationsEnd();
@@ -477,6 +477,7 @@ namespace Assets.Scripts.Levels
         {
 
             OnLevelReset();
+            LockInput();
             CameraFade.FadeOut(0.3f, OnLevelStarted);
         }
 
@@ -485,7 +486,7 @@ namespace Assets.Scripts.Levels
         {
             if (LevelMap == null)
             {
-                Debug.LogWarning("Reset(): LevelMap == null");
+                Debug.LogWarning("OnLevelReset(): LevelMap == null");
                 return;
             }
 
@@ -513,17 +514,18 @@ namespace Assets.Scripts.Levels
             ResetScore();
 
             LockInput();
-            DecorationShelduler.Play(DecorationPlaymode.In);
+            Decorator.Play(DecorationPlaymode.In);
 
         }
 
         private void OnInDecorationsEnd()
         {
-            Play();
+
             foreach (var e in GetLevelElements())
             {
                 e.OnLevelStarted();
-            } 
+            }
+            Play();
         }
 
         private void OnOutDecorationsEnd()
@@ -551,7 +553,7 @@ namespace Assets.Scripts.Levels
         public void EndLevel()
         {
             LockInput();
-            DecorationShelduler.Play(DecorationPlaymode.Out);
+            Decorator.Play(DecorationPlaymode.Out);
         }
 
 

@@ -5,6 +5,10 @@
         public float MinScale = 0f;
         public float Time = 0.3f;
 
+        public override bool RefreshTileIndexesAfterDone
+        {
+            get { return false; }
+        }
 
         private void OnITweenAnimationDone()
         {
@@ -14,12 +18,15 @@
         protected override void OnDecorationStart()
         {
 
+            base.OnDecorationStart();
+
             iTween.ScaleTo(gameObject, iTween.Hash(
 
                 "time", Time,
                 "oncomplete", "OnITweenAnimationDone",
                 "scale", transform.localScale * MinScale,
-                "includechildren", true
+                "includechildren", true,
+                "easetype", iTween.EaseType.linear
 
                 ));
 

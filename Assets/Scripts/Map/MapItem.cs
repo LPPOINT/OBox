@@ -290,8 +290,6 @@ namespace Assets.Scripts.Map
 
         private void OnITweenMoveDone()
         {
-
-
             IsMoving = false;
             lastMove = currentMove;
             currentMove = null;
@@ -313,6 +311,7 @@ namespace Assets.Scripts.Map
  
 
             GameMap.ProcessCollisionEnter(this);
+
         }
 
         private void OnITweenMoveStart()

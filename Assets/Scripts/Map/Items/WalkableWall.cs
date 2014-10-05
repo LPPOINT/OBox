@@ -5,61 +5,51 @@ namespace Assets.Scripts.Map.Items
 {
     public class WalkableWall : Wall
     {
-
         public bool DestroyAfterLeave;
 
-        public bool IsDestroyed { get; private set; }
+        private const string ShowingAnimation = "WalkableWallShowing";
+        private const string IdleAnimation = "WalkableWallIdle";
+        private const string DisposingAnimation = "WalkableWallDisposing";
 
-        public override MapItemColliderType GetCollider(MapItem other)
-        {
-            return IsDestroyed ? MapItemColliderType.MoveThrow : MapItemColliderType.GoInside;
-        }
+        public bool IsDisposed { get; private set; }
 
-        private bool isShowed = false;
+        private Animator animator;
 
-        protected override void Update()
-        {
-            base.Update();
-
-        }
-
-        private void LateUpdate()
-        {
-            if (!isShowed)
-            {
-                isShowed = true;
-                IsDestroyed = false;
-                GetComponent<Animator>().Play("WalkableWallShowing");
-            }
-        }
 
         protected override void Start()
         {
             base.Start();
-            IsDestroyed = false;
+            animator = GetComponent<Animator>();
         }
 
-        public void Destroy()
+        public override MapItemColliderType GetCollider(MapItem other)
         {
-            IsDestroyed = true;
-            GetComponent<Animator>().Play("WalkableWallDisposing");
+            return IsDisposed ? MapItemColliderType.MoveThrow : MapItemColliderType.GoInside;
         }
-
 
         public override void OnItemCollisionLeave(MapItemCollisionType collisionType, MapItem other)
         {
-            base.OnItemCollisionLeave(collisionType, other);
-            if (collisionType == MapItemCollisionType.Inside && DestroyAfterLeave)
+            if (collisionType == MapItemCollisionType.Inside && DestroyAfterLeave && !IsDisposed)
             {
-                Destroy();
+                Dispose();
             }
         }
 
-        public override void OnLevelReset()
+        public void Dispose()
         {
-            base.OnLevelReset();
-            IsDestroyed = false;
-            GetComponent<Animator>().Play("WalkableWallShowing");
+            if (IsDisposed)
+            {
+                Debug.LogWarning("WalkableWall: Wall already disposed");
+                return;
+            }
+            IsDisposed = true;
+            animator.Play(DisposingAnimation);
+        }
+
+        public override void OnLevelStarted()
+        {
+            IsDisposed = false;
+            animator.Play(IdleAnimation);
         }
     }
 }

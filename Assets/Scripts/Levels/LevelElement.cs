@@ -16,6 +16,14 @@ namespace Assets.Scripts.Levels
             get { return Level.Current; }
         }
 
+        protected virtual bool ShouldCatchEvents
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         private List<MethodInfo> eventFilters;
         private IEnumerable<MethodInfo> EventFilters
         {
@@ -98,6 +106,9 @@ namespace Assets.Scripts.Levels
 
         internal void ProcessEvent(LevelEvent e)
         {
+
+            if(!ShouldCatchEvents)
+                return;
 
             var filter = EventFilters.FirstOrDefault(info =>
                                                      {

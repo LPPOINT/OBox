@@ -1,18 +1,42 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Assets.Scripts.Levels;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Assets.Scripts.Map.Decorations
 {
-    public class DecorationShelduler : LevelElement
+    public class Decorator : LevelElement
     {
+
+
+        public class DecoratorEvent : LevelEvent
+        {
+            public DecoratorEvent(DecoratorStatus status, DecorationPlaymode playMode)
+            {
+                PlayMode = playMode;
+                Status = status;
+            }
+
+            public DecorationPlaymode PlayMode { get; private set; }
+            public DecoratorStatus Status { get; private set; }
+
+            public enum DecoratorStatus
+            {
+                Started,
+                Done
+            }
+
+        }
+
         public int CurrentDecorationIndex { get; private set; }
         public List<Decoration> Decorations { get; private set; }
 
         private List<Decoration> currentDecorations;
 
         private bool isFirstRun = true;
+        public bool Enabled = false;
 
         public DecorationPlaymode CurrentPlayMode { get; private set; }
 
@@ -24,6 +48,11 @@ namespace Assets.Scripts.Map.Decorations
         public void InvalidateDecorations()
         {
             Decorations = new List<Decoration>(FindObjectsOfType<Decoration>());
+
+            foreach (var decoration in Decorations)
+            {
+                decoration.Decorator = this;
+            }
         }
 
         private void Start()
@@ -31,35 +60,24 @@ namespace Assets.Scripts.Map.Decorations
             InvalidateDecorations();
         }
 
-        public class DecorationsSheldulerEvent : LevelEvent
-        {
-            public DecorationsSheldulerEvent(DecorationSheldulerStatus status, DecorationPlaymode playMode)
-            {
-                PlayMode = playMode;
-                Status = status;
-            }
-
-            public DecorationPlaymode PlayMode { get; private set; }
-            public DecorationSheldulerStatus Status { get; private set; }
-
-            public enum DecorationSheldulerStatus
-            {
-                Started,
-                Done
-            }
-
-        }
 
         public void Reset()
         {
             foreach (var d in Decorations.Where(decoration => decoration.Playmode == CurrentPlayMode))
             {
-                d.Reset();
+                d.ResetDecoration();
             }
         }
 
         public void Play(DecorationPlaymode playMode)
         {
+
+
+            if (!Enabled)
+            {
+                FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, playMode));
+                return;
+            }
 
             if(!isFirstRun)
                  Reset();
@@ -70,43 +88,46 @@ namespace Assets.Scripts.Map.Decorations
             CurrentDecorationIndex = 0;
             CurrentPlayMode = playMode;
 
-            FireEvent(new DecorationsSheldulerEvent(DecorationsSheldulerEvent.DecorationSheldulerStatus.Started, playMode));
+            foreach (var decoration in Decorations)
+            {
+                decoration.OnDecotorStarted();
+            }
 
             PlayNextDecorations();
         }
 
         private void PlayNextDecorations()
         {
+
             currentDecorations = GetDecorationsByIndex(CurrentDecorationIndex, CurrentPlayMode).ToList();
 
             if (!currentDecorations.Any())
             {
-                FireEvent(new DecorationsSheldulerEvent(DecorationsSheldulerEvent.DecorationSheldulerStatus.Done, CurrentPlayMode));
+                FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, CurrentPlayMode));
+
             }
 
             foreach (var currentDecoration in currentDecorations)
             {
-                currentDecoration.Play(CurrentPlayMode);
+                currentDecoration.Play();
             }
 
             CurrentDecorationIndex++;
+
+
         }
 
-        [LevelEventFilter(typeof (Decoration.DecorationEvent))]
-        public void OnDecorationEvent(Decoration.DecorationEvent e)
+
+        internal void RegisterDecorationDone(Decoration decoration)
         {
-
-            if (e.Status == Decoration.DecorationEvent.DecorationStatus.Done)
+            currentDecorations.Remove(decoration);
+            if (!currentDecorations.Any())
             {
-                currentDecorations.Remove(e.Element as Decoration);
-
-                if (!currentDecorations.Any())
-                {
-                    PlayNextDecorations();
-                }
-
+                PlayNextDecorations();
             }
+
         }
+        
 
     }
 }

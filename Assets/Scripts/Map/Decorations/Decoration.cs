@@ -3,9 +3,12 @@ using UnityEngine;
 
 namespace Assets.Scripts.Map.Decorations
 {
-    public class Decoration : LevelElement
+    public class Decoration : MonoBehaviour
     {
 
+
+
+        public Decorator Decorator { get; internal set; }
 
         public enum DecorationStatus
         {
@@ -24,23 +27,13 @@ namespace Assets.Scripts.Map.Decorations
                 return true;
             }
         }
-
         public virtual bool DisableRendererBeforePlaying
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public virtual bool StopAnimatorBeforePlaying
         {
             get
             {
                 return true;
             }
         }
-
         public virtual bool CanBeRoot
         {
             get
@@ -50,14 +43,14 @@ namespace Assets.Scripts.Map.Decorations
         }
 
         public DecorationStatus CurrentStatus { get; private set; }
-        public DecorationPlaymode CurrentPlayMode { get; private set; }
 
 
         protected Vector3 StartPosition { get; private set; }
         protected Vector3 StartScale { get; private set; }
 
-        public virtual void Reset()
+        public virtual void ResetDecoration()
         {
+
             transform.position = StartPosition;
             transform.localScale = StartScale;
         }
@@ -67,25 +60,19 @@ namespace Assets.Scripts.Map.Decorations
 
         }
 
-        [LevelEventFilter(typeof(DecorationShelduler.DecorationsSheldulerEvent))]
-        public  void OnDecorationsEvent(DecorationShelduler.DecorationsSheldulerEvent e)
+
+        public virtual void OnDecotorStarted()
         {
+            StartPosition = transform.position;
+            StartScale = transform.localScale;
 
-
-            if (e.Status == DecorationShelduler.DecorationsSheldulerEvent.DecorationSheldulerStatus.Started)
+            if (DisableRendererBeforePlaying)
             {
-
-                StartPosition = transform.position;
-                StartScale = transform.localScale;
-
-                if (DisableRendererBeforePlaying)
+                if (GetComponent<Renderer>() != null)
+                    GetComponent<Renderer>().enabled = false;
+                foreach (var r in GetComponentsInChildren<Renderer>())
                 {
-                    if (GetComponent<Renderer>() != null)
-                        GetComponent<Renderer>().enabled = false;
-                    foreach (var r in GetComponentsInChildren<Renderer>())
-                    {
-                        r.enabled = false;
-                    }
+                    r.enabled = false;
                 }
             }
         }
@@ -107,9 +94,8 @@ namespace Assets.Scripts.Map.Decorations
 
         }
 
-        public void Play(DecorationPlaymode playMode)
+        public void Play()
         {
-            CurrentPlayMode = playMode;
             CurrentStatus = DecorationStatus.Playing;
             OnDecorationStart();
         }
@@ -117,21 +103,22 @@ namespace Assets.Scripts.Map.Decorations
         protected virtual void OnDecorationEnd()
         {
 
-
-            var items = GetComponentsInChildren<MapItem>();
-
-            foreach (var mapItem in items)
+            if (RefreshTileIndexesAfterDone)
             {
-                mapItem.RefreshIndex();
+                var items = GetComponentsInChildren<MapItem>();
+
+
+                foreach (var mapItem in items)
+                {
+                    mapItem.RefreshIndex();
+                }
             }
 
 
 
             CurrentStatus = DecorationStatus.Stopped;
-            FireEvent(new DecorationEvent(DecorationEvent.DecorationStatus.Done));
+            Decorator.RegisterDecorationDone(this);
         }
-
-        private bool isAnimatorWasEnabled;
 
         protected virtual void OnDecorationStart()
         {
@@ -146,8 +133,6 @@ namespace Assets.Scripts.Map.Decorations
             }
 
 
-
-            FireEvent(new DecorationEvent(DecorationEvent.DecorationStatus.Started));
         }
 
         protected virtual void OnDecorationUpdate()

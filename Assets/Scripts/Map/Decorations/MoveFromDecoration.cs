@@ -48,10 +48,10 @@ namespace Assets.Scripts.Map.Decorations
 
         }
 
-        //[LevelEventFilter(typeof(DecorationShelduler.DecorationsSheldulerEvent))]
-        //public void OnSheldulerStart(DecorationShelduler.DecorationsSheldulerEvent e)
+        //[LevelEventFilter(typeof(Decorator.DecoratorEvent))]
+        //public void OnSheldulerStart(Decorator.DecoratorEvent e)
         //{
-        //    if (e.Status == DecorationShelduler.DecorationsSheldulerEvent.DecorationSheldulerStatus.Started)
+        //    if (e.Status == Decorator.DecoratorEvent.DecoratorStatus.Started)
         //    {
         //        foreach (var r in GetComponentsInChildren<Renderer>())
         //        {

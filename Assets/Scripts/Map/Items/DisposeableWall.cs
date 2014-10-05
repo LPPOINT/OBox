@@ -23,6 +23,11 @@ namespace Assets.Scripts.Map.Items
         public float TimeBeforeTransmission { get; private set; }
         private bool isTransmitted;
 
+
+        private const string IdleAnimation = "DWallIdle";
+        private const string ShowingAnimation = "DWallShowing";
+        private const string DisposingAnimation = "DWallDone";
+
         public class DisposeableWallStatusChangedEvent : LevelEvent
         {
             public DisposeableWallStatusChangedEvent(DisposeableWallStatus oldStatus, DisposeableWallStatus newStatus)
@@ -57,7 +62,7 @@ namespace Assets.Scripts.Map.Items
             if (!modifers.Any())
             {
                 if(Status == DisposeableWallStatus.NotActivated) Activate(null);
-                else if(Status == DisposeableWallStatus.Activated) ForceActivationEnd();
+                else if(Status == DisposeableWallStatus.Activated) Dispose();
             }
         }
 
@@ -149,16 +154,16 @@ namespace Assets.Scripts.Map.Items
 
                 if (remTime <= 0)
                 {
-                    ForceActivationEnd();
+                    Dispose();
                 }
             }
 
             base.Update();
         }
 
-        private void ForceActivationEnd()
+        public void Dispose()
         {
-            gameObject.GetComponent<Animator>().Play("WallDone");
+            gameObject.GetComponent<Animator>().Play(DisposingAnimation);
             Status = DisposeableWallStatus.Done;
             FireEvent(new DisposeableWallDestroyedEvent());
         }
@@ -170,7 +175,7 @@ namespace Assets.Scripts.Map.Items
             {
                 return MapItemColliderType.MoveThrow;
             }
-             return MapItemColliderType.StopNear;
+            return MapItemColliderType.StopNear;
         }
 
         public override void OnItemCollisionEnter(MapItemCollisionType collisionType, MapItem other)
@@ -207,7 +212,7 @@ namespace Assets.Scripts.Map.Items
 
 
 
-                ForceActivationEnd();
+                Dispose();
 
 
                 switch (collisionType)
@@ -237,13 +242,13 @@ namespace Assets.Scripts.Map.Items
             FireEvent(new DisposeableWallActivatedEvent());
         }
 
-        public override void OnLevelReset()
+        public override void OnLevelStarted()
         {
             base.OnLevelReset();
             Activator = null;
             CurrentTime = 0;
             Status = DisposeableWallStatus.NotActivated;
-            gameObject.GetComponent<Animator>().Play("Wallidle");
+            gameObject.GetComponent<Animator>().Play(IdleAnimation);
             isTransmitted = false;
             TimeUI.text = ((int)Time).ToString();
 

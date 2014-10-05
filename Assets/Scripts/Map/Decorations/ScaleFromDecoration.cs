@@ -8,6 +8,11 @@ namespace Assets.Scripts.Map.Decorations
         public float Time = 0.3f;
 
 
+        public override bool RefreshTileIndexesAfterDone
+        {
+            get { return false; }
+        }
+
         private void OnITweenAnimationDone()
         {
             OnDecorationEnd();
@@ -15,13 +20,14 @@ namespace Assets.Scripts.Map.Decorations
 
         protected override void OnDecorationStart()
         {
-
+            base.OnDecorationStart();
             iTween.ScaleFrom(gameObject, iTween.Hash(
 
                 "time", Time,
                 "oncomplete", "OnITweenAnimationDone",
                 "scale", transform.localScale * MinScale,
-                "includechildren", true
+                "includechildren", true,
+                "easetype", iTween.EaseType.linear
 
                 ));
 
