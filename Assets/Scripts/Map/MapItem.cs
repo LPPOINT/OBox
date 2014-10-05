@@ -143,8 +143,6 @@ namespace Assets.Scripts.Map
         public void SetSize(float width, float height)
         {
 
-            return;
-
             var targetXSize = width;
             var targetYSize = height;
 

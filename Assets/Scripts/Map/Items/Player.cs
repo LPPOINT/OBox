@@ -74,7 +74,7 @@ namespace Assets.Scripts.Map.Items
 
         }
 
-        public override void OnLevelReset()
+        public override void OnLevelStarted()
         {
             base.OnLevelReset();
             SetIndex(startIndex);

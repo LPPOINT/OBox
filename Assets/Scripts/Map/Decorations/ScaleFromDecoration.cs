@@ -21,12 +21,13 @@ namespace Assets.Scripts.Map.Decorations
         protected override void OnDecorationStart()
         {
             base.OnDecorationStart();
+
+
             iTween.ScaleFrom(gameObject, iTween.Hash(
 
                 "time", Time,
                 "oncomplete", "OnITweenAnimationDone",
                 "scale", transform.localScale * MinScale,
-                "includechildren", true,
                 "easetype", iTween.EaseType.linear
 
                 ));
