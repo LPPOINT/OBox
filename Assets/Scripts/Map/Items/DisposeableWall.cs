@@ -242,7 +242,7 @@ namespace Assets.Scripts.Map.Items
             FireEvent(new DisposeableWallActivatedEvent());
         }
 
-        public override void OnLevelStarted()
+        public override void OnLevelReset()
         {
             base.OnLevelReset();
             Activator = null;
@@ -252,12 +252,19 @@ namespace Assets.Scripts.Map.Items
             isTransmitted = false;
             TimeUI.text = ((int)Time).ToString();
 
+
             UpdateTransmissionTime();
 
             if (ShouldActivateAfterStart)
             {
                 Activate(GameMap.Player);
             }
+        }
+
+        public override void OnLevelStarted()
+        {
+            base.OnLevelReset();
+
         }
 
     }

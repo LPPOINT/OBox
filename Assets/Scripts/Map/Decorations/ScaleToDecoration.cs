@@ -1,4 +1,6 @@
-﻿namespace Assets.Scripts.Map.Decorations
+﻿using UnityEngine;
+
+namespace Assets.Scripts.Map.Decorations
 {
     public class ScaleToDecoration : Decoration
     {
@@ -10,7 +12,7 @@
             get { return false; }
         }
 
-        private void OnITweenAnimationDone()
+        private void OnITweenScaleToAnimationDone()
         {
             OnDecorationEnd();
         }
@@ -19,11 +21,10 @@
         {
 
             base.OnDecorationStart();
-
             iTween.ScaleTo(gameObject, iTween.Hash(
 
                 "time", Time,
-                "oncomplete", "OnITweenAnimationDone",
+                "oncomplete", "OnITweenScaleToAnimationDone",
                 "scale", transform.localScale * MinScale,
                 "includechildren", true,
                 "easetype", iTween.EaseType.linear

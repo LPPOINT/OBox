@@ -22,7 +22,6 @@ namespace Assets.Scripts.Map.Decorations
         {
             base.OnDecorationStart();
 
-
             iTween.ScaleFrom(gameObject, iTween.Hash(
 
                 "time", Time,

@@ -26,6 +26,7 @@ namespace Assets.Scripts.Map.Decorations
         protected override void OnDecorationStart()
         {
 
+
             iTween.FadeTo(gameObject, iTween.Hash(
 
                 "time", Time,

@@ -48,6 +48,11 @@ namespace Assets.Scripts.Map.Decorations
         protected Vector3 StartPosition { get; private set; }
         protected Vector3 StartScale { get; private set; }
 
+        protected virtual void Start()
+        {
+            CurrentStatus = DecorationStatus.Stopped;
+        }
+
         public virtual void ResetDecoration()
         {
 
@@ -55,13 +60,8 @@ namespace Assets.Scripts.Map.Decorations
             transform.localScale = StartScale;
         }
 
-        protected virtual void Start()
-        {
 
-        }
-
-
-        public virtual void OnDecotorStarted()
+        public virtual void OnDecotorPlay()
         {
             StartPosition = transform.position;
             StartScale = transform.localScale;
@@ -79,18 +79,18 @@ namespace Assets.Scripts.Map.Decorations
 
         public class DecorationEvent : LevelEvent
         {
-            public DecorationEvent(DecorationStatus status)
+            public DecorationEvent(DecorationPlayState playState)
             {
-                Status = status;
+                PlayState = playState;
             }
 
-            public enum DecorationStatus
+            public enum DecorationPlayState
             {
                 Started,
                 Done
             }
 
-            public DecorationStatus Status { get; private set; }
+            public DecorationPlayState PlayState { get; private set; }
 
         }
 
@@ -98,21 +98,29 @@ namespace Assets.Scripts.Map.Decorations
         {
             CurrentStatus = DecorationStatus.Playing;
             OnDecorationStart();
+            isEnded = false;
         }
 
-        private bool ended;
+        public void Stop()
+        {
+
+            CurrentStatus = DecorationStatus.Stopped;
+        }
+
+
+        private bool isEnded;
 
         protected virtual void OnDecorationEnd()
         {
 
 
-            if (ended)
+            if (isEnded)
             {
-                return;
+                Debug.LogError("IsEnded = true");
             }
-            ended = true;
 
-            
+            isEnded = true;
+
 
             if (RefreshTileIndexesAfterDone)
             {

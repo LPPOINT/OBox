@@ -30,122 +30,126 @@ namespace Assets.Scripts.Map.Decorations
 
         }
 
-        public int CurrentDecorationIndex { get; private set; }
-        public List<Decoration> Decorations { get; private set; }
 
+        private List<Decoration> sceneDecorations;
         private List<Decoration> currentDecorations;
+        private DecorationPlaymode currentPlaymode;
 
-        private bool isFirstRun = true;
-        public bool Enabled = false;
+        public int CurrentIndex { get; private set; }
+        public int MaxIndex { get; private set; }
+        public int MinIndex { get; private set; }
 
-        private bool isDone;
-
-        public DecorationPlaymode CurrentPlayMode { get; private set; }
-
-        public IEnumerable<Decoration> GetDecorationsByIndex(int index, DecorationPlaymode playmode)
+        private void FetchSceneDecorations()
         {
-            return Decorations.Where(decoration => decoration.PlayIndex == index && decoration.Playmode == playmode);
-        }
+            sceneDecorations = new List<Decoration>(FindObjectsOfType<Decoration>());
 
-        public void InvalidateDecorations()
-        {
-            Decorations = new List<Decoration>(FindObjectsOfType<Decoration>());
+            MaxIndex = sceneDecorations.Max(decoration => decoration.PlayIndex);
+            MinIndex = sceneDecorations.Min(decoration => decoration.PlayIndex);
 
-            foreach (var decoration in Decorations)
+            foreach (var d in sceneDecorations)
             {
-                decoration.Decorator = this;
+                d.Decorator = this;
             }
         }
-
-        private void Start()
+        private IEnumerable<Decoration> GetDecorationsByIndex(int index, DecorationPlaymode playmode)
         {
-            InvalidateDecorations();
+            var res =  sceneDecorations.Where(decoration => decoration.PlayIndex == index && decoration.Playmode == playmode);
+            return res;
         }
 
-
-        public void ResetDecorator()
+        private void NotifyDecoratorDone()
         {
-            foreach (var d in Decorations.Where(decoration => decoration.Playmode == CurrentPlayMode))
+            FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, currentPlaymode));
+        }
+        private void NotifyDecoratorStarted()
+        {
+            FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Started, currentPlaymode));
+        }
+
+        public bool IsPlaying { get; private set; }
+
+        public void Terminate()
+        {
+            Debug.Log("Decorator.Terminate()");
+            currentDecorations.Clear();
+            IsPlaying = false;
+        }
+
+        private void ResetDecorator()
+        {
+            if(sceneDecorations == null) return;
+            foreach (var d in sceneDecorations.Where(decoration => decoration.Playmode == currentPlaymode))
             {
                 d.ResetDecoration();
             }
         }
 
-        public void Play(DecorationPlaymode playMode)
+        public void Play(DecorationPlaymode playmode)
         {
-            isDone = false;
-            if (!Enabled)
+            if (IsPlaying)
             {
-                FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, playMode));
-                return;
-            }
-            InvalidateDecorations();
-
-            if(!isFirstRun)
-                 ResetDecorator();
-
-            isFirstRun = false;
-            CurrentDecorationIndex = 0;
-            CurrentPlayMode = playMode;
-
-            foreach (var decoration in Decorations)
-            {
-                decoration.OnDecotorStarted();
-            }
-
-            PlayNextDecorations();
-        }
-
-        private void PlayNextDecorations()
-        {
-
-            if (isDone)
-            {
-                FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, CurrentPlayMode));
+                Debug.LogWarning("Decorator already active");
                 return;
             }
 
-            currentDecorations = GetDecorationsByIndex(CurrentDecorationIndex, CurrentPlayMode).ToList();
+            ResetDecorator();
 
-            if (!currentDecorations.Any())
+            IsPlaying = true;
+            FetchSceneDecorations();
+            CurrentIndex = MinIndex;
+            currentPlaymode = playmode;
+
+            foreach (var d in sceneDecorations.Where(decoration => decoration.Playmode == currentPlaymode))
             {
-                FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, CurrentPlayMode));
-                isDone = true;
+                d.OnDecotorPlay();
             }
 
-            foreach (var currentDecoration in currentDecorations)
-            {
-                currentDecoration.Play();
-            }
 
-            CurrentDecorationIndex++;
-
+            PlayNewIndex();
+            NotifyDecoratorStarted();
 
         }
 
-
-        private void Update()
+        private void PlayNewIndex()
         {
-            if (Input.GetKeyDown(KeyCode.B))
+            if (CurrentIndex > MaxIndex)
             {
-                FireEvent(new DecoratorEvent(DecoratorEvent.DecoratorStatus.Done, CurrentPlayMode));
+                IsPlaying = false;
+                NotifyDecoratorDone();
+                return;
             }
+
+            currentDecorations = new List<Decoration>(GetDecorationsByIndex(CurrentIndex, currentPlaymode));
+
+            foreach (var d in currentDecorations)
+            {
+                d.Play();
+            }
+
         }
 
         internal void RegisterDecorationDone(Decoration decoration)
         {
-            var removeResult = currentDecorations.Remove(decoration);
 
+            if (!IsPlaying)
+            {
+                Debug.LogError("IN RegisterDecorationDone() When IsPlaying = false");
+                return;
+            }
+
+            var removeResult = currentDecorations.Remove(decoration);
             if (!removeResult)
             {
-                Debug.LogWarning("RegisterDecorationDone(): decoration not found");
+                Debug.LogError("UNEXPECTED DECORATION PASSED TO RegisterDecorationDone(). Decorator will be terminated");
+                NotifyDecoratorDone();
+                Terminate();
+                return;
             }
-
             if (!currentDecorations.Any())
             {
-                PlayNextDecorations();
+                CurrentIndex++;
+                PlayNewIndex();
             }
-
         }
         
 
