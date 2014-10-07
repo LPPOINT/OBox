@@ -112,6 +112,11 @@ namespace Assets.Scripts.Map.Decorations
 
         private void PlayNewIndex()
         {
+
+            MaxIndex = sceneDecorations.Where((decoration => decoration.Playmode == currentPlaymode)).Max(decoration =>  decoration.PlayIndex);
+            MinIndex = sceneDecorations.Where((decoration => decoration.Playmode == currentPlaymode)).Min(decoration => decoration.PlayIndex);
+
+
             if (CurrentIndex > MaxIndex)
             {
                 IsPlaying = false;
@@ -151,7 +156,14 @@ namespace Assets.Scripts.Map.Decorations
                 PlayNewIndex();
             }
         }
-        
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                Debug.Log("Decorator.currentDecorations count = " + currentDecorations.Count);
+            }
+        }
 
     }
 }
