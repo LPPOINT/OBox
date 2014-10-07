@@ -1,11 +1,47 @@
 ﻿using System;
+using Assets.Scripts.Levels;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Map.InteractiveUI
 {
-    public class MapItemMoverByMouse : MapItemsMover
+    public class MapItemsSlider : LevelElement
     {
+        public enum MoverOrientation
+        {
+            Horizontal,
+            Vertical
+        }
+
+        public MoverOrientation Orientation;
+        public Graphic UIBorder;
+        public MapItemsGroup Group;
+
+        public void Move(Vector2 offset)
+        {
+            if(Orientation == MoverOrientation.Horizontal) Group.Offset(new Vector2(offset.x, 0));
+            else Group.Offset(new Vector2(0, offset.y));
+        }
+
+
+        public bool CanMove(Direction direction)
+        {
+            var edgeItems = Group.GetEdgeItems(direction);
+
+            
+
+            foreach (var edgeItem in edgeItems)
+            {
+                var wall = Level.LevelMap.GetFirstWallOfDirection(edgeItem, direction);
+                if (wall == null)
+                {
+                    return false;
+                }
+            }
+            return true;
+
+        }
+
 
         private Vector2 lastMousePosition;
         private bool lastMousePressed;
@@ -31,7 +67,7 @@ namespace Assets.Scripts.Map.InteractiveUI
 
                 if (lastMousePressed && worldRect.Contains(worldMouse))
                 {
-                    var offset = new Vector2( worldMouse.x - lastMousePosition.x,  worldMouse.y - lastMousePosition.y);
+                    var offset = new Vector2(worldMouse.x - lastMousePosition.x, worldMouse.y - lastMousePosition.y);
                     Move(offset);
                 }
 
@@ -41,10 +77,12 @@ namespace Assets.Scripts.Map.InteractiveUI
             }
             else
             {
-                if(lastMousePressed) Group.NormalizePositions();
+                if (lastMousePressed) Group.NormalizePositions();
                 lastMousePressed = false;
             }
 
         }
+
+
     }
 }

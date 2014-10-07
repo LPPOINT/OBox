@@ -19,6 +19,7 @@ namespace Assets.Scripts.Levels
         private void Start()
         {
 
+
             FetchCoreComponents();
             LoadDatabase();
             ValidateLevel();
@@ -27,12 +28,10 @@ namespace Assets.Scripts.Levels
             StartLevel();
         }
 
+        private static Level current;
         public static Level Current
         {
-            get
-            {
-                return FindObjectOfType<Level>();
-            }
+            get { return current ?? (current = FindObjectOfType<Level>()); }
         }
 
         [SerializeField]
@@ -211,6 +210,7 @@ namespace Assets.Scripts.Levels
         public int StepsForThreeStars;
         public int StepsForTwoStars;
         public int StepsForOneStar;
+
 
         public int GetStepsTargetForStar(StarsCount star)
         {

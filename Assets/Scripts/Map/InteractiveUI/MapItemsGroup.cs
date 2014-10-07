@@ -19,14 +19,6 @@ namespace Assets.Scripts.Map.InteractiveUI
             startPos = transform.position;
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                NormalizePositions();
-            }
-        }
-
 
 
 
@@ -40,6 +32,19 @@ namespace Assets.Scripts.Map.InteractiveUI
 
         public void NormalizePositions()
         {
+
+            if (items == null)
+            {
+                Debug.LogWarning("NormalizePositions(): items == null");
+                return;
+            }
+
+            if (Level == null || Level.LevelMap == null)
+            {
+                Debug.LogWarning("NormalizePositions(): Level == null || Level.LevelMap == null");
+                return;
+            }
+
             var probeItem = items.FirstOrDefault();
             var closestIndex = Level.LevelMap.TileSystem.ClosestTileIndexFromWorld(probeItem.transform.position);
             var newPosition = Level.LevelMap.TileSystem.WorldPositionFromTileIndex(closestIndex);

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace Assets.Editor
 {
     [CustomEditor(typeof(TipTextManager))]
-    public class TipTextInspector : UnityEditor.Editor
+    public class TipTextEditor : UnityEditor.Editor
     {
 
 
@@ -24,7 +24,7 @@ namespace Assets.Editor
             var p = AssetDatabase.LoadAssetAtPath(@"Assets/Prefabs/UI/TipTextManager.prefab", typeof(GameObject));
             if (p == null)
             {
-                Debug.LogWarning("TipTextInspector(): GetTipPrefab(): prefab == null");
+                Debug.LogWarning("TipTextEditor(): GetTipPrefab(): prefab == null");
                 return null;
             }
             return p as GameObject;

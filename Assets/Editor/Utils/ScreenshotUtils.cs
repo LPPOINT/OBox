@@ -2,9 +2,9 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Assets.Editor
+namespace Assets.Editor.Utils
 {
-    public class CaptureScreenshot : ScriptableObject
+    public class ScreenshotUtils : ScriptableObject
     {
 
         public static String GetTimestamp(DateTime value)

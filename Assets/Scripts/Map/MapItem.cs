@@ -147,9 +147,9 @@ namespace Assets.Scripts.Map
             var targetYSize = height;
 
 
+           
             var currentXSize = gameObject.GetComponent<SpriteRenderer>().bounds.size.x;
             var currentYSize = gameObject.GetComponent<SpriteRenderer>().bounds.size.y;
-
 
 
             var scale = gameObject.transform.localScale;

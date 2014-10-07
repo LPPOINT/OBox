@@ -24,6 +24,26 @@ namespace Assets.Editor
             return true;
         }
 
+
+        private void SetObjectScaleBySize(float width, float height, GameObject gameObject, Renderer renderer)
+        {
+            var targetXSize = width;
+            var targetYSize = height;
+
+
+            var currentXSize = renderer.bounds.size.x;
+            var currentYSize = renderer.bounds.size.y;
+
+
+            var scale = gameObject.transform.localScale;
+
+            scale.x = targetXSize * scale.x / currentXSize;
+            scale.y = targetYSize * scale.y / currentYSize;
+
+
+            gameObject.transform.localScale = scale;
+        }
+
         public override void OnInspectorGUI()
         {
 
@@ -75,6 +95,16 @@ namespace Assets.Editor
                     {
                         lastItems.Add(mapItem);
                         mapItem.SetSize(cellScale.x, cellScale.y);
+
+                        if (mapItem.transform.parent != null)
+                        {
+                            
+                            SetObjectScaleBySize(cellScale.x, cellScale.y, mapItem.transform.parent.gameObject, mapItem.GetComponent<SpriteRenderer>());
+                        }
+                        else
+                        {
+                            SetObjectScaleBySize(cellScale.x, cellScale.y, mapItem.gameObject, mapItem.GetComponent<SpriteRenderer>());
+                        }
                     }
                 }
 
@@ -104,7 +134,14 @@ namespace Assets.Editor
 
                     foreach (var item in items)
                     {
-                        item.SetSize(cellScale.x, cellScale.y);
+                        if (item.transform.parent != null)
+                        {
+                            SetObjectScaleBySize(cellScale.x, cellScale.y, item.transform.parent.gameObject, item.GetComponent<SpriteRenderer>());
+                        }
+                        else
+                        {
+                            SetObjectScaleBySize(cellScale.x, cellScale.y, item.gameObject, item.GetComponent<SpriteRenderer>());
+                        }
                     }
 
             }

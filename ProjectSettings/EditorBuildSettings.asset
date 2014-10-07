@@ -7,3 +7,19 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/Levels/World1/Build/Level1_build.unity
+  - enabled: 1
+    path: Assets/SceneManagerDemo/Scenes/MainMenu.unity
+  - enabled: 1
+    path: Assets/SceneManagerDemo/Scenes/LevelSelectionMenu.unity
+  - enabled: 1
+    path: Assets/SceneManagerDemo/Scenes/Level4.unity
+  - enabled: 1
+    path: Assets/SceneManagerDemo/Scenes/Level3.unity
+  - enabled: 1
+    path: Assets/SceneManagerDemo/Scenes/Level2.unity
+  - enabled: 1
+    path: Assets/SceneManagerDemo/Scenes/Level1.unity
+  - enabled: 1
+    path: Assets/SceneManagerDemo/Scenes/Intro.unity
+  - enabled: 1
+    path: Assets/SceneManagerDemo/Scenes/Cutscene.unity

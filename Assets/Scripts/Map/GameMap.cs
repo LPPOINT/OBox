@@ -42,10 +42,10 @@ namespace Assets.Scripts.Map
 
             Player = Items.FirstOrDefault(item => item is Player) as Player;
 
-            foreach (var mapItem in Items)
-            {
-               mapItem.SetSize(TileSystem.CellSize.x, TileSystem.CellSize.y);
-            }
+            //foreach (var mapItem in Items)
+            //{
+            //   mapItem.SetSize(TileSystem.CellSize.x, TileSystem.CellSize.y);
+            //}
 
         }
 
