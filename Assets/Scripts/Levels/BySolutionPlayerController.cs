@@ -41,7 +41,7 @@ namespace Assets.Scripts.Levels
         {
         }
 
-        public override void OnLevelReset()
+        protected override void OnLevelReset()
         {
             CurrentNodeIndex = 0;
             isDone = false;

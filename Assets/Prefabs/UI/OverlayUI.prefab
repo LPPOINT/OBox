@@ -114,7 +114,7 @@ GameObject:
   - 114: {fileID: 11400006}
   - 114: {fileID: 11400008}
   m_Layer: 5
-  m_Name: TopUI
+  m_Name: OverlayUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,7 +128,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 22400012}
-  - 225: {fileID: 22500000}
   m_Layer: 0
   m_Name: RightContainer
   m_TagString: Untagged
@@ -144,7 +143,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 22400014}
-  - 225: {fileID: 22500002}
   m_Layer: 0
   m_Name: LeftContainer
   m_TagString: Untagged
@@ -373,19 +371,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 100012}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44a7ef9deb95be046bf78bca06667978, type: 3}
+  m_Script: {fileID: 11500000, guid: cbe5a9de45334ac478daed2b6c96e468, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StepsSlider: {fileID: 11400002}
-  FirstStar: {fileID: 11400000}
-  SecondStar: {fileID: 11400012}
-  ThirdStar: {fileID: 11400010}
-  StepsCount: {fileID: 11400022}
-  TryAgainButton: {fileID: 11400014}
-  MenuButton: {fileID: 11400018}
-  LeftGroup: {fileID: 22500002}
-  RightGroup: {fileID: 22500000}
-  Mode: 1
+  StepsSlider: {fileID: 0}
+  FirstStar: {fileID: 0}
+  SecondStar: {fileID: 0}
+  ThirdStar: {fileID: 0}
+  StepsCount: {fileID: 0}
+  TryAgainButton: {fileID: 0}
+  MenuButton: {fileID: 0}
+  MissionIcon: {fileID: 0}
+  Mode: 0
 --- !u!114 &11400010
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -891,24 +888,6 @@ RectTransform:
   m_AnchoredPosition: {x: -52.5859985, y: 4.00012684}
   m_SizeDelta: {x: 26.1000004, y: 31.1000004}
   m_Pivot: {x: .5, y: .5}
---- !u!225 &22500000
-CanvasGroup:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100014}
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
---- !u!225 &22500002
-CanvasGroup:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100016}
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

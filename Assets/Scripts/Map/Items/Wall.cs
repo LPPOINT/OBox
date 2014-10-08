@@ -47,7 +47,7 @@ namespace Assets.Scripts.Map.Items
             }
         }
 
-        public override void OnLevelReset()
+        protected override void OnLevelReset()
         {
             if (GetType() != typeof (Wall))
             {

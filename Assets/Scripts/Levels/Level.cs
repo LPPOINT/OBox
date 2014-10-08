@@ -26,6 +26,7 @@ namespace Assets.Scripts.Levels
             ResetScore();
             InvalidateLevelElements();
             StartLevel();
+            FireAction(LevelActionEvent.LevelActionType.LevelInitialized);
         }
 
         private static Level current;
@@ -42,14 +43,14 @@ namespace Assets.Scripts.Levels
         public LevelMission Mission { get; private set; }
 
         public GameMap LevelMap { get; private set; }
-        public LevelTopUI TopUI { get; private set; }
+        public OverlayUI OverlayUI { get; private set; }
 
         public void FetchCoreComponents()
         {
             Solution = FindObjectOfType<LevelSolution>();
             Mission = FindObjectOfType<LevelMission>();
             LevelMap = FindObjectOfType<GameMap>();
-            TopUI = FindObjectOfType<LevelTopUI>();
+            OverlayUI = FindObjectOfType<OverlayUI>();
         }
 
 
@@ -211,8 +212,22 @@ namespace Assets.Scripts.Levels
         public int StepsForTwoStars;
         public int StepsForOneStar;
 
+        public void UpdateOverlayUI()
+        {
+            OverlayUI.Invalidate();
+        }
 
-        public int GetStepsTargetForStar(StarsCount star)
+        public int CurrentSteps { get; private set; }
+        public int CurrentMaxSteps { get; private set; }
+
+        public int RemainingSteps
+        {
+            get { return CurrentMaxSteps - CurrentSteps ; }
+        }
+
+        public StarsCount CurrentStar { get; private set; }
+
+        public int GetMaxStepsForStar(StarsCount star)
         {
             switch (star)
             {
@@ -227,88 +242,15 @@ namespace Assets.Scripts.Levels
             }
             return StepsForOneStar;
         }
-        public int CurrentSteps { get; private set; }
-        public int CurrentStepsTarget { get; private set; }
-        public int RemainingSteps
-        {
-            get { return CurrentStepsTarget - CurrentSteps + 1; }
-        }
-        public StarsCount CurrentStar { get; private set; }
-
-        private void DecrementUIStar()
-        {
-
-            if (CurrentStar == StarsCount.TwoStar)
-            {
-                TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-            }
-            else if (CurrentStar == StarsCount.OneStar)
-            {
-                TopUI.SecondStar.GetComponent<Animator>().Play("StarDisposing");
-            }
-            else if (CurrentStar == StarsCount.None)
-            {
-                TopUI.FirstStar.GetComponent<Animator>().Play("StarDisposing");
-            }
-        }
-        private void IncrementUIStar()
-        {
-            if (CurrentStar == StarsCount.ThreeStar)
-            {
-                TopUI.ThirdStar.GetComponent<Animator>().Play("StarIdle");
-            }
-            else if (CurrentStar == StarsCount.TwoStar)
-            {
-                TopUI.SecondStar.GetComponent<Animator>().Play("StarIdle");
-            }
-            else if (CurrentStar == StarsCount.OneStar)
-            {
-                TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
-            }
-        }
-
-        private void SetUIStar(StarsCount count)
-        {
-            switch (count)
-            {
-                case StarsCount.None:
-                    TopUI.SecondStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.FirstStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                    break;
-                case StarsCount.OneStar:
-                    TopUI.SecondStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
-                    break;
-                case StarsCount.TwoStar:
-                    TopUI.SecondStar.GetComponent<Animator>().Play("StarIdle");
-                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                    TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
-                    break;
-                case StarsCount.ThreeStar:
-                    TopUI.SecondStar.GetComponent<Animator>().Play("StarIdle");
-                    TopUI.ThirdStar.GetComponent<Animator>().Play("StarIdle");
-                    TopUI.FirstStar.GetComponent<Animator>().Play("StarIdle");
-                    break;
-
-            }
-        }
 
         private void ResetScore()
         {
 
             CurrentStar = StarsCount.ThreeStar;
             CurrentSteps = 0;
-            CurrentStepsTarget = GetStepsTargetForStar(CurrentStar);
+            CurrentMaxSteps = GetMaxStepsForStar(CurrentStar);
 
-            TopUI.StepsSlider.minValue = 0;
-            TopUI.StepsSlider.maxValue = CurrentStepsTarget;
-            TopUI.StepsSlider.value = RemainingSteps;
-            TopUI.StepsCount.text = RemainingSteps.ToString();
-            TopUI.StepsCount.fontStyle = FontStyle.Normal;
-
-            SetUIStar(CurrentStar);
+            UpdateOverlayUI();
         }
 
         #endregion
@@ -407,37 +349,14 @@ namespace Assets.Scripts.Levels
 
             CurrentSteps++;
 
-            if (CurrentSteps > CurrentStepsTarget)
+            if (CurrentSteps > CurrentMaxSteps)
             {
                 CurrentStar--;
                 CurrentSteps = 0;
-
-                if (CurrentStar == StarsCount.None)
-                {
-                    TopUI.StepsSlider.value = 0;
-                    TopUI.StepsCount.text = "∞";
-                    TopUI.StepsCount.fontStyle = FontStyle.Bold;
-                    DecrementUIStar();
-                    return;
-                }
-
-                CurrentStepsTarget = GetStepsTargetForStar(CurrentStar);
-
-                TopUI.StepsSlider.minValue = 0;
-                TopUI.StepsSlider.maxValue = CurrentStepsTarget;
-                TopUI.StepsSlider.value = RemainingSteps;
-                TopUI.StepsCount.text = RemainingSteps.ToString();
-                TopUI.StepsCount.fontStyle = FontStyle.Normal;
-                DecrementUIStar();
-
-            }
-            else
-            {
-                TopUI.StepsSlider.value = RemainingSteps;
-                TopUI.StepsCount.text = RemainingSteps.ToString();
-                TopUI.StepsCount.fontStyle = FontStyle.Normal;
+                CurrentMaxSteps = GetMaxStepsForStar(CurrentStar);
             }
 
+            UpdateOverlayUI();
         }
         private void RegisterPlayerOutside()
         {
@@ -446,25 +365,26 @@ namespace Assets.Scripts.Levels
 
         public class LevelActionEvent : LevelEvent
         {
-            public LevelActionEvent(LevelActionEventType type)
+            public LevelActionEvent(LevelActionType type)
             {
                 Type = type;
             }
 
-            public enum LevelActionEventType
+            public enum LevelActionType
             {
                 LevelStarted,
                 LevelReset,
                 LevelEnd,
                 PauseMenuOpen,
                 PauseMenuClosed,
+                LevelInitialized
             }
 
-            public LevelActionEventType Type { get; private set; }
+            public LevelActionType Type { get; private set; }
 
         }
 
-        private void FireAction(LevelActionEvent.LevelActionEventType actionType)
+        private void FireAction(LevelActionEvent.LevelActionType actionType)
         {
             ProcessEvent(new LevelActionEvent(actionType));
         }
@@ -534,7 +454,7 @@ namespace Assets.Scripts.Levels
             if (currentLevelResults != null)
                 CloseResultsMenu();
 
-            FireAction(LevelActionEvent.LevelActionEventType.LevelReset);
+            FireAction(LevelActionEvent.LevelActionType.LevelReset);
 
             StartLevel();
             
@@ -559,7 +479,7 @@ namespace Assets.Scripts.Levels
                 return;
             }
             Destroy(currentPauseMenu.gameObject);
-            FireAction(LevelActionEvent.LevelActionEventType.PauseMenuClosed);
+            FireAction(LevelActionEvent.LevelActionType.PauseMenuClosed);
         }
 
         public void ClosePauseMenuAndPlay()
@@ -610,11 +530,13 @@ namespace Assets.Scripts.Levels
         {
             if (context == DecorationsContext.Preplay)
             {
-                FireAction(LevelActionEvent.LevelActionEventType.LevelStarted);
+                UpdateOverlayUI();
+                FireAction(LevelActionEvent.LevelActionType.LevelStarted);
                 Play();
             }
             else if (context == DecorationsContext.Afterplay)
             {
+                FireAction(LevelActionEvent.LevelActionType.LevelEnd);
                 OpenResultsMenu(new LevelResultsUIModel());
             }
         }
@@ -632,7 +554,7 @@ namespace Assets.Scripts.Levels
                 var menuUI = currentPauseMenu.GetComponent<MenuUI>();
                 menuUI.Level = this;
 
-                FireAction(LevelActionEvent.LevelActionEventType.PauseMenuOpen);
+                FireAction(LevelActionEvent.LevelActionType.PauseMenuOpen);
             }
         }
 

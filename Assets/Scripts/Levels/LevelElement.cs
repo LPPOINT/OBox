@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Assets.Scripts.Map;
 using Assets.Scripts.Map.Items;
+using Assets.Scripts.UI;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels
@@ -38,67 +39,118 @@ namespace Assets.Scripts.Levels
             }
         }
 
-        public virtual void OnLevelReset()
+        /// <summary>
+        /// Вызывается при перезагрузке уровня
+        /// </summary>
+        protected virtual void OnLevelReset()
         {
             
         }
 
-        public virtual void OnLevelStarted()
+        /// <summary>
+        /// Вызывается при начале уровня, после проигрывания начальных декораций
+        /// </summary>
+        protected virtual void OnLevelStarted()
         {
             
         }
 
+        /// <summary>
+        /// Вызывается при открытии меню паузы, когда экземпляр <see cref="MenuUI"/> уже создан и отображён.
+        /// </summary>
         public virtual void OnPauseMenuOpen()
         {
             
         }
 
-        public virtual void OnPauseMenuClosed()
+        /// <summary>
+        /// Вызывается при закрытии меню паузы, сразу после удаления объекта <see cref="MenuUI"/> со сцены
+        /// </summary>
+        protected virtual void OnPauseMenuClosed()
         {
             
         }
 
-        public virtual void OnLevelEnded()
+        /// <summary>
+        /// Вызывается при завершении миссии, сразу после проигрывания конечных декораций и до открытия экрана результатов уровня
+        /// </summary>
+        protected virtual void OnLevelEnded()
         {
             
         }
 
-        public virtual void OnPlayerMoveBegin(Player player, MapItemMove move)
+        /// <summary>
+        /// Вызывается, когда игрок начал движение
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="move"></param>
+        protected virtual void OnPlayerMoveBegin(Player player, MapItemMove move)
         {
             
         }
 
-        public virtual void OnPlayerMoveEnd(Player player, MapItemMove move)
+        /// <summary>
+        /// Вызывается, когда игрок закончил движение
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="move"></param>
+        protected virtual void OnPlayerMoveEnd(Player player, MapItemMove move)
         {
             
         }
 
-        public virtual void OnLevelStateChanged(LevelState oldState, LevelState newState)
+        /// <summary>
+        /// Вызывается, когда уровень изменил состояние
+        /// </summary>
+        /// <param name="oldState"></param>
+        /// <param name="newState"></param>
+        protected virtual void OnLevelStateChanged(LevelState oldState, LevelState newState)
         {
             
         }
 
-        public void FireEvent(LevelEvent e)
+        /// <summary>
+        /// Вызывается в конце метода Start()
+        /// </summary>
+        protected virtual void OnLevelInitialized()
+        {
+            
+        }
+
+        /// <summary>
+        /// Вызывается когда пройзошло какое - либо из действий, описанных в <see cref="Levels.Level.LevelActionEvent.LevelActionType"/>
+        /// </summary>
+        /// <param name="actionType"></param>
+        protected virtual void OnLevelAction(Level.LevelActionEvent.LevelActionType actionType)
+        {
+            
+        }
+
+        protected void FireEvent(LevelEvent e)
         {
             e.Element = this;
             Level.ProcessEvent(e, null);
         }
 
-        public void FireEvent(LevelEvent e, params Type[] targets)
+        protected void FireEvent(LevelEvent e, params Type[] targets)
         {
             e.Element = this;
             Level.ProcessEvent(e, targets);
         }
 
-        public void FireEvent(string eventName)
+        protected void FireEvent(string eventName)
         {
             FireEvent(new LevelEvent(eventName, null));
         }
-        public void FireEvent(string eventName, Dictionary<string, object> data)
+        protected void FireEvent(string eventName, Dictionary<string, object> data)
         {
             FireEvent(new LevelEvent(eventName, data));
         }
 
+        /// <summary>
+        /// Вызывается когда какой - либо элемент уровня отправил событие
+        /// </summary>
+        /// <param name="e"></param>
         public virtual void OnLevelEvent(LevelEvent e)
         {
             
@@ -159,23 +211,28 @@ namespace Assets.Scripts.Levels
                 var ae = e as Level.LevelActionEvent;
                 switch (ae.Type)
                 {
-                    case Level.LevelActionEvent.LevelActionEventType.LevelStarted:
+                    case Level.LevelActionEvent.LevelActionType.LevelInitialized:
+                        OnLevelInitialized();
+                        break;
+                    case Level.LevelActionEvent.LevelActionType.LevelStarted:
                         OnLevelStarted();
                         break;
-                    case Level.LevelActionEvent.LevelActionEventType.LevelReset:
+                    case Level.LevelActionEvent.LevelActionType.LevelReset:
                         OnLevelReset();
                         break;
-                    case Level.LevelActionEvent.LevelActionEventType.LevelEnd:
+                    case Level.LevelActionEvent.LevelActionType.LevelEnd:
                         OnLevelEnded();
                         break;
-                    case Level.LevelActionEvent.LevelActionEventType.PauseMenuOpen:
+                    case Level.LevelActionEvent.LevelActionType.PauseMenuOpen:
                         OnPauseMenuOpen();
                         break;
-                    case Level.LevelActionEvent.LevelActionEventType.PauseMenuClosed:
+                    case Level.LevelActionEvent.LevelActionType.PauseMenuClosed:
                         OnPauseMenuClosed();
                         break;
                 }
+                OnLevelAction(ae.Type);
             }
+            
         }
 
 

@@ -1,8 +1,7 @@
 ﻿using Assets.Scripts.Levels;
-using Assets.Scripts.UI;
 using UnityEngine;
 
-namespace Assets.Scripts.Map
+namespace Assets.Scripts.UI
 {
     public class LevelResultsUI : MonoBehaviour
     {

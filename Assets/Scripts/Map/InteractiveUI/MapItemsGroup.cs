@@ -97,7 +97,7 @@ namespace Assets.Scripts.Map.InteractiveUI
             }
         }
 
-        public override void OnLevelReset()
+        protected override void OnLevelReset()
         {
             base.OnLevelReset();
             transform.position = startPos;

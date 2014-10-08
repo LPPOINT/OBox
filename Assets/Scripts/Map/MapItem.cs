@@ -180,7 +180,7 @@ namespace Assets.Scripts.Map
             
         }
 
-        public override void OnLevelStateChanged(LevelState oldState, LevelState newState)
+        protected override void OnLevelStateChanged(LevelState oldState, LevelState newState)
         {
             base.OnLevelStateChanged(oldState, newState);
             if (newState == LevelState.Playing)
@@ -424,7 +424,7 @@ namespace Assets.Scripts.Map
             return other.Index.Equals(Index);
         }
 
-        public override void OnLevelReset()
+        protected override void OnLevelReset()
         {
             IsOutside = false;
             currentMove = null;

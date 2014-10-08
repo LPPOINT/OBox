@@ -101,7 +101,7 @@ namespace Assets.Scripts.Map.Items
 
         public float CurrentTime { get; private set; }
 
-        public override void OnLevelStateChanged(LevelState oldState, LevelState newState)
+        protected override void OnLevelStateChanged(LevelState oldState, LevelState newState)
         {
             if(newState == LevelState.Playing && Status == DisposeableWallStatus.Paused) Status = DisposeableWallStatus.Activated;
             else if(newState == LevelState.Paused && Status == DisposeableWallStatus.Activated) Status = DisposeableWallStatus.Paused;
@@ -242,7 +242,7 @@ namespace Assets.Scripts.Map.Items
             FireEvent(new DisposeableWallActivatedEvent());
         }
 
-        public override void OnLevelReset()
+        protected override void OnLevelReset()
         {
             base.OnLevelReset();
             Activator = null;
@@ -261,7 +261,7 @@ namespace Assets.Scripts.Map.Items
             }
         }
 
-        public override void OnLevelStarted()
+        protected override void OnLevelStarted()
         {
             base.OnLevelReset();
 

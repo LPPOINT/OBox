@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Map;
+using Assets.Scripts.UI;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;

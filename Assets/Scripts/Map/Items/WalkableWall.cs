@@ -46,7 +46,7 @@ namespace Assets.Scripts.Map.Items
             animator.Play(DisposingAnimation);
         }
 
-        public override void OnLevelStarted()
+        protected override void OnLevelStarted()
         {
             IsDisposed = false;
             animator.Play(IdleAnimation);

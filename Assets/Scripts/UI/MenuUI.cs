@@ -2,7 +2,7 @@
 using Assets.Scripts.Levels;
 using UnityEngine;
 
-namespace Assets.Scripts.Map
+namespace Assets.Scripts.UI
 {
     public class MenuUI : MonoBehaviour
     {

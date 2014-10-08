@@ -15,7 +15,7 @@ namespace Assets.Scripts.Missions
             get { return WallsCount - CurrentDestroyedWallsCount; }
         }
 
-        public override void OnLevelStarted()
+        protected override void OnLevelStarted()
         {
             CurrentDestroyedWallsCount = 0;
             WallsCount = Level.LevelMap.FindItemsOfType<DisposeableWall>().Count();

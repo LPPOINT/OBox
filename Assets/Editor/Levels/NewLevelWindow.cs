@@ -2,6 +2,7 @@
 using Assets.Scripts.Levels;
 using Assets.Scripts.Levels.Model;
 using Assets.Scripts.Meta.Model;
+using Assets.Scripts.UI;
 using UnityEditor;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ namespace Assets.Editor.Levels
 
 
         private LevelMissionModel currentMissionType = LevelMissionModel.EnterTarget;
-        private LevelTopUI.ShowMode currentTopUIShowMode = LevelTopUI.ShowMode.ShowAll;
+        private OverlayUI.ShowMode currentTopUIShowMode = OverlayUI.ShowMode.ShowAll;
 
         private int levelNumber = 1;
         private WorldNumber worldNumber = WorldNumber.World1;
@@ -52,7 +53,7 @@ namespace Assets.Editor.Levels
             GUILayout.Space(10);
 
             currentMissionType = (LevelMissionModel)EditorGUILayout.EnumPopup("Mission type", (Enum)currentMissionType);
-            currentTopUIShowMode = (LevelTopUI.ShowMode)EditorGUILayout.EnumPopup("UI Show mode", (Enum)currentTopUIShowMode);
+            currentTopUIShowMode = (OverlayUI.ShowMode)EditorGUILayout.EnumPopup("UI Show mode", (Enum)currentTopUIShowMode);
 
             GUILayout.Space(20);
 

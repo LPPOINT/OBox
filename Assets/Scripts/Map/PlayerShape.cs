@@ -44,7 +44,7 @@ namespace Assets.Scripts.Map
             }
         }
 
-        public override void OnPlayerMoveBegin(Player player, MapItemMove move)
+        protected override void OnPlayerMoveBegin(Player player, MapItemMove move)
         {
             base.OnPlayerMoveBegin(player, move);
 
@@ -69,14 +69,14 @@ namespace Assets.Scripts.Map
 
         }
 
-        public override void OnPlayerMoveEnd(Player player, MapItemMove move)
+        protected override void OnPlayerMoveEnd(Player player, MapItemMove move)
         {
             base.OnPlayerMoveEnd(player, move);
             //StartCoroutine(StopShape());
             shape.enableEmission = false;
         }
 
-        public override void OnLevelStateChanged(LevelState oldState, LevelState newState)
+        protected override void OnLevelStateChanged(LevelState oldState, LevelState newState)
         {
             base.OnLevelStateChanged(oldState, newState);
         }
