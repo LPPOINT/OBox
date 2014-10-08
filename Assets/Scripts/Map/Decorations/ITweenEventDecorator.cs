@@ -1,4 +1,7 @@
-﻿namespace Assets.Scripts.Map.Decorations
+﻿using System.Diagnostics;
+using Debug = UnityEngine.Debug;
+
+namespace Assets.Scripts.Map.Decorations
 {
     public class ITweenEventDecorator : Decoration
     {
@@ -35,6 +38,11 @@
 
         private void OnITweenDone()
         {
+            if (CurrentStatus != DecorationStatus.Playing)
+            {
+                //Debug.Log("Fake OnITweenDone() call detected and will be ignored");
+                return;
+            }
             OnDecorationEnd();
         }
 

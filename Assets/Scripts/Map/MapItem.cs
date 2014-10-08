@@ -267,7 +267,7 @@ namespace Assets.Scripts.Map
 
             if (TileData == null)
             {
-                Debug.LogWarning("SetIndex(): TileData == null");
+                //Debug.LogWarning("SetIndex(): TileData == null"); wtf?
             }
 
             IsOutside = false;

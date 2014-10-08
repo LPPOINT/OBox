@@ -88,7 +88,6 @@ namespace Assets.Scripts.Map.Decorations
         {
             if (IsPlaying)
             {
-                Debug.LogWarning("Decorator already active");
                 return;
             }
 
