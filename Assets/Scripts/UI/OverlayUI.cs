@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Missions;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace Assets.Scripts.UI
 {
     public class OverlayUI : MonoBehaviour
     {
-        public Slider StepsSlider;
+        public ProgressBar StepsProgress;
         public Image FirstStar;
         public Image SecondStar;
         public Image ThirdStar;
@@ -53,7 +54,7 @@ namespace Assets.Scripts.UI
                     ThirdStar.gameObject.SetActive(false);
                     SecondStar.gameObject.SetActive(false);
                     FirstStar.gameObject.SetActive(false);
-                    StepsSlider.gameObject.SetActive(false);
+                    StepsProgress.gameObject.SetActive(false);
                     MenuButton.gameObject.SetActive(true);
                 }
                 else if (mode == ShowMode.ShowAll)
@@ -64,7 +65,7 @@ namespace Assets.Scripts.UI
                     ThirdStar.gameObject.SetActive(true);
                     SecondStar.gameObject.SetActive(true);
                     FirstStar.gameObject.SetActive(true);
-                    StepsSlider.gameObject.SetActive(true);
+                    StepsProgress.gameObject.SetActive(true);
                     MenuButton.gameObject.SetActive(true);
                 }
             }
@@ -101,13 +102,45 @@ namespace Assets.Scripts.UI
 
         public void Invalidate()
         {
-            
+            var level = Level.Current;
+
+            var remainingSteps = level.RemainingSteps;
+            var maxSteps = level.CurrentMaxSteps;
+            var stars = level.CurrentStars;
+
+            if (StepsProgress != null)
+            {
+                if (stars != StarsCount.None)
+                {
+                    StepsProgress.gameObject.SetActive(true);
+                    StepsProgress.SetValues(remainingSteps, maxSteps);
+                }
+                else StepsProgress.gameObject.SetActive(false);
+            }
+
+            if (StepsCount != null)
+            {
+                if (remainingSteps == -1)
+                {
+                    
+                }
+                else
+                {
+                    StepsCount.text = remainingSteps.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+
+            SetStarsUICount(stars);
+
         }
 
 
         #region stars management
         private void SetStarsUICount(StarsCount count)
         {
+
+            if(FirstStar == null || SecondStar == null || ThirdStar == null) return;
+
             switch (count)
             {
                 case StarsCount.None:

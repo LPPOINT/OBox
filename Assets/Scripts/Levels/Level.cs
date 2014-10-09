@@ -233,7 +233,7 @@ namespace Assets.Scripts.Levels
             get { return CurrentMaxSteps - CurrentSteps ; }
         }
 
-        public StarsCount CurrentStar { get; private set; }
+        public StarsCount CurrentStars { get; private set; }
 
         public int GetMaxStepsForStar(StarsCount star)
         {
@@ -254,9 +254,9 @@ namespace Assets.Scripts.Levels
         private void ResetScore()
         {
 
-            CurrentStar = StarsCount.ThreeStar;
+            CurrentStars = StarsCount.ThreeStar;
             CurrentSteps = 0;
-            CurrentMaxSteps = GetMaxStepsForStar(CurrentStar);
+            CurrentMaxSteps = GetMaxStepsForStar(CurrentStars);
 
             UpdateOverlayUI();
         }
@@ -351,7 +351,7 @@ namespace Assets.Scripts.Levels
         private void RegisterPlayerStep()
         {
 
-            if (CurrentStar == StarsCount.None)
+            if (CurrentStars == StarsCount.None)
                 return;
 
 
@@ -359,9 +359,9 @@ namespace Assets.Scripts.Levels
 
             if (CurrentSteps > CurrentMaxSteps)
             {
-                CurrentStar--;
+                CurrentStars--;
                 CurrentSteps = 0;
-                CurrentMaxSteps = GetMaxStepsForStar(CurrentStar);
+                CurrentMaxSteps = GetMaxStepsForStar(CurrentStars);
             }
 
             UpdateOverlayUI();
@@ -449,6 +449,7 @@ namespace Assets.Scripts.Levels
 
         public void StartLevel()
         {
+            ResetScore();
             LockInput();
             StartDecorations(DecorationsContext.Preplay, DecorationPlaymode.In);
         }
