@@ -29,13 +29,13 @@ namespace Assets.Scripts.Levels
             FireAction(LevelActionEvent.LevelActionType.LevelInitialized);
         }
 
-	private void Update()
-	{
-	    if(Input.GetKeyDown(KeyCode.R))
-	     {
-		ResetLevel();
-	     }
-	}
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                ResetLevel();
+            }
+        }
 
         private static Level current;
         public static Level Current

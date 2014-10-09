@@ -54,7 +54,7 @@ namespace Assets.Scripts.UI
                     ThirdStar.gameObject.SetActive(false);
                     SecondStar.gameObject.SetActive(false);
                     FirstStar.gameObject.SetActive(false);
-                    StepsProgress.gameObject.SetActive(false);
+                    //StepsProgress.gameObject.SetActive(false);
                     MenuButton.gameObject.SetActive(true);
                 }
                 else if (mode == ShowMode.ShowAll)
