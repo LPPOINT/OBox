@@ -75,7 +75,6 @@ namespace Assets.Scripts.UI
         private void Start ()
         {
             initialWidth = Background.rectTransform.rect.width;
-            Debug.Log(initialWidth);
             UpdateValues();
             lastMaxValue = MaxValue;
             lastCurrentValue = CurrentValue;

@@ -139,31 +139,38 @@ namespace Assets.Scripts.UI
         private void SetStarsUICount(StarsCount count)
         {
 
-            if(FirstStar == null || SecondStar == null || ThirdStar == null) return;
-
-            switch (count)
+            try
             {
-                case StarsCount.None:
-                    SecondStar.GetComponent<Animator>().Play("StarDisposing");
-                    FirstStar.GetComponent<Animator>().Play("StarDisposing");
-                    ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                    break;
-                case StarsCount.OneStar:
-                    SecondStar.GetComponent<Animator>().Play("StarDisposing");
-                    ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                    FirstStar.GetComponent<Animator>().Play("StarIdle");
-                    break;
-                case StarsCount.TwoStar:
-                    SecondStar.GetComponent<Animator>().Play("StarIdle");
-                    ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                    FirstStar.GetComponent<Animator>().Play("StarIdle");
-                    break;
-                case StarsCount.ThreeStar:
-                    SecondStar.GetComponent<Animator>().Play("StarIdle");
-                    ThirdStar.GetComponent<Animator>().Play("StarIdle");
-                    FirstStar.GetComponent<Animator>().Play("StarIdle");
-                    break;
+                if(FirstStar == null || SecondStar == null || ThirdStar == null) return;
 
+                switch (count)
+                {
+                    case StarsCount.None:
+                        SecondStar.GetComponent<Animator>().Play("StarDisposing");
+                        FirstStar.GetComponent<Animator>().Play("StarDisposing");
+                        ThirdStar.GetComponent<Animator>().Play("StarDisposing");
+                        break;
+                    case StarsCount.OneStar:
+                        SecondStar.GetComponent<Animator>().Play("StarDisposing");
+                        ThirdStar.GetComponent<Animator>().Play("StarDisposing");
+                        FirstStar.GetComponent<Animator>().Play("StarIdle");
+                        break;
+                    case StarsCount.TwoStar:
+                        SecondStar.GetComponent<Animator>().Play("StarIdle");
+                        ThirdStar.GetComponent<Animator>().Play("StarDisposing");
+                        FirstStar.GetComponent<Animator>().Play("StarIdle");
+                        break;
+                    case StarsCount.ThreeStar:
+                        SecondStar.GetComponent<Animator>().Play("StarIdle");
+                        ThirdStar.GetComponent<Animator>().Play("StarIdle");
+                        FirstStar.GetComponent<Animator>().Play("StarIdle");
+                        break;
+
+                }
+            }
+            catch 
+            {
+ 
             }
         }
 

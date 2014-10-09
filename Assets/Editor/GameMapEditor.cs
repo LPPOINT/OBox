@@ -17,7 +17,7 @@ namespace Assets.Editor
         private List<MapItem> lastItems;
 
         private Vector2 cells;
-        private Vector2 cellsDepency;
+        private Vector2 cellsAspect;
 
         public override bool RequiresConstantRepaint()
         {
@@ -52,30 +52,16 @@ namespace Assets.Editor
             base.OnInspectorGUI();
             var map = (GameMap) target;
 
-
+            var lastAutoscale = AutoscaleNewTiles;
             AutoscaleNewTiles = EditorGUILayout.Toggle("Autosclale New Tiles", AutoscaleNewTiles);
-
-            EditorGUILayout.Separator();
-
             
-
-
-
+            
             var ts = map.GetComponent<TileSystem>();
             var cellScale = ts.CellSize;
 
             cells.x = ts.ColumnCount;
             cells.y = ts.RowCount;
-
-            var newColumns = EditorGUILayout.IntField("Columns", (int)cells.x);
-            var newRows = UnityEditor.EditorGUILayout.IntField("Rows", (int)cells.y);
-
-            EditorGUILayout.Separator();
-
-
-
-
-            cellsDepency = new Vector2(ts.ColumnCount / cellScale.x, ts.RowCount / cellScale.y);
+            cellsAspect = new Vector2(ts.ColumnCount / cellScale.x, ts.RowCount / cellScale.y);
 
 
             if (AutoscaleNewTiles)
@@ -88,6 +74,15 @@ namespace Assets.Editor
 
                 var items = map.GetComponentsInChildren<MapItem>();
 
+                if (!lastAutoscale)
+                {
+                    foreach (var mapItem in items)
+                    {
+                        if(!lastItems.Contains(mapItem)) lastItems.Add(mapItem);
+                    }
+                }
+
+
                 for (int i = 0; i < items.Length; i++)
                 {
                     var mapItem = items[i];
@@ -98,8 +93,9 @@ namespace Assets.Editor
 
                         if (mapItem.transform.parent != null)
                         {
-                            
+
                             SetObjectScaleBySize(cellScale.x, cellScale.y, mapItem.transform.parent.gameObject, mapItem.GetComponent<SpriteRenderer>());
+                            mapItem.transform.localScale = new Vector3(1, 1, mapItem.transform.localScale.z);
                         }
                         else
                         {
@@ -119,32 +115,7 @@ namespace Assets.Editor
             }
 
 
-            if(newColumns != cells.x || newRows != cells.y)
-            {
-                cellScale.x = newColumns*cellsDepency.x;
-                cellScale.y = newRows * cellsDepency.y;
-                Debug.Log("CreateSystem");
-                ts.CreateSystem(0.5f, 0.5f, 0, 22, 14);
-            }
-
-            if (GUILayout.Button("Update items scale"))
-            {
-
-                    var items = map.GetComponentsInChildren<MapItem>();
-
-                    foreach (var item in items)
-                    {
-                        if (item.transform.parent != null)
-                        {
-                            SetObjectScaleBySize(cellScale.x, cellScale.y, item.transform.parent.gameObject, item.GetComponent<SpriteRenderer>());
-                        }
-                        else
-                        {
-                            SetObjectScaleBySize(cellScale.x, cellScale.y, item.gameObject, item.GetComponent<SpriteRenderer>());
-                        }
-                    }
-
-            }
+          
 
 
         }
