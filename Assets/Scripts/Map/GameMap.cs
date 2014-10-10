@@ -9,7 +9,6 @@ using UnityEngine;
 namespace Assets.Scripts.Map
 {
 
-    //[RequireComponent(typeof(TileSystem))]
     public class GameMap : MonoBehaviour
     {
 

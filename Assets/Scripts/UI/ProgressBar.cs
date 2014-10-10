@@ -74,6 +74,12 @@ namespace Assets.Scripts.UI
 
         private void Start ()
         {
+
+            if (Background == null)
+            {
+                Background = GetComponent<Image>();
+            }
+
             initialWidth = Background.rectTransform.rect.width;
             UpdateValues();
             lastMaxValue = MaxValue;

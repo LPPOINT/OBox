@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Camera;
@@ -132,18 +133,68 @@ namespace Assets.Scripts.Levels
             Reset
         }
 
-        private FadeContext currentFadeContext;
+        private FadeVariant currentFadeVariant;
 
-        private enum FadeType
+
+        private class FadeVariant
         {
-            In,
-            Out
+
+            public static FadeVariant MenuOpen = new FadeVariant(FadeContext.MenuOpen, 0.3f, UnityEngine.Camera.main.backgroundColor, FadeMode.To, 1);
+
+            public FadeVariant(FadeContext context, float duration, Color color, FadeMode mode, float amount)
+            {
+                Context = context;
+                Duration = duration;
+                Color = color;
+                Mode = mode;
+                Amount = amount;
+            }
+
+            public enum FadeMode
+            {
+                To,
+                From
+            }
+
+
+            public FadeContext Context { get; set; }
+            public float Duration { get; set; }
+            public Color Color { get; set; }
+            public FadeMode Mode { get; set; }
+
+            public float Amount { get; set; }
+
+            public Texture2D GenerateFadeTexture()
+            {
+                return iTween.CameraTexture(Color);
+            }
+
+            public Hashtable CreateITweenHashtable()
+            {
+                return iTween.Hash("time", Duration, "amount", Amount);
+            }
         }
 
-        private void StartFade(FadeContext fadeContext, FadeType fadeType)
+        private void OnITweenFadeDone()
         {
-            currentFadeContext = fadeContext;
-            OnFadeEnd(fadeType, fadeContext);
+            iTween.CameraFadeDestroy();
+            OnFadeEnd(currentFadeVariant);
+        }
+
+        private void StartFadeOperation(FadeVariant variant)
+        {
+
+            var hash = variant.CreateITweenHashtable();
+            var texture = variant.GenerateFadeTexture();
+
+            iTween.CameraFadeAdd(texture);
+
+            hash.Add("oncomplete", "OnITweenFadeDone");
+            hash.Add("oncompletetarget", gameObject);
+
+            iTween.CameraFadeTo(hash);
+
+            currentFadeVariant = variant;
         }
 
         #endregion
@@ -354,7 +405,7 @@ namespace Assets.Scripts.Levels
 
             CurrentSteps++;
 
-            if (CurrentSteps > CurrentMaxSteps)
+            if (CurrentSteps > CurrentMaxSteps-1)
             {
                 CurrentStars--;
                 CurrentSteps = 0;
@@ -437,6 +488,17 @@ namespace Assets.Scripts.Levels
         #endregion
 
         #region Level actions (start, end, reset, open/close menu, results menu)
+
+        public void HideUI()
+        {
+            if(OverlayUI != null) OverlayUI.gameObject.SetActive(false);
+        }
+
+        public void UnhideUI()
+        {
+            if (OverlayUI != null) OverlayUI.gameObject.SetActive(true);
+        }
+
         public void EndLevel()
         {
             LockInput();
@@ -474,7 +536,7 @@ namespace Assets.Scripts.Levels
 
         public void OpenPauseMenu()
         {
-            StartFade(FadeContext.MenuOpen, FadeType.In);
+            StartFadeOperation(FadeVariant.MenuOpen);
         }
 
         public void ClosePauseMenu()
@@ -484,6 +546,7 @@ namespace Assets.Scripts.Levels
                 Debug.LogWarning("menu to close not found");
                 return;
             }
+            UnhideUI();
             Destroy(currentPauseMenu.gameObject);
             FireAction(LevelActionEvent.LevelActionType.PauseMenuClosed);
         }
@@ -507,6 +570,8 @@ namespace Assets.Scripts.Levels
                 ClosePauseMenu();
             }
 
+            HideUI();
+
             currentLevelResults = Instantiate(LevelResultsPrefab);
             var currentLevelResultsUI = currentLevelResults.GetComponent<LevelResultsUI>();
 
@@ -523,6 +588,7 @@ namespace Assets.Scripts.Levels
                 return;
             }
 
+            UnhideUI();
             Destroy(currentLevelResults.gameObject);
 
         }
@@ -547,10 +613,11 @@ namespace Assets.Scripts.Levels
             }
         }
 
-        private void OnFadeEnd(FadeType fadeType, FadeContext fadeContext)
+        private void OnFadeEnd( FadeVariant fadeVariant)
         {
-            if (fadeContext == FadeContext.MenuOpen)
+            if (fadeVariant.Context == FadeContext.MenuOpen)
             {
+                HideUI();
                 if (currentPauseMenu != null)
                 {
                     Debug.LogWarning("Menu already opened");
