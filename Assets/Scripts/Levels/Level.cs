@@ -31,10 +31,6 @@ namespace Assets.Scripts.Levels
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                ResetLevel();
-            }
         }
 
         private static Level current;
@@ -222,7 +218,8 @@ namespace Assets.Scripts.Levels
 
         public void UpdateOverlayUI()
         {
-            OverlayUI.Invalidate();
+            if(OverlayUI != null)
+                OverlayUI.Invalidate();
         }
 
         public int CurrentSteps { get; private set; }

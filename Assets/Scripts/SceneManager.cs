@@ -1,4 +1,6 @@
-﻿using Assets.Scripts.Meta.Model;
+﻿using Assets.Scripts.Levels.Model;
+using Assets.Scripts.Meta.Model;
+
 
 namespace Assets.Scripts
 {

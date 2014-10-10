@@ -39,14 +39,14 @@ namespace Assets.Scripts.Meta.Stats
             PlayerPrefs.SetInt(GetLevelBestStepsKey(levelNumber), steps);
         }
 
-        public static int GetTipsCount()
+        public static int GetSkipsCount()
         {
-            return PlayerPrefs.GetInt("TipsCount");
+            return PlayerPrefs.GetInt("Skips");
         }
 
-        public static void SetTipsCount(int count)
+        public static void SetSkipsCount(int count)
         {
-            PlayerPrefs.SetInt("TipsCount", count);
+            PlayerPrefs.SetInt("Skips", count);
           
         }
 
