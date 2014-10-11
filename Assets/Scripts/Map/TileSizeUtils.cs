@@ -4,7 +4,7 @@ namespace Assets.Scripts.Map
 {
     public static class TileSizeUtils
     {
-        public static void SetTileScaleBySize(GameObject tileObject, Bounds tileBounds, float sizeWidth,
+        public static void SetScaleBySize(GameObject tileObject, Bounds tileBounds, float sizeWidth,
             float sizeHeight)
         {
             var targetXSize = sizeWidth;
@@ -28,13 +28,13 @@ namespace Assets.Scripts.Map
         {
             if (mapItem.transform.parent == null)
             {
-                SetTileScaleBySize(mapItem.gameObject, mapItem.GetComponent<Renderer>().bounds,
+                SetScaleBySize(mapItem.gameObject, mapItem.GetComponent<Renderer>().bounds,
                     sizeWidth, sizeHeight);
             }
             else
             {
                 var scaleTarget = mapItem.transform.parent.gameObject;
-                SetTileScaleBySize(scaleTarget, mapItem.GetComponent<Renderer>().bounds,
+                SetScaleBySize(scaleTarget, mapItem.GetComponent<Renderer>().bounds,
                     sizeWidth, sizeHeight);
             }
         }
