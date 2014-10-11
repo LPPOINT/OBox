@@ -124,11 +124,17 @@ namespace Assets.Scripts.Map.Items
         {
 
 
+            if (collisionType == MapItemCollisionType.Inside && Other == null)
+            {
+                Debug.LogWarning("Teleported: other teleporter bot found in scene!");
+                return;
+            }
 
             if (collisionType == MapItemCollisionType.Inside
                 && other is Player &&
                 ((other as Player).GetLastMove() as ToCellItemMove).To != Other.Index)
             {
+
                 var p = other as Player;
                 MakeTeleportation(p, p.GetLastMove().Direction);
             }
