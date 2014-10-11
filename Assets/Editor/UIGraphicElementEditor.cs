@@ -11,20 +11,20 @@ namespace Assets.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            var uiElement = (Graphic)target;
+            //var uiElement = (Graphic)target;
 
-            var oldColor = ColorUtils.CalculateUIElementColor(uiElement);
-            var newColor = (RendererColor)EditorGUILayout.EnumPopup("Color preset:", oldColor);
+            //var oldColor = ColorUtils.CalculateUIElementColor(uiElement);
+            //var newColor = (RendererColor)EditorGUILayout.EnumPopup("Color preset:", oldColor);
 
-            if (newColor != oldColor)
-            {
-                ColorUtils.SetUIElementColor(uiElement, newColor);
-                EditorUtility.SetDirty(uiElement);
-            }
-            else
-            {
+            //if (newColor != oldColor)
+            //{
+            //    ColorUtils.SetUIElementColor(uiElement, newColor);
+            //    EditorUtility.SetDirty(uiElement);
+            //}
+            //else
+            //{
 
-            }
+            //}
         }
     }
 }

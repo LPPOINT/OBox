@@ -14,20 +14,20 @@ namespace Assets.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            var renderer = (SpriteRenderer) target;
+            //var renderer = (SpriteRenderer) target;
 
-            var oldColor = ColorUtils.CalculateRendererColor(renderer);
-            var newColor = (RendererColor)EditorGUILayout.EnumPopup("Color preset:", oldColor);
+            //var oldColor = ColorUtils.CalculateRendererColor(renderer);
+            //var newColor = (RendererColor)EditorGUILayout.EnumPopup("Color preset:", oldColor);
 
-            if (newColor != oldColor)
-            {
-                ColorUtils.SetRendererColor(renderer, newColor);
-                EditorUtility.SetDirty(renderer);
-            }
-            else
-            {
+            //if (newColor != oldColor)
+            //{
+            //    ColorUtils.SetRendererColor(renderer, newColor);
+            //    EditorUtility.SetDirty(renderer);
+            //}
+            //else
+            //{
                 
-            }
+            //}
 
         }
     }
