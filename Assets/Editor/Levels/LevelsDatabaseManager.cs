@@ -84,6 +84,7 @@ namespace Assets.Editor.Levels
 
         public static bool HasDatabase()
         {
+   
             return AssetDatabase.LoadAssetAtPath(DatabasePath, typeof(LevelsDatabase)) != null;
         }
 

@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Gradient
-  m_Shader: {fileID: 45, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 5a5ceca84e7b4dc4887ec1ae4eaf49dd, type: 3}
   m_ShaderKeywords:
   - _LIGHTMAPPING_DYNAMIC_LIGHTMAPS
   - _UVSEC_UV1
@@ -129,13 +129,17 @@ Material:
         second: 0
       data:
         first:
+          name: _Scale
+        second: 1
+      data:
+        first:
           name: _EmissionScaleUI
         second: 1
     m_Colors:
       data:
         first:
           name: _Color
-        second: {r: 1, g: 1, b: 1, a: 1}
+        second: {r: .572549045, g: .278431386, b: .321568638, a: 1}
       data:
         first:
           name: _EmissionColor
@@ -144,6 +148,10 @@ Material:
         first:
           name: _SpecularColor
         second: {r: .200000003, g: .200000003, b: .200000003, a: 1}
+      data:
+        first:
+          name: _Color2
+        second: {r: .507352948, g: 0, b: .713235319, a: 1}
       data:
         first:
           name: _EmissionColorUI

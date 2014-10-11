@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Map;
+﻿using System;
+using Assets.Scripts.Map;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.GradientBackground
@@ -14,9 +15,17 @@ namespace Assets.Scripts.Levels.GradientBackground
         public Color Color1;
         public Color Color2;
 
+        public GradientPreset CreatePreset()
+        {
+            var preset = ScriptableObject.CreateInstance<GradientPreset>();
+            preset.Color1 = Color1;
+            preset.Color2 = Color2;
+            return preset;
+        }
+
         private SpriteRenderer spriteRenderer;
 
-        private void Start()
+        protected virtual void Start()
         {
 
             var thisCam = UnityEngine.Camera.main;
@@ -30,17 +39,22 @@ namespace Assets.Scripts.Levels.GradientBackground
             var w = topRightPosition.x - topLeftPosition.x;
             var h = btmRightPosition.y - topRightPosition.y;
 
-            spriteRenderer = gameObject.GetComponent<SpriteRenderer>() ?? gameObject.AddComponent<SpriteRenderer>();
+            spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+            if (spriteRenderer == null) spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
 
             spriteRenderer.sharedMaterial = GradientMaterial;
             spriteRenderer.sprite = GradientTexture;
-            spriteRenderer.transform.rotation = Quaternion.Euler(0, 180, 0);
+            spriteRenderer.transform.rotation = Quaternion.Euler(0, 0, 0);
             spriteRenderer.transform.position = new Vector3(thisCam.transform.position.x, thisCam.transform.position.y, spriteRenderer.transform.position.z);
 
             TileSizeUtils.SetScaleBySize(gameObject, spriteRenderer.bounds, w, h);
 
-            spriteRenderer.material.SetColor("_Color", Color1);
-            spriteRenderer.material.SetColor("_Color2", Color2);
+            spriteRenderer.sharedMaterial.SetColor("_Color", Color1);
+            spriteRenderer.sharedMaterial.SetColor("_Color2", Color2);
+            spriteRenderer.transform.localScale = new Vector3(Math.Abs(spriteRenderer.transform.localScale.x),
+                                                              Math.Abs(spriteRenderer.transform.localScale.y),
+                                                              Math.Abs(spriteRenderer.transform.localScale.z));
 
         }
 
@@ -52,6 +66,8 @@ namespace Assets.Scripts.Levels.GradientBackground
 
         private void Update()
         {
+
+
             if (lastColor1 != Color1 || lastColor2 != Color2)
             {
                 lastColor1 = Color1;
