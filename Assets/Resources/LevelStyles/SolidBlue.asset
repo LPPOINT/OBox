@@ -9,8 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 85a1a5a8fae37624a9d4b5992abd755f, type: 3}
-  m_Name: WhiteToLightRed
+  m_Name: SolidBlue
   m_EditorClassIdentifier: 
-  BackgroundGradientColor1: {r: 1, g: .522058845, b: .522058845, a: 1}
-  BackgroundGradientColor2: {r: .779411793, g: .779411793, b: .779411793, a: 1}
-  FrontColor: {r: .301470578, g: .0620674789, b: .0620674789, a: 1}
+  BackgroundGradientColor1: {r: 0, g: .292866051, b: .382352948, a: 1}
+  BackgroundGradientColor2: {r: 0, g: .292866051, b: .382352948, a: 1}
+  FrontColor: {r: 1, g: 1, b: 1, a: 1}

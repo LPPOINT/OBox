@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Assets.Scripts.Common;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Missions;
 using UnityEngine;
@@ -7,12 +8,15 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.UI
 {
+
+    [ExecuteInEditMode]
     public class OverlayUI : MonoBehaviour
     {
         public ProgressBar StepsProgress;
         public Image FirstStar;
         public Image SecondStar;
         public Image ThirdStar;
+        public GameObject StarsContainer;
         public Text StepsCount;
         public Button TryAgainButton;
         public Button MenuButton;
@@ -97,6 +101,8 @@ namespace Assets.Scripts.UI
         private void Start()
         {
             ResetShowMode();
+            startStarsContainerPosition = StarsContainer.transform.position;
+            currentStars = StarsCount.ThreeStar;
         }
 
 
@@ -107,6 +113,11 @@ namespace Assets.Scripts.UI
             var remainingSteps = level.RemainingSteps;
             var maxSteps = level.CurrentMaxSteps;
             var stars = level.CurrentStars;
+
+            if (MissionIcon != null)
+            {
+                MissionIcon.sprite = level.Mission.Icon;
+            }
 
             if (StepsProgress != null)
             {
@@ -130,59 +141,122 @@ namespace Assets.Scripts.UI
                 }
             }
 
-            SetStarsUICount(stars);
+            SetStarsCount(stars);
 
         }
 
 
         #region stars management
-        private void SetStarsUICount(StarsCount count)
+
+
+        private Vector2 startStarsContainerPosition;
+        private StarsCount currentStars;
+
+        private void SetStarsCount(StarsCount count)
         {
 
-            try
+            if(count == currentStars) return;
+
+
+            var lastCount = currentStars;
+            currentStars = count;
+
+            if (lastCount > currentStars && lastCount != StarsCount.None)
             {
-                if(FirstStar == null || SecondStar == null || ThirdStar == null) return;
 
-                switch (count)
-                {
-                    case StarsCount.None:
-                        SecondStar.GetComponent<Animator>().Play("StarDisposing");
-                        FirstStar.GetComponent<Animator>().Play("StarDisposing");
-                        ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                        break;
-                    case StarsCount.OneStar:
-                        SecondStar.GetComponent<Animator>().Play("StarDisposing");
-                        ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                        FirstStar.GetComponent<Animator>().Play("StarIdle");
-                        break;
-                    case StarsCount.TwoStar:
-                        SecondStar.GetComponent<Animator>().Play("StarIdle");
-                        ThirdStar.GetComponent<Animator>().Play("StarDisposing");
-                        FirstStar.GetComponent<Animator>().Play("StarIdle");
-                        break;
-                    case StarsCount.ThreeStar:
-                        SecondStar.GetComponent<Animator>().Play("StarIdle");
-                        ThirdStar.GetComponent<Animator>().Play("StarIdle");
-                        FirstStar.GetComponent<Animator>().Play("StarIdle");
-                        break;
+                if(lastCount == StarsCount.ThreeStar) DisposeStar(StarsCount.ThreeStar);
+                else if (lastCount == StarsCount.TwoStar) DisposeStar(StarsCount.TwoStar);
+                else if (lastCount == StarsCount.OneStar) DisposeStar(StarsCount.OneStar);
 
-                }
+
             }
-            catch 
+            else if (lastCount < currentStars && lastCount != StarsCount.ThreeStar)
             {
- 
+                if (lastCount == StarsCount.None) ShowStar(StarsCount.OneStar);
+                else if (lastCount == StarsCount.OneStar) ShowStar(StarsCount.TwoStar);
+                else if (lastCount == StarsCount.TwoStar) ShowStar(StarsCount.ThreeStar);
             }
-        }
 
-        private void IncrementStars()
-        {
-            
         }
 
         private void DecrementStars()
         {
             
         }
+
+        private void OffsetStarsContainer()
+        {
+            var starWidth = FirstStar.rectTransform.rect.width;
+            if (StarsContainer == null)
+            {
+                Debug.LogWarning("OffsetStars(): StarsContainer == null");
+                return;
+            }
+
+            iTween.MoveTo(StarsContainer, 
+                new ITweenHash().
+                    EaseType(iTween.EaseType.easeInOutCirc).
+                    Time(0.3f).
+                    Position(new Vector3(StarsContainer.transform.position.x + starWidth, StarsContainer.transform.position.y, StarsContainer.transform.position.y))
+                .GetHashtable());
+            
+
+        }
+
+        private void ResetStarsContainer()
+        {
+            StarsContainer.transform.position = startStarsContainerPosition;
+        }
+
+        private void PlayStarAnimation(GameObject starObject, string animationStateName)
+        {
+            var animator = starObject.GetComponent<Animator>();
+            if (animator == null)
+            {
+                Debug.LogWarning("PlayStarAnimation(): passed wrong star object");
+                return;
+            }
+
+            animator.Play(animationStateName);
+        }
+        private GameObject GetStarObject(StarsCount star)
+        {
+            switch (star)
+            {
+                case StarsCount.OneStar:
+                    return FirstStar.gameObject;
+                case StarsCount.TwoStar:
+                    return SecondStar.gameObject;
+                case StarsCount.ThreeStar:
+                    return ThirdStar.gameObject;
+            }
+            return null;
+        }
+
+        private void DisposeStar(GameObject starObject)
+        {
+
+
+            PlayStarAnimation(starObject, "StarDisposing");
+
+        }
+
+        private void DisposeStar(StarsCount star)
+        {
+            DisposeStar(GetStarObject(star));
+        }
+
+
+        private void ShowStar(GameObject starObject)
+        {
+            PlayStarAnimation(starObject, "StarIdle");
+        }
+
+        private void ShowStar(StarsCount star)
+        {
+            ShowStar(GetStarObject(star));
+        }
+
         #endregion
 
         #region mission management
@@ -193,7 +267,13 @@ namespace Assets.Scripts.UI
 
         #endregion
 
+        private void Update()
+        {
+            var c = GetComponent<ReferenceResolution>();
 
+            c.resolution = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+
+        }
 
         #region event handlers
         public void OnResetClick()

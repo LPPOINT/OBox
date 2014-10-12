@@ -4,6 +4,18 @@ namespace Assets.Scripts.Levels.Style
 {
     public abstract class LevelStyle : MonoBehaviour, ILevelStyle
     {
+
+        private const string MainStyleTag = "MainStyle";
+        public static LevelStyle MainStyle { get; private set; }
+
+        private void Awake()
+        {
+            if (gameObject.tag == MainStyleTag)
+            {
+                MainStyle = this;
+            }
+        }
+
         public LevelStylePreset CreatePreset()
         {
             var p = ScriptableObject.CreateInstance<LevelStylePreset>();

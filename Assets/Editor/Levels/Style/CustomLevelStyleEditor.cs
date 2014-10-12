@@ -34,7 +34,7 @@ namespace Assets.Editor.Levels.Style
             if (lastFrontColor != style.FrontColor)
             {
                 lastFrontColor = style.FrontColor;
-                LevelFrontColor.SetColor(lastFrontColor);
+                LevelStyleUtils.SetColor(lastFrontColor);
             }
 
         }

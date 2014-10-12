@@ -9,6 +9,17 @@ namespace Assets.Scripts.Levels.Style.GradientBackground
     public class GradientBackground : MonoBehaviour
     {
 
+        private static GradientBackground mainGradient;
+        public static GradientBackground MainGradient
+        {
+            get
+            {
+                return
+                    mainGradient ?? (mainGradient =
+                        GameObject.FindGameObjectWithTag("MainGradient").GetComponent<GradientBackground>());
+            }
+        }
+
         public Material GradientMaterial;
         public Sprite GradientTexture;
 
@@ -16,8 +27,31 @@ namespace Assets.Scripts.Levels.Style.GradientBackground
 
         private SpriteRenderer spriteRenderer;
 
+        public Transform BackAnchor;
+        public Transform FrontAnchor;
+
+        public void AlignToBackAnchor()
+        {
+            if (BackAnchor == null)
+            {
+                Debug.LogWarning("BackAnchor missing");
+                return;
+            }
+            transform.position = new Vector3(transform.position.x, transform.position.y, BackAnchor.position.z);
+        }
+        public void AlignToFrontAnchor()
+        {
+            if (FrontAnchor == null)
+            {
+                Debug.LogWarning("FrontAnchor missing");
+                return;
+            }
+            transform.position = new Vector3(transform.position.x, transform.position.y, FrontAnchor.position.z);
+        }
+
         protected virtual void Start()
         {
+
 
 
             if (LevelStyle == null)
@@ -58,11 +92,13 @@ namespace Assets.Scripts.Levels.Style.GradientBackground
 
         }
 
+
 #if UNITY_EDITOR
 
 
         private Color lastColor1;
         private Color lastColor2;
+
 
         private void Update()
         {

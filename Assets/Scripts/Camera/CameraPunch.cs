@@ -6,33 +6,32 @@ using UnityEngine;
 
 namespace Assets.Scripts.Camera
 {
-    public class CameraShake : LevelElement
+    public class CameraPunch : LevelElement
     {
 
-        public float ShakeOffset = 1;
-        public float ShakeTime = 0.6f;
-        public int MinMoveLenght = 0;
+        public float PunchVelocity = 0.1f;
+        public float PuchTime = 1f;
 
         protected override void OnPlayerMoveEnd(Player player, MapItemMove move)
         {
 
-           if(move.MoveLenght < MinMoveLenght) return;
 
             Vector3 shakeVector;
+            var len = move.MoveLenght;
 
             switch (move.Direction)
             {
                 case Direction.Left:
-                    shakeVector = new Vector3(-ShakeOffset, 0);
+                    shakeVector = new Vector3(-PunchVelocity * len, 0);
                     break;
                 case Direction.Right:
-                    shakeVector = new Vector3(ShakeOffset, 0);
+                    shakeVector = new Vector3(PunchVelocity * len, 0);
                     break;
                 case Direction.Top:
-                    shakeVector = new Vector3(0, -ShakeOffset);
+                    shakeVector = new Vector3(0, -PunchVelocity * len);
                     break;
                 case Direction.Bottom:
-                    shakeVector = new Vector3(0, ShakeOffset);
+                    shakeVector = new Vector3(0, PunchVelocity * len);
                     break;
                 default:
                     shakeVector = Vector3.zero;
@@ -40,7 +39,7 @@ namespace Assets.Scripts.Camera
             }
 
 
-            iTween.PunchPosition(gameObject, shakeVector, ShakeTime);
+            iTween.PunchPosition(gameObject, shakeVector, PuchTime);
             
         }
     }

@@ -60,6 +60,7 @@ namespace Assets.Editor.Levels.Style
 
         public override bool HasPreviewGUI()
         {
+           
             return true;
         }
     }

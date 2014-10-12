@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Assets.Scripts.Camera;
 using Assets.Scripts.Levels.Model;
+using Assets.Scripts.Levels.Style;
 using Assets.Scripts.Map;
 using Assets.Scripts.Map.Decorations;
 using Assets.Scripts.Map.Items;
 using Assets.Scripts.Missions;
 using Assets.Scripts.UI;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
+using GradientBackground = Assets.Scripts.Levels.Style.GradientBackground.GradientBackground;
 
 namespace Assets.Scripts.Levels
 {
@@ -20,14 +24,32 @@ namespace Assets.Scripts.Levels
         private void Start()
         {
 
+#if UNITY_EDITOR
+
+            var sw = new Stopwatch();
+            sw.Start();
+#endif
 
             FetchCoreComponents();
             LoadDatabase();
+
+#if UNITY_EDITOR
             ValidateLevel();
+#endif
+
             ResetScore();
+            LevelStyleUtils.SetColor();
+            UnhideLevel();
             InvalidateLevelElements();
             StartLevel();
             FireAction(LevelActionEvent.LevelActionType.LevelInitialized);
+
+#if UNITY_EDITOR
+
+            sw.Stop();
+            //Debug.Log("Level.Start(): " + sw.Elapsed.TotalSeconds);
+
+#endif
         }
 
         private void Update()
@@ -183,6 +205,9 @@ namespace Assets.Scripts.Levels
 
         private void StartFadeOperation(FadeVariant variant)
         {
+
+            OnFadeEnd(variant); // temp
+            return;
 
             var hash = variant.CreateITweenHashtable();
             var texture = variant.GenerateFadeTexture();
@@ -489,14 +514,17 @@ namespace Assets.Scripts.Levels
 
         #region Level actions (start, end, reset, open/close menu, results menu)
 
-        public void HideUI()
+        public void HideLevel()
         {
             if(OverlayUI != null) OverlayUI.gameObject.SetActive(false);
+            GradientBackground.MainGradient.AlignToFrontAnchor();
+
         }
 
-        public void UnhideUI()
+        public void UnhideLevel()
         {
             if (OverlayUI != null) OverlayUI.gameObject.SetActive(true);
+            GradientBackground.MainGradient.AlignToBackAnchor();
         }
 
         public void EndLevel()
@@ -546,7 +574,7 @@ namespace Assets.Scripts.Levels
                 Debug.LogWarning("menu to close not found");
                 return;
             }
-            UnhideUI();
+            UnhideLevel();
             Destroy(currentPauseMenu.gameObject);
             FireAction(LevelActionEvent.LevelActionType.PauseMenuClosed);
         }
@@ -570,13 +598,15 @@ namespace Assets.Scripts.Levels
                 ClosePauseMenu();
             }
 
-            HideUI();
+            HideLevel();
 
             currentLevelResults = Instantiate(LevelResultsPrefab);
             var currentLevelResultsUI = currentLevelResults.GetComponent<LevelResultsUI>();
 
             currentLevelResultsUI.Level = this;
             currentLevelResultsUI.Model = model;
+
+            LevelStyleUtils.SetColor(currentLevelResults.gameObject, LevelStyleUtils.MainStyle.GetFrontColor());
 
         }
 
@@ -588,11 +618,10 @@ namespace Assets.Scripts.Levels
                 return;
             }
 
-            UnhideUI();
+            UnhideLevel();
             Destroy(currentLevelResults.gameObject);
 
         }
-
 
         #endregion
 
@@ -617,7 +646,7 @@ namespace Assets.Scripts.Levels
         {
             if (fadeVariant.Context == FadeContext.MenuOpen)
             {
-                HideUI();
+                HideLevel();
                 if (currentPauseMenu != null)
                 {
                     Debug.LogWarning("Menu already opened");
@@ -626,6 +655,8 @@ namespace Assets.Scripts.Levels
                 currentPauseMenu = Instantiate(MenuPrefab);
                 var menuUI = currentPauseMenu.GetComponent<MenuUI>();
                 menuUI.Level = this;
+
+                LevelStyleUtils.SetColor(currentPauseMenu.gameObject, LevelStyleUtils.MainStyle.GetFrontColor());
 
                 FireAction(LevelActionEvent.LevelActionType.PauseMenuOpen);
             }

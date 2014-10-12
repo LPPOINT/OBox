@@ -11,7 +11,7 @@ namespace Assets.Scripts.Missions
         }
 
         [Tooltip("128x128 only")]
-        public Texture2D Icon;
+        public Sprite Icon;
 
         public string Description;
 

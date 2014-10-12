@@ -12,7 +12,7 @@ GameObject:
   - 212: {fileID: 21200000}
   m_Layer: 0
   m_Name: Gradient
-  m_TagString: Untagged
+  m_TagString: MainGradient
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24,8 +24,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.0608086586, y: -.451566219, z: 5.19703102}
-  m_LocalScale: {x: 29.3744717, y: 44.1063499, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 16.0135002}
+  m_LocalScale: {x: 29.3775501, y: 44.1063499, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -43,6 +43,8 @@ MonoBehaviour:
   GradientMaterial: {fileID: 2100000, guid: 14d18f17d768875489ee7abb7d34ae2d, type: 2}
   GradientTexture: {fileID: 21300000, guid: cd6134c6d23221842abcced955fd9fb8, type: 3}
   LevelStyle: {fileID: 0}
+  BackAnchor: {fileID: 0}
+  FrontAnchor: {fileID: 0}
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

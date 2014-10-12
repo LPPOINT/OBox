@@ -18,7 +18,7 @@ namespace Assets.Editor.Levels.Style
             if (p.Preset != lastPreset)
             {
                 lastPreset = p.Preset;
-                LevelFrontColor.SetColor(p.Preset.FrontColor);
+                LevelStyleUtils.SetColor(p.Preset.FrontColor);
             }
 
 
