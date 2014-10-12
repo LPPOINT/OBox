@@ -12,9 +12,15 @@ namespace Assets.Scripts.Camera
         public float PunchVelocity = 0.1f;
         public float PuchTime = 1f;
 
+        public bool BlurOnMove;
+        public float BlurAmout = 0.3f;
+
         protected override void OnPlayerMoveEnd(Player player, MapItemMove move)
         {
 
+
+            var blur = GetComponent<MotionBlur>();
+            if (blur != null) Destroy(blur);
 
             Vector3 shakeVector;
             var len = move.MoveLenght;
@@ -40,7 +46,29 @@ namespace Assets.Scripts.Camera
 
 
             iTween.PunchPosition(gameObject, shakeVector, PuchTime);
-            
+
+        }
+
+        protected override void OnPlayerMoveBegin(Player player, MapItemMove move)
+        {
+
+
+            if (BlurOnMove)
+            {
+                var blur = GetComponent<MotionBlur>();
+
+                if (blur != null)
+                {
+                    Destroy(blur);
+                }
+
+                var newBlur = gameObject.AddComponent<MotionBlur>();
+                newBlur.extraBlur = true;
+                newBlur.blurAmount = BlurAmout;
+                newBlur.shader = Shader.Find("Hidden/MotionBlur");
+            }
+
+            base.OnPlayerMoveBegin(player, move);
         }
     }
 }
