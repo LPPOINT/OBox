@@ -89,6 +89,7 @@ class Vignetting /* And Chromatic Aberration */ extends PostEffectsBase {
 			vignetteMaterial.SetFloat ("_Intensity", intensity); 		// intensity for vignette
 			vignetteMaterial.SetFloat ("_Blur", blur); 					// blur intensity
 			vignetteMaterial.SetTexture ("_VignetteTex", color2a);	// blurred texture
+			vignetteMaterial.color = Color(0, 132, 132);
 
 			Graphics.Blit (source, color, vignetteMaterial, 0); 		// prepass blit: darken & blur corners
 		}		
@@ -97,6 +98,7 @@ class Vignetting /* And Chromatic Aberration */ extends PostEffectsBase {
 		chromAberrationMaterial.SetFloat ("_AxialAberration", axialAberration);
 		chromAberrationMaterial.SetVector ("_BlurDistance", Vector2 (-blurDistance, blurDistance));
 		chromAberrationMaterial.SetFloat ("_Luminance", 1.0f/Mathf.Max(Mathf.Epsilon, luminanceDependency));
+		chromAberrationMaterial.color = Color(0, 132, 132);
 
 		if(doPrepass) color.wrapMode = TextureWrapMode.Clamp;
 		else source.wrapMode = TextureWrapMode.Clamp;		

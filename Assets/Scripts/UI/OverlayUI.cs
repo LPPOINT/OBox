@@ -9,7 +9,6 @@ using UnityEngine.UI;
 namespace Assets.Scripts.UI
 {
 
-    [ExecuteInEditMode]
     public class OverlayUI : MonoBehaviour
     {
         public ProgressBar StepsProgress;
@@ -145,6 +144,16 @@ namespace Assets.Scripts.UI
 
         }
 
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
 
         #region stars management
 
@@ -269,9 +278,7 @@ namespace Assets.Scripts.UI
 
         private void Update()
         {
-            var c = GetComponent<ReferenceResolution>();
 
-            c.resolution = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
 
         }
 

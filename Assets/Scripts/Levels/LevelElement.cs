@@ -126,6 +126,18 @@ namespace Assets.Scripts.Levels
             
         }
 
+        private Dictionary<int, LevelEvent> lockedEvents = new Dictionary<int, LevelEvent>();  
+
+        public int LockCurrentEvent()
+        {
+            return 0;
+        }
+
+        public void UnlockEvent(int lockedEventId)
+        {
+            
+        }
+
         protected void FireEvent(LevelEvent e)
         {
             e.Element = this;
@@ -162,11 +174,15 @@ namespace Assets.Scripts.Levels
             return m.GetCustomAttributes(typeof (LevelEventFilter), true).FirstOrDefault() as LevelEventFilter;
         }
 
+        private LevelEvent currentEvent;
+
         internal void ProcessEvent(LevelEvent e)
         {
 
             if(!ShouldCatchEvents)
                 return;
+
+            currentEvent = e;
 
             var filter = EventFilters.FirstOrDefault(info =>
                                                      {

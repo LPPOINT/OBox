@@ -1,12 +1,11 @@
-﻿using System;
-using Assets.Scripts.Levels;
+﻿using Assets.Scripts.Levels;
 using Assets.Scripts.Map;
 using Assets.Scripts.Map.Items;
 using UnityEngine;
 
-namespace Assets.Scripts.Camera
+namespace Assets.Scripts.Camera.Effects
 {
-    public class CameraPunch : LevelElement
+    public class CameraEffectOnMove : LevelElement
     {
 
         public float PunchVelocity = 0.1f;
@@ -69,6 +68,15 @@ namespace Assets.Scripts.Camera
             }
 
             base.OnPlayerMoveBegin(player, move);
+        }
+
+        protected override void OnLevelReset()
+        {
+
+
+            var blur = GetComponent<MotionBlur>();
+            if (blur != null) Destroy(blur);
+            base.OnLevelReset();
         }
     }
 }

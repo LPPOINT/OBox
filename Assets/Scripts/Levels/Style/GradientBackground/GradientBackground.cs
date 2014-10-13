@@ -27,26 +27,13 @@ namespace Assets.Scripts.Levels.Style.GradientBackground
 
         private SpriteRenderer spriteRenderer;
 
-        public Transform BackAnchor;
-        public Transform FrontAnchor;
-
         public void AlignToBackAnchor()
         {
-            if (BackAnchor == null)
-            {
-                Debug.LogWarning("BackAnchor missing");
-                return;
-            }
-            transform.position = new Vector3(transform.position.x, transform.position.y, BackAnchor.position.z);
+            LevelDepth.AlignToBack(transform);
         }
         public void AlignToFrontAnchor()
         {
-            if (FrontAnchor == null)
-            {
-                Debug.LogWarning("FrontAnchor missing");
-                return;
-            }
-            transform.position = new Vector3(transform.position.x, transform.position.y, FrontAnchor.position.z);
+            LevelDepth.AlignToFront(transform);
         }
 
         protected virtual void Start()

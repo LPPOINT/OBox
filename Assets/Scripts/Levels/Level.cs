@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Assets.Scripts.Camera;
+using Assets.Scripts.Camera.Effects;
 using Assets.Scripts.Levels.Model;
 using Assets.Scripts.Levels.Style;
 using Assets.Scripts.Map;
@@ -11,6 +12,7 @@ using Assets.Scripts.Map.Decorations;
 using Assets.Scripts.Map.Items;
 using Assets.Scripts.Missions;
 using Assets.Scripts.UI;
+using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using GradientBackground = Assets.Scripts.Levels.Style.GradientBackground.GradientBackground;
@@ -34,7 +36,7 @@ namespace Assets.Scripts.Levels
             LoadDatabase();
 
 #if UNITY_EDITOR
-            ValidateLevel();
+            LevelValidator.Validate(this);
 #endif
 
             ResetScore();
@@ -66,15 +68,12 @@ namespace Assets.Scripts.Levels
         public LevelIndex Index;
 
         #region Level core components 
-        public LevelSolution Solution { get; private set; }
         public LevelMission Mission { get; private set; }
-
         public GameMap LevelMap { get; private set; }
         public OverlayUI OverlayUI { get; private set; }
 
         public void FetchCoreComponents()
         {
-            Solution = FindObjectOfType<LevelSolution>();
             Mission = FindObjectOfType<LevelMission>();
             LevelMap = FindObjectOfType<GameMap>();
             OverlayUI = FindObjectOfType<OverlayUI>();
@@ -83,12 +82,34 @@ namespace Assets.Scripts.Levels
 
         #endregion
 
-        #region UI instances and prefabs
+        #region UI management
+
         public Canvas LevelResultsPrefab;
         private Canvas currentLevelResults;
 
         public Canvas MenuPrefab;
         private Canvas currentPauseMenu;
+
+        public Canvas HelpPopupPrefab;
+        private Canvas currentHelpPopup;
+
+        public void UpdateOverlayUI()
+        {
+            if (OverlayUI != null)
+                OverlayUI.Invalidate();
+        }
+
+        private void EstablishUIPopup(GameObject canvasGameObject)
+        {
+            EstablishUIPopup(canvasGameObject.GetComponent<Canvas>());
+        }
+        private void EstablishUIPopup(Canvas canvas)
+        {
+            canvas.worldCamera = UnityEngine.Camera.main;
+            canvas.planeDistance = 1;
+        }
+
+
         #endregion
 
         #region game progress management
@@ -137,8 +158,16 @@ namespace Assets.Scripts.Levels
             get { return decorator ?? (decorator = FindObjectOfType<Decorator>()); }
         }
 
-        private void StartDecorations(DecorationsContext context, DecorationPlaymode playmode)
+        private DecorationPlaymode GetDecorationPlaymodeByContext(DecorationsContext context)
         {
+            if(context == DecorationsContext.Afterplay) return DecorationPlaymode.Out;
+            else if(context == DecorationsContext.Preplay) return DecorationPlaymode.In;
+            return DecorationPlaymode.In;
+        }
+
+        private void StartDecorationsAndHadleContext(DecorationsContext context)
+        {
+            var playmode = GetDecorationPlaymodeByContext(context);
             currentDecorationsContext = context;
             Decorator.Play(playmode);
         }
@@ -148,24 +177,24 @@ namespace Assets.Scripts.Levels
 
         #region Fade management
 
-        private enum FadeContext
+        private enum FadeContextType
         {
             PlayStarted,
             MenuOpen,
             Reset
         }
 
-        private FadeVariant currentFadeVariant;
+        private FadeContext currentFadeContext;
 
 
-        private class FadeVariant
+        private class FadeContext
         {
 
-            public static FadeVariant MenuOpen = new FadeVariant(FadeContext.MenuOpen, 0.3f, UnityEngine.Camera.main.backgroundColor, FadeMode.To, 1);
+            public static FadeContext MenuOpen = new FadeContext(FadeContextType.MenuOpen, 0.3f, UnityEngine.Camera.main.backgroundColor, FadeMode.To, 1);
 
-            public FadeVariant(FadeContext context, float duration, Color color, FadeMode mode, float amount)
+            public FadeContext(FadeContextType contextType, float duration, Color color, FadeMode mode, float amount)
             {
-                Context = context;
+                ContextType = contextType;
                 Duration = duration;
                 Color = color;
                 Mode = mode;
@@ -179,7 +208,7 @@ namespace Assets.Scripts.Levels
             }
 
 
-            public FadeContext Context { get; set; }
+            public FadeContextType ContextType { get; set; }
             public float Duration { get; set; }
             public Color Color { get; set; }
             public FadeMode Mode { get; set; }
@@ -200,17 +229,17 @@ namespace Assets.Scripts.Levels
         private void OnITweenFadeDone()
         {
             iTween.CameraFadeDestroy();
-            OnFadeEnd(currentFadeVariant);
+            OnFadeEnd(currentFadeContext);
         }
 
-        private void StartFadeOperation(FadeVariant variant)
+        private void StartFadeOperationAndHandleContext(FadeContext context)
         {
 
-            OnFadeEnd(variant); // temp
+            OnFadeEnd(context); // temp
             return;
 
-            var hash = variant.CreateITweenHashtable();
-            var texture = variant.GenerateFadeTexture();
+            var hash = context.CreateITweenHashtable();
+            var texture = context.GenerateFadeTexture();
 
             iTween.CameraFadeAdd(texture);
 
@@ -219,7 +248,7 @@ namespace Assets.Scripts.Levels
 
             iTween.CameraFadeTo(hash);
 
-            currentFadeVariant = variant;
+            currentFadeContext = context;
         }
 
         #endregion
@@ -292,11 +321,6 @@ namespace Assets.Scripts.Levels
         public int StepsForTwoStars;
         public int StepsForOneStar;
 
-        public void UpdateOverlayUI()
-        {
-            if(OverlayUI != null)
-                OverlayUI.Invalidate();
-        }
 
         public int CurrentSteps { get; private set; }
         public int CurrentMaxSteps { get; private set; }
@@ -334,89 +358,6 @@ namespace Assets.Scripts.Levels
             UpdateOverlayUI();
         }
 
-        #endregion
-
-        #region Validators
-
-        private void ValidateLevel()
-        {
-#if UNITY_EDITOR
-
-
-            if (LevelMap == null)
-            {
-                Debug.LogWarning("Level.Map == null");
-            }
-
-            ValidateSolution();
-            ValidateMission();
-            ValidateSteps();
-            ValidateLevelIndex();
-#endif
-        }
-        private void ValidateSteps()
-        {
-            if (StepsForOneStar == 0
-                || StepsForTwoStars == 0
-                || StepsForThreeStars == 0)
-            {
-                Debug.LogWarning("Invalid level step limits. EDIT steps limits in level inspector. Ащк this run steps limits will be sets by default.");
-
-                StepsForOneStar = 15;
-                StepsForTwoStars = 10;
-                StepsForThreeStars = 5;
-            }
-        }
-
-        private void ValidateLevelIndex()
-        {
-            if (Index.LevelNumber == 0)
-            {
-                Debug.LogWarning("Levent number or level world not found");
-            }
-        }
-        private void ValidateSolution()
-        {
-            if (Solution == null) Solution = FindObjectOfType<LevelSolution>();
-
-
-        }
-        private void ValidateMission()
-        {
-
-            if (Mission == null)
-            {
-                var mission = FindObjectOfType<LevelMission>();
-                if (mission == null)
-                {
-                    var missionGO = new GameObject("Mission");
-
-                    if (LevelMap.FindItemsOfType<Map.Items.Target>().Any())
-                    {
-                        Mission = missionGO.AddComponent<EnterTargetMission>();
-                    }
-                    else
-                    {
-                        Mission =  missionGO.AddComponent<DestroyAllWallsMission>();
-                    }
-
-
-                    Debug.LogWarning("ValidateMission(): Mission for level not found. Initializing mission by temp value (" + Mission.GetType().Name + ")");
-
-                }
-                else Mission = mission;
-
-            }
-            
-                if (Mission is DestroyAllWallsMission && LevelMap.FindItemsOfType<Map.Items.Target>().Any())
-                {
-                    Debug.LogWarning("ValidateMission(): Unexpected target found.");
-                }
-                else if (Mission is EnterTargetMission && !LevelMap.FindItemsOfType<Map.Items.Target>().Any())
-                {
-                    Debug.LogWarning("ValidateMission(): For EnterTargetMission target not found");
-                }
-        }
         #endregion
 
         #region Events management
@@ -474,6 +415,16 @@ namespace Assets.Scripts.Levels
         {
 
 
+
+            foreach (var element in GetLevelElements())
+            {
+
+                if ((e.Element != element || e.Element == null))
+                {
+                    element.ProcessEvent(e);
+                }
+            }
+
             if (e is Player.PlayerOutsideEvent)
             {
                 RegisterPlayerOutside();
@@ -481,10 +432,6 @@ namespace Assets.Scripts.Levels
             else if (e is Player.PlayerStepEvent)
             {
                 RegisterPlayerStep();
-            }
-            else if (e is MapItem.MapItemMoveEvent && e.IsPlayer)
-            {
-
             }
             else if (e is LevelMission.MissionDoneEvent)
             {
@@ -495,20 +442,13 @@ namespace Assets.Scripts.Levels
                 var se = e as Decorator.DecoratorEvent;
                 if (se.Status == Decorator.DecoratorEvent.DecoratorStatus.Done)
                 {
-                    OnDecorationsEnd(se.PlayMode, currentDecorationsContext);
+                    OnDecorationsEnd(currentDecorationsContext);
                 }
 
 
             }
 
-            foreach (var element in GetLevelElements())
-            {
 
-                if ((e.Element != element || e.Element == null))
-                {
-                    element.ProcessEvent(e);
-                }
-            }
         }
         #endregion
 
@@ -516,14 +456,14 @@ namespace Assets.Scripts.Levels
 
         public void HideLevel()
         {
-            if(OverlayUI != null) OverlayUI.gameObject.SetActive(false);
+            if(OverlayUI != null) OverlayUI.Hide();
             GradientBackground.MainGradient.AlignToFrontAnchor();
 
         }
 
         public void UnhideLevel()
         {
-            if (OverlayUI != null) OverlayUI.gameObject.SetActive(true);
+            if (OverlayUI != null) OverlayUI.Show();
             GradientBackground.MainGradient.AlignToBackAnchor();
         }
 
@@ -531,14 +471,14 @@ namespace Assets.Scripts.Levels
         {
             LockInput();
             RegisterLevelResults();
-            StartDecorations(DecorationsContext.Afterplay, DecorationPlaymode.Out);
+            StartDecorationsAndHadleContext(DecorationsContext.Afterplay);
         }
 
         public void StartLevel()
         {
             ResetScore();
             LockInput();
-            StartDecorations(DecorationsContext.Preplay, DecorationPlaymode.In);
+            StartDecorationsAndHadleContext(DecorationsContext.Preplay);
         }
 
         public void ResetLevel()
@@ -564,7 +504,7 @@ namespace Assets.Scripts.Levels
 
         public void OpenPauseMenu()
         {
-            StartFadeOperation(FadeVariant.MenuOpen);
+            StartFadeOperationAndHandleContext(FadeContext.MenuOpen);
         }
 
         public void ClosePauseMenu()
@@ -605,6 +545,7 @@ namespace Assets.Scripts.Levels
 
             currentLevelResultsUI.Level = this;
             currentLevelResultsUI.Model = model;
+            EstablishUIPopup(currentLevelResultsUI.gameObject);
 
             LevelStyleUtils.SetColor(currentLevelResults.gameObject, LevelStyleUtils.MainStyle.GetFrontColor());
 
@@ -623,46 +564,101 @@ namespace Assets.Scripts.Levels
 
         }
 
+        public void ShowHelpPopup(Sprite icon, string description)
+        {
+            CameraBlurEffect.BlurIn();
+            StartCoroutine(WaitAndShowHelpPopup(0.3f, icon, description));
+        }
+
+        private IEnumerator WaitAndShowHelpPopup(float t, Sprite icon, string d)
+        {
+            yield return new WaitForSeconds(t);
+
+            currentHelpPopup = Instantiate(HelpPopupPrefab);
+            var currentHelpPopupUI = currentHelpPopup.GetComponent<HelpPopupUI>();
+
+            currentHelpPopupUI.Description = d;
+            currentHelpPopupUI.Icon = icon;
+        }
+
+        public void ShowHelpPopup()
+        {
+            Pause();
+            if (Mission == null)
+            {
+                Debug.LogWarning("ShowHelpPopup(): Mission == null");
+                return;
+            }
+            ShowHelpPopup(Mission.Icon, Mission.Description);
+        }
+
+        public void HideHelpPopup()
+        {
+            Play();
+            if (currentHelpPopup != null)
+            {
+                Destroy(currentHelpPopup.gameObject);
+                CameraBlurEffect.BlurOut();
+            }
+        }
+
         #endregion
 
         #region fade and decorations events management
 
-        private void OnDecorationsEnd(DecorationPlaymode playmode, DecorationsContext context)
+        private void OnDecorationsEnd(DecorationsContext context)
         {
             if (context == DecorationsContext.Preplay)
             {
-                UpdateOverlayUI();
-                FireAction(LevelActionEvent.LevelActionType.LevelStarted);
-                Play();
+                OnPreplayEnd();
             }
             else if (context == DecorationsContext.Afterplay)
             {
-                FireAction(LevelActionEvent.LevelActionType.LevelEnd);
-                OpenResultsMenu(new LevelResultsUIModel());
+                OnAfterplayEnd();
             }
         }
 
-        private void OnFadeEnd( FadeVariant fadeVariant)
+        private void OnFadeEnd( FadeContext fadeContext)
         {
-            if (fadeVariant.Context == FadeContext.MenuOpen)
+            if (fadeContext.ContextType == FadeContextType.MenuOpen)
             {
-                HideLevel();
-                if (currentPauseMenu != null)
-                {
-                    Debug.LogWarning("Menu already opened");
-                    return;
-                }
-                currentPauseMenu = Instantiate(MenuPrefab);
-                var menuUI = currentPauseMenu.GetComponent<MenuUI>();
-                menuUI.Level = this;
-
-                LevelStyleUtils.SetColor(currentPauseMenu.gameObject, LevelStyleUtils.MainStyle.GetFrontColor());
-
-                FireAction(LevelActionEvent.LevelActionType.PauseMenuOpen);
+                OnPreMenuOpenEnd();
             }
+        }
+
+        private void OnPreplayEnd()
+        {
+            UpdateOverlayUI();
+            FireAction(LevelActionEvent.LevelActionType.LevelStarted);
+            Play();
+        }
+
+        private void OnAfterplayEnd()
+        {
+            FireAction(LevelActionEvent.LevelActionType.LevelEnd);
+            OpenResultsMenu(new LevelResultsUIModel());
+        }
+
+        private void OnPreMenuOpenEnd()
+        {
+            HideLevel();
+            if (currentPauseMenu != null)
+            {
+                Debug.LogWarning("Menu already opened");
+                return;
+            }
+            currentPauseMenu = Instantiate(MenuPrefab);
+            var menuUI = currentPauseMenu.GetComponent<MenuUI>();
+            menuUI.Level = this;
+            EstablishUIPopup(menuUI.gameObject);
+
+            LevelStyleUtils.SetColor(currentPauseMenu.gameObject, LevelStyleUtils.MainStyle.GetFrontColor());
+
+            FireAction(LevelActionEvent.LevelActionType.PauseMenuOpen);
         }
 
         #endregion
+
 
     }
 }
