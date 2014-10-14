@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Levels;
+﻿using System;
+using Assets.Scripts.Levels;
 using Assets.Scripts.Map;
 using Assets.Scripts.Map.Items;
 using UnityEngine;
@@ -14,8 +15,23 @@ namespace Assets.Scripts.Camera.Effects
         public bool BlurOnMove;
         public float BlurAmout = 0.3f;
 
+        private bool hasPreviousPunch = false;
+        private Vector3 startPunchPosition;
+
         protected override void OnPlayerMoveEnd(Player player, MapItemMove move)
         {
+
+
+            if (hasPreviousPunch && transform.position != startPunchPosition)
+            {
+                transform.position = startPunchPosition;
+            }
+
+            startPunchPosition = transform.position;
+
+
+
+            hasPreviousPunch = true;
 
 
             var blur = GetComponent<MotionBlur>();

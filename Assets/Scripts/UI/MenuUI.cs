@@ -4,36 +4,21 @@ using UnityEngine;
 
 namespace Assets.Scripts.UI
 {
-    public class MenuUI : MonoBehaviour
+    public class MenuUI : PopupUI
     {
 
         public RectTransform MenuBorder;
 
         public Level Level { get; set; }
 
-        private bool isClosing;
-        private Action afterClosingAction;
-
-        public void Close(Action afterClosing)
+        private void Start()
         {
-            afterClosingAction = afterClosing;
-            isClosing = true;
-            MenuBorder.gameObject.GetComponent<Animator>().Play("MenuDisposing");
+            Level = Level.Current;
         }
-
-        private void Update()
-        {
-            if (isClosing)
-            {
-                afterClosingAction();
-                Destroy(gameObject);
-            }
-        }
-
 
         public void OnContinueButton()
         {
-            Level.ClosePauseMenuAndPlay();
+            Level.HidePauseMenu();
         }
 
         public void OnResetButton()

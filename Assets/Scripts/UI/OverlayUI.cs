@@ -21,6 +21,18 @@ namespace Assets.Scripts.UI
         public Button MenuButton;
         public Image MissionIcon;
 
+        public GameObject TopContainer;
+        public GameObject BottomContainer;
+
+        private Animator topAnimator;
+        private Animator bottomAnimator;
+
+        private const string TopShowing = "TopIn";
+        private const string TopHidding = "TopOut";
+
+        private const string BottomShowing = "BottomIn";
+        private const string BottomHidding = "BottomOut";
+
         #region ShowMode management
 
         public ShowMode Mode;
@@ -102,6 +114,12 @@ namespace Assets.Scripts.UI
             ResetShowMode();
             startStarsContainerPosition = StarsContainer.transform.position;
             currentStars = StarsCount.ThreeStar;
+
+            if (TopContainer != null && BottomContainer != null)
+            {
+                topAnimator = TopContainer.GetComponent<Animator>();
+                bottomAnimator = BottomContainer.GetComponent<Animator>();
+            }
         }
 
 
@@ -144,16 +162,27 @@ namespace Assets.Scripts.UI
 
         }
 
-        public void Hide()
+        public void Disable()
         {
             gameObject.SetActive(false);
         }
 
-        public void Show()
+        public void Enable()
         {
             gameObject.SetActive(true);
         }
 
+        public void PlayShowAnimation()
+        {
+            topAnimator.Play(TopShowing);
+            bottomAnimator.Play(BottomShowing);
+        }
+
+        public void PlayHideAnimation()
+        {
+            topAnimator.Play(TopHidding);
+            bottomAnimator.Play(BottomHidding);
+        }
 
         #region stars management
 
@@ -278,7 +307,8 @@ namespace Assets.Scripts.UI
 
         private void Update()
         {
-
+            if(Input.GetKeyDown(KeyCode.H)) PlayHideAnimation();
+            else if(Input.GetKeyDown(KeyCode.G)) PlayShowAnimation(); 
 
         }
 
@@ -289,7 +319,7 @@ namespace Assets.Scripts.UI
         }
         public void OnMenuClick()
         {
-            Level.Current.OpenPauseMenuAndPause();
+            Level.Current.ShowPauseMenu();
         }
 
         public void OnMissionIconClick()

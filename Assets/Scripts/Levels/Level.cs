@@ -88,10 +88,8 @@ namespace Assets.Scripts.Levels
         private Canvas currentLevelResults;
 
         public Canvas MenuPrefab;
-        private Canvas currentPauseMenu;
-
         public Canvas HelpPopupPrefab;
-        private Canvas currentHelpPopup;
+        private PopupUI currentPopup;
 
         public void UpdateOverlayUI()
         {
@@ -109,6 +107,33 @@ namespace Assets.Scripts.Levels
             canvas.planeDistance = 1;
         }
 
+        private void ShowPopup(Canvas popupUICanvasPrefab)
+        {
+            CameraBlurEffect.BlurIn();
+            OverlayUI.PlayHideAnimation();
+            StartCoroutine(WaitAndShowPopup(0.3f, popupUICanvasPrefab));
+        }
+
+        private IEnumerator WaitAndShowPopup(float t, Canvas popupUIPRefab)
+        {
+
+            yield return new WaitForSeconds(t);
+
+            var popup = Instantiate(popupUIPRefab);
+            currentPopup = popup.GetComponent<PopupUI>();
+        }
+
+        private void HideCurrentPopup()
+        {
+
+            if (currentPopup != null)
+            {
+                OverlayUI.PlayShowAnimation();
+                CameraBlurEffect.BlurOut();
+                Destroy(currentPopup.gameObject);
+                currentPopup = null;
+            }
+        }
 
         #endregion
 
@@ -456,16 +481,17 @@ namespace Assets.Scripts.Levels
 
         public void HideLevel()
         {
-            if(OverlayUI != null) OverlayUI.Hide();
+            if(OverlayUI != null) OverlayUI.Disable();
             GradientBackground.MainGradient.AlignToFrontAnchor();
 
         }
 
         public void UnhideLevel()
         {
-            if (OverlayUI != null) OverlayUI.Show();
+            if (OverlayUI != null) OverlayUI.Enable();
             GradientBackground.MainGradient.AlignToBackAnchor();
         }
+
 
         public void EndLevel()
         {
@@ -484,9 +510,9 @@ namespace Assets.Scripts.Levels
         public void ResetLevel()
         {
             LockInput();
+            HideCurrentPopup();
+            UnhideLevel();
 
-            if(currentPauseMenu != null)
-                ClosePauseMenu();
             if (currentLevelResults != null)
                 CloseResultsMenu();
 
@@ -496,34 +522,21 @@ namespace Assets.Scripts.Levels
             
         }
 
-        public void OpenPauseMenuAndPause()
+
+        public void ShowPauseMenu()
         {
-            OpenPauseMenu();
             Pause();
+            ShowPopup(MenuPrefab);
+            FireAction(LevelActionEvent.LevelActionType.PauseMenuOpen);
         }
 
-        public void OpenPauseMenu()
+        public void HidePauseMenu()
         {
-            StartFadeOperationAndHandleContext(FadeContext.MenuOpen);
-        }
-
-        public void ClosePauseMenu()
-        {
-            if (currentPauseMenu == null)
-            {
-                Debug.LogWarning("menu to close not found");
-                return;
-            }
-            UnhideLevel();
-            Destroy(currentPauseMenu.gameObject);
+            Play();
+            HideCurrentPopup();
             FireAction(LevelActionEvent.LevelActionType.PauseMenuClosed);
         }
 
-        public void ClosePauseMenuAndPlay()
-        {
-            ClosePauseMenu();
-            Play();
-        }
 
         public void OpenResultsMenu(LevelResultsUIModel model)
         {
@@ -532,12 +545,6 @@ namespace Assets.Scripts.Levels
                 Debug.LogWarning("Results menu already opened");
                 return;
             }
-
-            if (currentPauseMenu != null)
-            {
-                ClosePauseMenu();
-            }
-
             HideLevel();
 
             currentLevelResults = Instantiate(LevelResultsPrefab);
@@ -559,47 +566,22 @@ namespace Assets.Scripts.Levels
                 return;
             }
 
-            UnhideLevel();
+            //UnhideLevel();
             Destroy(currentLevelResults.gameObject);
 
         }
 
-        public void ShowHelpPopup(Sprite icon, string description)
-        {
-            CameraBlurEffect.BlurIn();
-            StartCoroutine(WaitAndShowHelpPopup(0.3f, icon, description));
-        }
-
-        private IEnumerator WaitAndShowHelpPopup(float t, Sprite icon, string d)
-        {
-            yield return new WaitForSeconds(t);
-
-            currentHelpPopup = Instantiate(HelpPopupPrefab);
-            var currentHelpPopupUI = currentHelpPopup.GetComponent<HelpPopupUI>();
-
-            currentHelpPopupUI.Description = d;
-            currentHelpPopupUI.Icon = icon;
-        }
 
         public void ShowHelpPopup()
         {
             Pause();
-            if (Mission == null)
-            {
-                Debug.LogWarning("ShowHelpPopup(): Mission == null");
-                return;
-            }
-            ShowHelpPopup(Mission.Icon, Mission.Description);
+            ShowPopup(HelpPopupPrefab);
         }
 
         public void HideHelpPopup()
         {
             Play();
-            if (currentHelpPopup != null)
-            {
-                Destroy(currentHelpPopup.gameObject);
-                CameraBlurEffect.BlurOut();
-            }
+            HideCurrentPopup();
         }
 
         #endregion
@@ -622,7 +604,7 @@ namespace Assets.Scripts.Levels
         {
             if (fadeContext.ContextType == FadeContextType.MenuOpen)
             {
-                OnPreMenuOpenEnd();
+                
             }
         }
 
@@ -637,24 +619,6 @@ namespace Assets.Scripts.Levels
         {
             FireAction(LevelActionEvent.LevelActionType.LevelEnd);
             OpenResultsMenu(new LevelResultsUIModel());
-        }
-
-        private void OnPreMenuOpenEnd()
-        {
-            HideLevel();
-            if (currentPauseMenu != null)
-            {
-                Debug.LogWarning("Menu already opened");
-                return;
-            }
-            currentPauseMenu = Instantiate(MenuPrefab);
-            var menuUI = currentPauseMenu.GetComponent<MenuUI>();
-            menuUI.Level = this;
-            EstablishUIPopup(menuUI.gameObject);
-
-            LevelStyleUtils.SetColor(currentPauseMenu.gameObject, LevelStyleUtils.MainStyle.GetFrontColor());
-
-            FireAction(LevelActionEvent.LevelActionType.PauseMenuOpen);
         }
 
         #endregion

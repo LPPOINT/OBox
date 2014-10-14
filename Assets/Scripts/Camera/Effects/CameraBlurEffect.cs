@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Assets.Scripts.Camera.Effects
 {
@@ -8,6 +9,20 @@ namespace Assets.Scripts.Camera.Effects
 
         public static CameraBlurEffect Instance;
 
+        public float FullBlurInTime = 0.5f;
+        public float FullBlurOutTime = 0.3f;
+        public iTween.EaseType FullBlurInEaseType = iTween.EaseType.easeInOutCirc;
+        public iTween.EaseType FullBlurOutEaseType = iTween.EaseType.easeInOutCirc;
+
+
+        public float FullBlurMaxSize = 9;
+        public float PartialBlurSizeOffset = 3;
+
+        public float PartialBlurInTime = 1.5f;
+        public float PartialBlurOutTime = 1.5f;
+        public iTween.EaseType PartialBlurInEaseType = iTween.EaseType.linear;
+        public iTween.EaseType PartialBlurOutEaseType = iTween.EaseType.linear;
+
 
         private void Awake()
         {
@@ -16,9 +31,12 @@ namespace Assets.Scripts.Camera.Effects
 
         private Blur blur;
 
-        private bool destroyAfterDone;
-
         public bool IsPlaying { get; private set; }
+        public bool IsLooped { get; private set; }
+
+        private float maxBlurValue;
+        private float currentTo;
+        private iTween.EaseType currentEaseType;
 
         private void PrepareBlur()
         {
@@ -29,7 +47,6 @@ namespace Assets.Scripts.Camera.Effects
             blur.blurShader = Shader.Find("Hidden/FastBlur");
             blur.downsample = 1;
             blur.blurIterations = 1;
-            blur.blurSize = 0;
         }
 
         private void OnITweenBlurUpdate(float newValue)
@@ -39,18 +56,36 @@ namespace Assets.Scripts.Camera.Effects
 
         private void OnITweenBlurDone()
         {
-            IsPlaying = false;
-            if (destroyAfterDone && blur != null)
+            if (!IsLooped && blur != null)
             {
+                IsPlaying = false;
                 Destroy(blur);
                 blur = null;
             }
+            else if (IsLooped)
+            {
+
+                if (maxBlurValue < currentTo) maxBlurValue = currentTo;
+
+                if (Math.Abs(currentTo - maxBlurValue) < 0.001f)
+                {
+                    Blur(maxBlurValue, maxBlurValue - Instance.PartialBlurSizeOffset, Instance.PartialBlurOutTime, Instance.PartialBlurInEaseType, IsLooped);
+                }
+                else
+                {
+                    Blur(maxBlurValue - Instance.PartialBlurSizeOffset, maxBlurValue, Instance.PartialBlurInTime, Instance.PartialBlurOutEaseType, IsLooped);
+                }
+
+            }
         }
 
-        private void Blur(float blurFrom, float blurTo, float blurTime, iTween.EaseType blurEaseType, bool shouldDestroyAfterDone = false)
+        private void Blur(float blurFrom, float blurTo, float blurTime, iTween.EaseType blurEaseType, bool looped = false)
         {
             PrepareBlur();
-            destroyAfterDone = shouldDestroyAfterDone;
+            IsLooped = looped;
+
+            currentTo = blurTo;
+            currentEaseType = blurEaseType;
 
             if (IsPlaying)
             {
@@ -70,13 +105,13 @@ namespace Assets.Scripts.Camera.Effects
         public static void BlurIn()
         {
             if(Instance == null) return;
-            Instance.Blur(0, 10, 0.5f, iTween.EaseType.easeInOutCirc, false);
+            Instance.Blur(0, Instance.FullBlurMaxSize, Instance.FullBlurInTime, Instance.FullBlurInEaseType, true);
         }
 
         public static void BlurOut()
         {
             if (Instance == null) return;
-            Instance.Blur(10, 0, 0.5f, iTween.EaseType.easeInOutCirc, true);
+            Instance.Blur(Instance.FullBlurMaxSize, 0, Instance.FullBlurOutTime, Instance.FullBlurOutEaseType, false);
         }
     }
 }

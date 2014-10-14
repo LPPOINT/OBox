@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.UI
 {
-    public class HelpPopupUI : MonoBehaviour
+    public class HelpPopupUI : PopupUI
     {
         public void Resume()
         {
@@ -20,6 +20,13 @@ namespace Assets.Scripts.UI
 
         private void Start()
         {
+
+
+            var level = Level.Current;
+
+            Icon = level.Mission.Icon;
+            Description = level.Mission.Description;
+
             if (IconImage != null) IconImage.sprite = Icon;
             if (DescriptionText != null) DescriptionText.text = Description;
         }
