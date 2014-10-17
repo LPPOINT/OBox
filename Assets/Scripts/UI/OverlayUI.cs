@@ -281,6 +281,7 @@ namespace Assets.Scripts.UI
 
         private void DisposeStar(StarsCount star)
         {
+
             DisposeStar(GetStarObject(star));
         }
 

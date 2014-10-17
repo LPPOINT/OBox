@@ -31,7 +31,7 @@ namespace Assets.Scripts.UI
 
         public float GetWidthForValue(float value)
         {
-            return ((initialWidth ) - ((initialWidth) * (MaxValue / value))) / (MaxValue/value); // хуйня
+            return ((initialWidth) - ((initialWidth)*(MaxValue/value))) / (MaxValue/value); // хуйня
         }
         private void SetWidth(float value)
         {

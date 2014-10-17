@@ -12,7 +12,6 @@ using Assets.Scripts.Map.Decorations;
 using Assets.Scripts.Map.Items;
 using Assets.Scripts.Missions;
 using Assets.Scripts.UI;
-using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using GradientBackground = Assets.Scripts.Levels.Style.GradientBackground.GradientBackground;

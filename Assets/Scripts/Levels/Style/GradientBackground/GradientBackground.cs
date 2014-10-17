@@ -23,27 +23,38 @@ namespace Assets.Scripts.Levels.Style.GradientBackground
         public Material GradientMaterial;
         public Sprite GradientTexture;
 
-        public LevelStyle LevelStyle;
+        public IGradientColorProvider ColorProvider;
+        public LevelStyle ProviderAsStyle;
 
         private SpriteRenderer spriteRenderer;
 
+        public bool UseCustomProvider;
+        public Color CustomColor1;
+        public Color CustomColor2;
+
         public void AlignToBackAnchor()
         {
-            LevelDepth.AlignToBack(transform);
+            if(LevelDepth.IsExist)
+                LevelDepth.AlignToBack(transform);
         }
         public void AlignToFrontAnchor()
         {
-            LevelDepth.AlignToFront(transform);
+            if (LevelDepth.IsExist)
+                LevelDepth.AlignToFront(transform);
         }
 
         protected virtual void Start()
         {
 
 
-
-            if (LevelStyle == null)
+            if (ProviderAsStyle != null)
             {
-                LevelStyle = FindObjectOfType<LevelStyle>();
+                ColorProvider = ProviderAsStyle;
+            }
+
+            if (UseCustomProvider)
+            {
+                ColorProvider = new GradientColorProvider(CustomColor1, CustomColor2);
             }
 
             var thisCam = UnityEngine.Camera.main;
@@ -68,11 +79,9 @@ namespace Assets.Scripts.Levels.Style.GradientBackground
 
             TileSizeUtils.SetScaleBySize(gameObject, spriteRenderer.bounds, w, h);
 
-            if (LevelStyle == null) return;
 
-
-            spriteRenderer.sharedMaterial.SetColor("_Color", LevelStyle.GetBackgroundGradientColor1());
-            spriteRenderer.sharedMaterial.SetColor("_Color2", LevelStyle.GetBackgroundGradientColor2());
+            spriteRenderer.sharedMaterial.SetColor("_Color", ColorProvider.GetBackgroundGradientColor1());
+            spriteRenderer.sharedMaterial.SetColor("_Color2", ColorProvider.GetBackgroundGradientColor2());
             spriteRenderer.transform.localScale = new Vector3(Math.Abs(spriteRenderer.transform.localScale.x),
                                                               Math.Abs(spriteRenderer.transform.localScale.y),
                                                               Math.Abs(spriteRenderer.transform.localScale.z));
@@ -90,16 +99,31 @@ namespace Assets.Scripts.Levels.Style.GradientBackground
         private void Update()
         {
 
-            if(LevelStyle == null) return;
-
-            if (lastColor1 != LevelStyle.GetBackgroundGradientColor1() || lastColor2 != LevelStyle.GetBackgroundGradientColor2())
+            if (ColorProvider == null)
             {
-                lastColor1 = LevelStyle.GetBackgroundGradientColor1();
-                lastColor2 = LevelStyle.GetBackgroundGradientColor2();
+                if (ProviderAsStyle != null)
+                {
+                    ColorProvider = ProviderAsStyle;
+                    return;
+                }
+            }
+            if (ColorProvider == null) return;
+
+            if (UseCustomProvider &&
+                (CustomColor1 != ColorProvider.GetBackgroundGradientColor1() ||
+                 CustomColor2 != ColorProvider.GetBackgroundGradientColor2()))
+            {
+                ColorProvider = new GradientColorProvider(CustomColor1, CustomColor2);
+            }
+
+            if (lastColor1 != ColorProvider.GetBackgroundGradientColor1() || lastColor2 != ColorProvider.GetBackgroundGradientColor2())
+            {
+                lastColor1 = ColorProvider.GetBackgroundGradientColor1();
+                lastColor2 = ColorProvider.GetBackgroundGradientColor2();
 
 
-                spriteRenderer.sharedMaterial.SetColor("_Color", LevelStyle.GetBackgroundGradientColor1());
-                spriteRenderer.sharedMaterial.SetColor("_Color2", LevelStyle.GetBackgroundGradientColor2());
+                spriteRenderer.sharedMaterial.SetColor("_Color", ColorProvider.GetBackgroundGradientColor1());
+                spriteRenderer.sharedMaterial.SetColor("_Color2", ColorProvider.GetBackgroundGradientColor2());
             }
         }
 

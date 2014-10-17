@@ -36,9 +36,9 @@ namespace Assets.Scripts.Levels.Style
             custom.BackgroundGradientColor1 = GetBackgroundGradientColor1();
             custom.BackgroundGradientColor2 = GetBackgroundGradientColor2();
 
-            if (GradientBackground.GradientBackground.MainGradient != null && GradientBackground.GradientBackground.MainGradient.LevelStyle == this)
+            if (GradientBackground.GradientBackground.MainGradient != null && GradientBackground.GradientBackground.MainGradient.ColorProvider is LevelPresetStyle && (GradientBackground.GradientBackground.MainGradient.ColorProvider as LevelPresetStyle) == this)
             {
-                GradientBackground.GradientBackground.MainGradient.LevelStyle = custom;
+                GradientBackground.GradientBackground.MainGradient.ColorProvider = custom;
             }
 
             DestroyImmediate(this);

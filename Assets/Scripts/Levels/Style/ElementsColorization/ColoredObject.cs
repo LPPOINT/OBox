@@ -12,10 +12,7 @@ namespace Assets.Scripts.Levels.Style.ElementsColorization
         public bool IncludeChildren = true;
         public bool IncludeSelf = true;
         public bool EnableAlphaMatching = true;
-
-#if UNITY_EDITOR
         public abstract IEnumerable<Object> GetDirtyObjects();
-#endif
 
         public abstract Color Color { get; set; }
     }

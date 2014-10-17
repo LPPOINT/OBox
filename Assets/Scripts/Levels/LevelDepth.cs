@@ -7,6 +7,11 @@ namespace Assets.Scripts.Levels
 
         public static LevelDepth Instance { get; private set; }
 
+        public static bool IsExist
+        {
+            get { return Instance != null; }
+        }
+
         public Transform BackTransform;
         public Transform FrontTransform;
         public Transform GamemapTransform;

@@ -6,7 +6,6 @@ namespace Assets.Scripts.Levels.Style.ElementsColorization
     public class RendererColored : ColoredObject
     {
 
-#if UNITY_EDITOR
         public override IEnumerable<Object> GetDirtyObjects()
         {
             var r = new List<Object>();
@@ -20,7 +19,6 @@ namespace Assets.Scripts.Levels.Style.ElementsColorization
             return r;
         }
 
-#endif
 
         public override Color Color
         {

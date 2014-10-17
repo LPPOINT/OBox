@@ -4,10 +4,9 @@ using UnityEngine;
 
 namespace Assets.Scripts.Levels.Style
 {
-    public interface ILevelStyle
+    public interface ILevelStyle : IGradientColorProvider
     {
-        Color GetBackgroundGradientColor1();
-        Color GetBackgroundGradientColor2();
+
         Color GetFrontColor();
     }
 }
