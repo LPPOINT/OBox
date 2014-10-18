@@ -14,7 +14,7 @@ using Assets.Scripts.Missions;
 using Assets.Scripts.UI;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using GradientBackground = Assets.Scripts.Levels.Style.GradientBackground.GradientBackground;
+using GradientBackground = Assets.Scripts.Styles.Gradient.GradientBackground;
 
 namespace Assets.Scripts.Levels
 {
@@ -39,7 +39,6 @@ namespace Assets.Scripts.Levels
 #endif
 
             ResetScore();
-            LevelStyleUtils.SetColor();
             UnhideLevel();
             InvalidateLevelElements();
             StartLevel();
@@ -553,7 +552,6 @@ namespace Assets.Scripts.Levels
             currentLevelResultsUI.Model = model;
             EstablishUIPopup(currentLevelResultsUI.gameObject);
 
-            LevelStyleUtils.SetColor(currentLevelResults.gameObject, LevelStyleUtils.MainStyle.GetFrontColor());
 
         }
 
