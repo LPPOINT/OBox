@@ -5,6 +5,8 @@ namespace Assets.Scripts.Styles
 {
     public abstract class StyleProvider : MonoBehaviour
     {
+
+
         public abstract IStyle GetStyle();
     }
 }

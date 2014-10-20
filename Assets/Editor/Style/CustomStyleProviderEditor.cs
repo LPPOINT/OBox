@@ -63,6 +63,8 @@ namespace Assets.Editor.Style
                 preset.Save(presetName);
             }
 
+            StyleEditorUtils.ShowApplyStyleButtonFor(p);
+
             if (GUI.changed)
             {
                 UnityEditor.EditorUtility.SetDirty(p);

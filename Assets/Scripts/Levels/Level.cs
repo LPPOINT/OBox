@@ -11,6 +11,7 @@ using Assets.Scripts.Map;
 using Assets.Scripts.Map.Decorations;
 using Assets.Scripts.Map.Items;
 using Assets.Scripts.Missions;
+using Assets.Scripts.Styles;
 using Assets.Scripts.UI;
 using UnityEngine;
 using Debug = UnityEngine.Debug;

@@ -10,8 +10,8 @@ GameObject:
   - 224: {fileID: 22400000}
   - 222: {fileID: 22200000}
   - 114: {fileID: 11400000}
-  - 114: {fileID: 11400002}
   - 95: {fileID: 9500000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: TipText
   m_TagString: Untagged
@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Mat: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FontData:
-    m_Font: {fileID: 12800000, guid: a3992f8eb57262144ac9a07a60255da8, type: 3}
+    m_Font: {fileID: 12800000, guid: bd9267736d1b41b4a812fcc7f461c55d, type: 3}
     m_FontSize: 41
     m_FontStyle: 0
     m_BestFit: 1
@@ -61,7 +61,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.08000004
-  m_Text: Text Decoration test
+  m_Text: Walk down
   m_ShownAsPassword: 0
   m_ShowPasswordLastChar: 0
 --- !u!114 &11400002
@@ -72,11 +72,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1573420865, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Script: {fileID: 11500000, guid: 89fa2d3b3c477fb45bed799a1ba7f09b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: .5}
-  m_EffectDistance: {x: 1, y: -1}
+  IncludeChildren: 1
+  IncludeSelf: 1
+  EnableAlphaMatching: 1
 --- !u!222 &22200000
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -97,7 +98,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 9, y: 281}
+  m_AnchoredPosition: {x: -335, y: 809}
   m_SizeDelta: {x: 575, y: 199}
   m_Pivot: {x: .5, y: .5}
 --- !u!1001 &100100000

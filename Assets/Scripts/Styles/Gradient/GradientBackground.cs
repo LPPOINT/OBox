@@ -23,9 +23,11 @@ namespace Assets.Scripts.Styles.Gradient
 
         public Material GradientMaterial;
         public Sprite GradientTexture;
+        public StyleProvider ColorProvider;
+
 
         private SpriteRenderer spriteRenderer;
-        public StyleProvider ColorProvider;
+
 
         public void AlignToBackAnchor()
         {
@@ -38,13 +40,25 @@ namespace Assets.Scripts.Styles.Gradient
                 LevelDepth.AlignToFront(transform);
         }
 
-        protected virtual void Start()
+        public void Visualize()
         {
-
             if (ColorProvider == null)
             {
                 var custom = gameObject.AddComponent<CustomStyleProvider>();
                 ColorProvider = custom;
+            }
+
+            try
+            {
+                if (gameObject == null)
+                {
+                    Debug.LogWarning("GradientBackground.go == null. WTF????");
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                return;
             }
 
             var thisCam = UnityEngine.Camera.main;
@@ -75,7 +89,6 @@ namespace Assets.Scripts.Styles.Gradient
             spriteRenderer.transform.localScale = new Vector3(Math.Abs(spriteRenderer.transform.localScale.x),
                                                               Math.Abs(spriteRenderer.transform.localScale.y),
                                                               Math.Abs(spriteRenderer.transform.localScale.z));
-
         }
 
 
@@ -89,14 +102,27 @@ namespace Assets.Scripts.Styles.Gradient
         private void Update()
         {
 
+            spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+            if (ColorProvider == null)
+            {
+                var custom = gameObject.AddComponent<CustomStyleProvider>();
+                ColorProvider = custom;
+            }
+
+
+
             if (lastColor1 != ColorProvider.GetStyle().GetBackgroundGradientColor1() || lastColor2 != ColorProvider.GetStyle().GetBackgroundGradientColor2())
             {
                 lastColor1 = ColorProvider.GetStyle().GetBackgroundGradientColor1();
                 lastColor2 = ColorProvider.GetStyle().GetBackgroundGradientColor2();
 
+                var newColor1 = ColorProvider.GetStyle().GetBackgroundGradientColor1();
+                var newColor2 = ColorProvider.GetStyle().GetBackgroundGradientColor2();
 
-                spriteRenderer.sharedMaterial.SetColor("_Color", ColorProvider.GetStyle().GetBackgroundGradientColor1());
-                spriteRenderer.sharedMaterial.SetColor("_Color2", ColorProvider.GetStyle().GetBackgroundGradientColor2());
+
+                spriteRenderer.sharedMaterial.SetColor("_Color", newColor1);
+                spriteRenderer.sharedMaterial.SetColor("_Color2", newColor2);
             }
         }
 
