@@ -7,6 +7,7 @@ using Assets.Scripts.Camera;
 using Assets.Scripts.Camera.Effects;
 using Assets.Scripts.Levels.Model;
 using Assets.Scripts.Levels.Style;
+using Assets.Scripts.Levels.Style.ElementsColorization;
 using Assets.Scripts.Map;
 using Assets.Scripts.Map.Decorations;
 using Assets.Scripts.Map.Items;
@@ -110,7 +111,12 @@ namespace Assets.Scripts.Levels
         {
             CameraBlurEffect.BlurIn();
             OverlayUI.PlayHideAnimation();
+
+
             StartCoroutine(WaitAndShowPopup(0.3f, popupUICanvasPrefab));
+
+
+
         }
 
         private IEnumerator WaitAndShowPopup(float t, Canvas popupUIPRefab)
@@ -548,6 +554,12 @@ namespace Assets.Scripts.Levels
 
             currentLevelResults = Instantiate(LevelResultsPrefab);
             var currentLevelResultsUI = currentLevelResults.GetComponent<LevelResultsUI>();
+
+
+            if (currentLevelResultsUI.GetComponent<UIColored>() != null)
+            {
+                currentLevelResultsUI.GetComponent<UIColored>().Color = StyleProvider.Main.GetStyle().GetFrontColor();
+            }
 
             currentLevelResultsUI.Level = this;
             currentLevelResultsUI.Model = model;

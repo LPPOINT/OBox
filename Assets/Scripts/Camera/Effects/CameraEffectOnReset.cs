@@ -39,12 +39,12 @@ namespace Assets.Scripts.Camera.Effects
             if (currentState == State.NotStarted)
             {
                 currentState = State.Forward;
-                iTween.ValueTo(gameObject, iTween.Hash("onupdate", "OnITweenValueUpdate",
+                iTween.ValueTo(gameObject, iTween.Hash("onupdate", "OnITweenResetValueUpdate",
                     "from", 0,
                     "to", VortexPower,
                     "time", VortexTime,
                     "easetype", iTween.EaseType.easeInOutCirc,
-                    "oncomplete", "OnITweenValueDone",
+                    "oncomplete", "OnITweenResetValueDone",
                     "oncompletetarget", gameObject));
             }
 
@@ -57,22 +57,22 @@ namespace Assets.Scripts.Camera.Effects
             if (currentState == State.Forward)
             {
                 currentState = State.Backward;
-                iTween.ValueTo(gameObject, iTween.Hash("onupdate", "OnITweenValueUpdate",
+                iTween.ValueTo(gameObject, iTween.Hash("onupdate", "OnITweenResetValueUpdate",
                         "from", VortexPower,
                         "to", 0,
                          "time", VortexTime,
                         "easetype", iTween.EaseType.easeInOutCirc,
-                        "oncomplete", "OnITweenValueDone",
+                        "oncomplete", "OnITweenResetValueDone",
                         "oncompletetarget", gameObject));
             }
         }
 
-        private void OnITweenValueUpdate(float newValue)
+        private void OnITweenResetValueUpdate(float newValue)
         {
             vortex.radius = new Vector2(newValue, newValue);
         }
 
-        private void OnITweenValueDone()
+        private void OnITweenResetValueDone()
         {
             if (currentState == State.Forward)
             {

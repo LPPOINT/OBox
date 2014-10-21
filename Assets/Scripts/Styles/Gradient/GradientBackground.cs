@@ -48,7 +48,7 @@ namespace Assets.Scripts.Styles.Gradient
                 ColorProvider = custom;
             }
 
-            try
+            try // что это 
             {
                 if (gameObject == null)
                 {
@@ -58,7 +58,7 @@ namespace Assets.Scripts.Styles.Gradient
             }
             catch (Exception e)
             {
-                return;
+                Debug.LogWarning("GradientBackground.go == null. WTF????");
             }
 
             var thisCam = UnityEngine.Camera.main;
