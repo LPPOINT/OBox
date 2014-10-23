@@ -21,7 +21,7 @@ namespace Assets.Editor.Utils
         public static void DoCaptureScreenshot()
         {
             Application.CaptureScreenshot(
-                Application.dataPath + "/Editor/Screenshots/" + GetTimestamp(DateTime.Now) + ".png", 2);
+                Application.dataPath + "/Editor/Screenshots/" + GetTimestamp(DateTime.Now) + ".png", 4);
         }
 
         public static void DoCaptureScreenshot(string name)

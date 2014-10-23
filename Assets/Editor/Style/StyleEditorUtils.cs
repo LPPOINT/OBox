@@ -20,10 +20,13 @@ namespace Assets.Editor.Style
 
         public static void ApplyStyleFromProvider(StyleProvider newProvider)
         {
-            GradientBackground.MainGradient.ColorProvider = newProvider;
-            GradientBackground.MainGradient.Visualize();
 
             SetFrontColor(newProvider.GetStyle().GetFrontColor());
+
+            var gbg = Object.FindObjectOfType<GradientBackground>();
+
+            gbg.ColorProvider = newProvider;
+            gbg.Visualize();
 
         }
 

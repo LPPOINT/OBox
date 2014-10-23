@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using Assets.Scripts.Camera;
 using Assets.Scripts.Camera.Effects;
-using Assets.Scripts.Levels.Model;
 using Assets.Scripts.Levels.Style;
 using Assets.Scripts.Levels.Style.ElementsColorization;
 using Assets.Scripts.Map;
@@ -34,7 +33,6 @@ namespace Assets.Scripts.Levels
 #endif
 
             FetchCoreComponents();
-            LoadDatabase();
 
 #if UNITY_EDITOR
             LevelValidator.Validate(this);
@@ -150,28 +148,7 @@ namespace Assets.Scripts.Levels
 
         #endregion
 
-        #region Database management
 
-        private void LoadDatabase()
-        {
-            levelsDatabase = Resources.Load<LevelsDatabase>("LevelsDatabase");
-
-            if (levelsDatabase == null)
-            {
-                Debug.LogWarning("Level.levelsDatabase == null");
-            }
-
-            DontDestroyOnLoad(levelsDatabase);
-        }
-
-
-        private LevelsDatabase levelsDatabase;
-        public LevelModel CreateLevelModel()
-        {
-            return new LevelModel(Index.GetScenePath(false), LevelMissionModel.EnterTarget, Index.WorldNumber,
-                Index.LevelNumber);
-        }
-        #endregion
 
         #region Decoration management
         private enum DecorationsContext

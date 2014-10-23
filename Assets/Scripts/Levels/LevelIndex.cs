@@ -1,5 +1,5 @@
 ﻿using System;
-using Assets.Scripts.Meta.Model;
+using Assets.Scripts.Model;
 
 namespace Assets.Scripts.Levels
 {
@@ -23,6 +23,7 @@ namespace Assets.Scripts.Levels
             {
                 l += ".unity";
             }
+
             return l;
         }
 

@@ -97,6 +97,10 @@ Material:
         second: 0
       data:
         first:
+          name: _Scale
+        second: 1
+      data:
+        first:
           name: _Parallax
         second: .0199999996
       data:
@@ -129,10 +133,6 @@ Material:
         second: 0
       data:
         first:
-          name: _Scale
-        second: 1
-      data:
-        first:
           name: _EmissionScaleUI
         second: 1
     m_Colors:
@@ -146,12 +146,12 @@ Material:
         second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
-          name: _SpecularColor
-        second: {r: .200000003, g: .200000003, b: .200000003, a: 1}
-      data:
-        first:
           name: _Color2
         second: {r: 1, g: .827450991, b: .00392156886, a: 1}
+      data:
+        first:
+          name: _SpecularColor
+        second: {r: .200000003, g: .200000003, b: .200000003, a: 1}
       data:
         first:
           name: _EmissionColorUI
