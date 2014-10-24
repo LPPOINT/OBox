@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Model;
+using UnityEngine;
 
 namespace Assets.Scripts.GameGUI
 {
@@ -11,7 +12,7 @@ namespace Assets.Scripts.GameGUI
 
         public void OnPlayClick()
         {
-            Supervisor.OpenPage(GUIPageType.Test);
+            Supervisor.OpenLevel("Level1", GUITranslation.CreateEmptyTranslation());
         }
 
         public void OnShopClick()

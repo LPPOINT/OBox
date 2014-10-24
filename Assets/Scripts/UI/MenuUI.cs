@@ -28,7 +28,7 @@ namespace Assets.Scripts.UI
 
         public void OnMainMenuButton()
         {
-            
+            Application.LoadLevel("GUI");
         }
 
     }

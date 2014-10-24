@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Assets.Scripts.Styles
@@ -22,16 +24,20 @@ namespace Assets.Scripts.Styles
             return preset;
         }
 
+#if UNITY_EDITOR
         public void Save(string assetName)
         {
             Save(this, assetName);
         }
+
 
         public static void Save(StylePreset preset, string name)
         {
             AssetDatabase.CreateAsset(preset, "Assets/Resources/" + StylePresetsFolder + "/" + name + ".asset");
             AssetDatabase.Refresh();
         }
+
+#endif
 
         public static StylePreset Load(string name)
         {

@@ -6,6 +6,7 @@
         SectionSelection,
         LevelSelection,
         Shop,
+        LevelLoading,
         Test
     }
 }
