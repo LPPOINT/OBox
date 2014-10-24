@@ -116,10 +116,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+	<data name="Loading.Cutaway1" xml:space="preserve">
+		<value>xvideos.com</value>
+	</data>
+	<data name="Loading.Cutaway2" xml:space="preserve">
+		<value>Стреляй</value>
+	</data>
+	<data name="Loading.Cutaway3" xml:space="preserve">
+		<value>Оцени</value>
+	</data>
+	<data name="Loading.Cutaway4" xml:space="preserve">
+		<value>Убивай</value>
+	</data>
+	<data name="Loading.Cutaway5" xml:space="preserve">
+		<value>Умирай</value>
+	</data>
+	<data name="Loading.Cutaway6" xml:space="preserve">
+		<value>Живи</value>
+	</data>
+	<data name="Loading.Cutaway7" xml:space="preserve">
+		<value>Играй</value>
+	</data>
+	<data name="Loading.Cutaway8" xml:space="preserve">
+		<value>Жди</value>
+	</data>
+	<data name="Loading.Cutaway9" xml:space="preserve">
+		<value>Иисус</value>
+	</data>
+	<data name="Loading.Loading" xml:space="preserve">
+		<value>Загрузка...</value>
+	</data>
 	<data name="MissionHelp.Target" xml:space="preserve">
 		<value>Чтобы пройти уровень, нужно попасть в цель</value>
-	</data>
-	<data name="Tip.Hello" xml:space="preserve">
-		<value>Привет</value>
 	</data>
 </root>

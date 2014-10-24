@@ -106,7 +106,6 @@ namespace Assets.Scripts.Map.Decorations
 
             PlayNewIndex();
             NotifyDecoratorStarted();
-
         }
 
         private void PlayNewIndex()

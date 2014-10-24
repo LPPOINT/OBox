@@ -116,10 +116,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-	<data name="MissionHelp.Target" xml:space="preserve">
-		<value>To complite level, slide player box to target</value>
+	<data name="Loading.Cutaway1" xml:space="preserve">
+		<value>xvideos.com</value>
 	</data>
-	<data name="Tip.Hello" xml:space="preserve">
-		<value>Hello</value>
+	<data name="Loading.Cutaway2" xml:space="preserve">
+		<value>Shoot</value>
+	</data>
+	<data name="Loading.Cutaway3" xml:space="preserve">
+		<value>Fuck</value>
+	</data>
+	<data name="Loading.Cutaway4" xml:space="preserve">
+		<value>Kill</value>
+	</data>
+	<data name="Loading.Cutaway5" xml:space="preserve">
+		<value>Die</value>
+	</data>
+	<data name="Loading.Cutaway6" xml:space="preserve">
+		<value>Life</value>
+	</data>
+	<data name="Loading.Cutaway7" xml:space="preserve">
+		<value>Play</value>
+	</data>
+	<data name="Loading.Cutaway8" xml:space="preserve">
+		<value>Prepare your anus</value>
+	</data>
+	<data name="Loading.Cutaway9" xml:space="preserve">
+		<value>Jesus</value>
+	</data>
+	<data name="Loading.Loading" xml:space="preserve">
+		<value>Loading...</value>
+	</data>
+	<data name="MissionHelp.Target" xml:space="preserve">
+		<value>To complite level, slide block to target</value>
 	</data>
 </root>

@@ -126,6 +126,10 @@ namespace Assets.Scripts.Styles.Gradient
             }
         }
 
+        private void OnDisable()
+        {
+            mainGradient = null;
+        }
 #endif
 
 

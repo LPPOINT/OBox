@@ -23,10 +23,6 @@ namespace Assets.Scripts.Levels
 
         private void Awake()
         {
-            if (Instance != null)
-            {
-                Debug.LogWarning("Multiple LevelDepth detected");
-            }
             Instance = this;
         }
 

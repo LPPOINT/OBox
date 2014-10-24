@@ -26,6 +26,8 @@ namespace Assets.Scripts.Levels
         private void Start()
         {
 
+          
+
 #if UNITY_EDITOR
 
             var sw = new Stopwatch();
@@ -54,6 +56,12 @@ namespace Assets.Scripts.Levels
 
         private void Update()
         {
+        }
+
+
+        private void OnDisable()
+        {
+            current = null;
         }
 
         private static Level current;
@@ -109,8 +117,6 @@ namespace Assets.Scripts.Levels
         {
             CameraBlurEffect.BlurIn();
             OverlayUI.PlayHideAnimation();
-
-
             StartCoroutine(WaitAndShowPopup(0.3f, popupUICanvasPrefab));
 
 
@@ -121,20 +127,22 @@ namespace Assets.Scripts.Levels
         {
 
             yield return new WaitForSeconds(t);
-
             var popup = Instantiate(popupUIPRefab);
             currentPopup = popup.GetComponent<PopupUI>();
         }
 
         private void HideCurrentPopup()
         {
-
             if (currentPopup != null)
             {
                 OverlayUI.PlayShowAnimation();
                 CameraBlurEffect.BlurOut();
                 Destroy(currentPopup.gameObject);
                 currentPopup = null;
+            }
+            else
+            {
+               
             }
         }
 
@@ -172,7 +180,7 @@ namespace Assets.Scripts.Levels
             return DecorationPlaymode.In;
         }
 
-        private void StartDecorationsAndHadleContext(DecorationsContext context)
+        private void StartDecorationsAndHandleContext(DecorationsContext context)
         {
             var playmode = GetDecorationPlaymodeByContext(context);
             currentDecorationsContext = context;
@@ -479,14 +487,14 @@ namespace Assets.Scripts.Levels
         {
             LockInput();
             RegisterLevelResults();
-            StartDecorationsAndHadleContext(DecorationsContext.Afterplay);
+            StartDecorationsAndHandleContext(DecorationsContext.Afterplay);
         }
 
         public void StartLevel()
         {
             ResetScore();
             LockInput();
-            StartDecorationsAndHadleContext(DecorationsContext.Preplay);
+            StartDecorationsAndHandleContext(DecorationsContext.Preplay);
         }
 
         public void ResetLevel()
@@ -567,6 +575,7 @@ namespace Assets.Scripts.Levels
 
         public void HideHelpPopup()
         {
+
             Play();
             HideCurrentPopup();
         }
@@ -577,6 +586,8 @@ namespace Assets.Scripts.Levels
 
         private void OnDecorationsEnd(DecorationsContext context)
         {
+
+
             if (context == DecorationsContext.Preplay)
             {
                 OnPreplayEnd();
