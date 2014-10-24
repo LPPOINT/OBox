@@ -1,0 +1,174 @@
+fileFormatVersion: 2
+guid: 1b36a72dea8f3a646bed18314efaf407
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: IndexFillIn
+    21300002: IndexFillIn_0
+    21300004: IndexFillIn_1
+    21300006: IndexFillIn_2
+    21300008: IndexFillIn_3
+    21300010: IndexFillIn_4
+    21300012: IndexFillIn_5
+    21300014: IndexFillIn_6
+    21300016: IndexFillIn_7
+    21300018: IndexFillIn_8
+    21300020: IndexFillIn_9
+    21300022: IndexFillIn_10
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: -1
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: IndexFillIn_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 874
+        width: 154
+        height: 149
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_1
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 874
+        width: 152
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_2
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 874
+        width: 150
+        height: 145
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_3
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 723
+        width: 149
+        height: 143
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_4
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 723
+        width: 147
+        height: 141
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_5
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 723
+        width: 144
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_6
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 572
+        width: 143
+        height: 137
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_7
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 571
+        width: 140
+        height: 137
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_8
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 571
+        width: 139
+        height: 134
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_9
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 420
+        width: 137
+        height: 132
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillIn_10
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 420
+        width: 135
+        height: 129
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 

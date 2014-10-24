@@ -5,6 +5,7 @@
         MainMenu,
         SectionSelection,
         LevelSelection,
-        Shop
+        Shop,
+        Test
     }
 }
