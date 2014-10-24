@@ -1,5 +1,7 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net.Mime;
 using SmartLocalization;
 using UnityEngine;
@@ -11,7 +13,7 @@ namespace Assets.Scripts.GameGUI
     {
         public string LevelPath;
 
-        public string[] Cutaways;
+        public List<string> Cutaways { get; private set; }
 
         public float CutawayMinTime;
         public float CutawayMaxTime;
@@ -112,16 +114,16 @@ namespace Assets.Scripts.GameGUI
         private string GetRandomCutawayText(int oldCutawayIndex)
         {
 
-            if (Cutaways.Length == 0)
+            if (Cutaways.Count == 0)
             {
                 Debug.LogWarning("GetRandomCutawayText() Cutaways.Length == 0");
                 return "GetRandomCutawayText() Cutaways.Length == 0";
             }
 
-            if (Cutaways.Length <= 1)
+            if (Cutaways.Count <= 1)
                 oldCutawayIndex = -1;
 
-            var randomIndex = Random.Range(0, Cutaways.Length - 1);
+            var randomIndex = Random.Range(0, Cutaways.Count);
 
             if (randomIndex == oldCutawayIndex)
                 return GetRandomCutawayText(oldCutawayIndex);
@@ -163,6 +165,14 @@ namespace Assets.Scripts.GameGUI
         private void Start()
         {
 
+            var values = LanguageManager.Instance.LanguageDatabase.Where(pair => pair.Key.StartsWith("Loading.Cutaway"));
+            Cutaways = new List<string>();
+
+            foreach (var keyValuePair in values)
+            {
+                Cutaways.Add(keyValuePair.Key);
+            }
+
             if (string.IsNullOrEmpty(LevelPath))
             {
                 Debug.LogWarning("LevelPath not initialized. ");
@@ -200,10 +210,6 @@ namespace Assets.Scripts.GameGUI
                 iTween.ValueTo(gameObject, iTween.Hash("onupdate", "OnITweenProgressEmulatorUpdate", "oncomplete", "OnITweenProgressEmulatorDone", "from", ((int)(LevelLoadingOperation.progress * 100)), "to", 100, "time", 5, "easetype", iTween.EaseType.easeOutQuad));
             }
 
-            if (LevelLoadingOperation == null)
-            {
-                Debug.Log("LLO is null");
-            }
 
             currentTextTime += Time.deltaTime;
             currentLoadingTime += Time.deltaTime;

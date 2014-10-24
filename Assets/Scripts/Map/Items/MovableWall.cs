@@ -21,7 +21,7 @@ namespace Assets.Scripts.Map.Items
 
         private void UpdateArrow(SpriteRenderer arrowRenderer, Direction arrowDirection)
         {
-            if (CanMoveTo(arrowDirection)) arrowRenderer.enabled = true;
+            if (CanMoveTo(arrowDirection) && GameMap.GetNextItem(this, GameMap.SwapDirection(arrowDirection)) == null) arrowRenderer.enabled = true;
             else arrowRenderer.enabled = false;
         }
 
