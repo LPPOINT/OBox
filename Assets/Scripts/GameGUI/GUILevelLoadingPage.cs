@@ -168,6 +168,8 @@ namespace Assets.Scripts.GameGUI
             var values = LanguageManager.Instance.LanguageDatabase.Where(pair => pair.Key.StartsWith("Loading.Cutaway"));
             Cutaways = new List<string>();
 
+            isCutaway = true;
+
             foreach (var keyValuePair in values)
             {
                 Cutaways.Add(keyValuePair.Key);

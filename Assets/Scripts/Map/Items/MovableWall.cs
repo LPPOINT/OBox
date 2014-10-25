@@ -78,6 +78,11 @@ namespace Assets.Scripts.Map.Items
 
         private TileIndex startIndex;
 
+        protected override void OnLevelInitialized()
+        {
+            UpdateArrows();
+        }
+
         protected override void Start()
         {
 

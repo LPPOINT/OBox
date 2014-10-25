@@ -3,6 +3,7 @@ using System.Globalization;
 using Assets.Scripts.Common;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Missions;
+using Assets.Scripts.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -320,13 +321,12 @@ namespace Assets.Scripts.UI
         }
         public void OnMenuClick()
         {
-            Debug.Log("ONMENUCLICK");
             Level.Current.ShowPauseMenu();
         }
 
         public void OnMissionIconClick()
         {
-            
+            Level.Current.ShowHelpPopup();
         }
 
         #endregion

@@ -18,11 +18,12 @@ namespace Assets.Scripts.Levels
 
         public string GetScenePath(bool withExtension = false, bool openBuildLevel = false)
         {
-            return string.Format("Scenes/Levels/World{0}/{1}Level{2}{3}",
+            return string.Format("Level{0}_{2}{4}{3}",
                 (int) WorldNumber,
-                openBuildLevel ? "Build/" : string.Empty
+                openBuildLevel ? "Build/" : "Editor/"
                 , LevelNumber,
-                withExtension ? ".unity" : string.Empty);
+                withExtension ? ".unity" : string.Empty,
+                openBuildLevel ? "B" : "E");
         }
 
         public static string GetScenePath(int levelNumber, WorldNumber worldNumber, bool withExtension = false, bool openBuildLevel = false)

@@ -11,6 +11,7 @@ using Assets.Scripts.Map;
 using Assets.Scripts.Map.Decorations;
 using Assets.Scripts.Map.Items;
 using Assets.Scripts.Missions;
+using Assets.Scripts.Model;
 using Assets.Scripts.Styles;
 using Assets.Scripts.UI;
 using UnityEngine;
@@ -56,6 +57,10 @@ namespace Assets.Scripts.Levels
 
         private void Update()
         {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                ResetLevel();
+            }
         }
 
 

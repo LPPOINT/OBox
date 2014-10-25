@@ -7,9 +7,9 @@ namespace Assets.Scripts.Map.Items
     {
         public bool DestroyAfterLeave;
 
-        private const string ShowingAnimation = "WalkableWallShowing";
-        private const string IdleAnimation = "WalkableWallIdle";
-        private const string DisposingAnimation = "WalkableWallDisposing";
+        private const string ShowingAnimation = "WWallShowing";
+        private const string IdleAnimation = "WWallIdle";
+        private const string DisposingAnimation = "WWallDisposing";
 
         public bool IsDisposed { get; private set; }
 
