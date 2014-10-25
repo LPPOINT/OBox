@@ -77,7 +77,6 @@ namespace Assets.Scripts.GameGUI
         {
             if (IsActive)
             {
-                Debug.LogWarning("GUITranslation already active");
                 return;
             }
 

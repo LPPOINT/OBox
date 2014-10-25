@@ -13,7 +13,7 @@ namespace Assets.Scripts.GameGUI
 
         public override GUIPageType Type
         {
-            get { return GUIPageType.Test; }
+            get { return GUIPageType.Debug; }
         }
 
         public void OnMenuClick()

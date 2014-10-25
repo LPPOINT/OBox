@@ -48,9 +48,9 @@ class EdgeDetectEffectNormals extends PostEffectsBase {
 
 	function SetCameraFlag () {
 		if (mode == EdgeDetectMode.SobelDepth || mode == EdgeDetectMode.SobelDepthThin)
-			GetComponent(Camera).depthTextureMode |= DepthTextureMode.Depth;
+			camera.depthTextureMode |= DepthTextureMode.Depth;
 		else if (mode == EdgeDetectMode.TriangleDepthNormals || mode == EdgeDetectMode.RobertsCrossDepthNormals)
-			GetComponent(Camera).depthTextureMode |= DepthTextureMode.DepthNormals;			
+			camera.depthTextureMode |= DepthTextureMode.DepthNormals;			
 	}
 
 	function OnEnable() {

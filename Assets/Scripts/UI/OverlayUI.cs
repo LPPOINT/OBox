@@ -320,6 +320,7 @@ namespace Assets.Scripts.UI
         }
         public void OnMenuClick()
         {
+            Debug.Log("ONMENUCLICK");
             Level.Current.ShowPauseMenu();
         }
 

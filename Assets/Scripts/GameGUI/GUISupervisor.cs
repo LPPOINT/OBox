@@ -39,7 +39,7 @@ namespace Assets.Scripts.GameGUI
         }
         public GUIPage InstantiatePage(GUIPage prefab)
         {
-            var r = Instantiate(prefab);
+            var r = (Instantiate(prefab.gameObject) as GameObject).GetComponent<GUIPage>();
             EstablishPage(r);
             return r;
 

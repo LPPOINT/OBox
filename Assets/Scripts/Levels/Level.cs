@@ -127,7 +127,7 @@ namespace Assets.Scripts.Levels
         {
 
             yield return new WaitForSeconds(t);
-            var popup = Instantiate(popupUIPRefab);
+            var popup = (Instantiate(popupUIPRefab.gameObject) as GameObject);
             currentPopup = popup.GetComponent<PopupUI>();
         }
 
@@ -537,7 +537,7 @@ namespace Assets.Scripts.Levels
             }
             HideLevel();
 
-            currentLevelResults = Instantiate(LevelResultsPrefab);
+            currentLevelResults = (Instantiate(LevelResultsPrefab.gameObject) as GameObject).GetComponent<Canvas>();
             var currentLevelResultsUI = currentLevelResults.GetComponent<LevelResultsUI>();
 
 

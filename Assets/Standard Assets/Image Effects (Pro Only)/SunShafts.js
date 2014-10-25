@@ -23,9 +23,9 @@ class SunShafts extends PostEffectsBase
 	public var sunTransform : Transform;
 	public var radialBlurIterations : int = 2;
 	public var sunColor : Color = Color.white;
-	public var sunThreshold : Color = Color(0.87,0.74,0.65);
 	public var sunShaftBlurRadius : float = 2.5f;
 	public var sunShaftIntensity : float = 1.15;
+	public var useSkyBoxAlpha : float = 0.75f;
 	
 	public var maxRadius : float = 0.75f;
 	
@@ -56,7 +56,7 @@ class SunShafts extends PostEffectsBase
 				
 		// we actually need to check this every frame
 		if(useDepthTexture)
-			GetComponent(Camera).depthTextureMode |= DepthTextureMode.Depth;	
+			camera.depthTextureMode |= DepthTextureMode.Depth;	
 		
         var divider : int = 4;
         if (resolution == SunShaftsResolution.Normal)
@@ -66,7 +66,7 @@ class SunShafts extends PostEffectsBase
             
 		var v : Vector3 = Vector3.one * 0.5;
 		if (sunTransform)
-			v = GetComponent(Camera).WorldToViewportPoint (sunTransform.position);
+			v = camera.WorldToViewportPoint (sunTransform.position);
 		else 
 			v = Vector3(0.5, 0.5, 0.0);
 
@@ -80,14 +80,13 @@ class SunShafts extends PostEffectsBase
 		// we have 2 methods, one of which requires depth buffer support, the other one is just comparing images
 		
 		sunShaftsMaterial.SetVector ("_BlurRadius4", Vector4 (1.0, 1.0, 0.0, 0.0) * sunShaftBlurRadius );
-		sunShaftsMaterial.SetVector ("_SunPosition", Vector4 (v.x, v.y, v.z, maxRadius));
-		sunShaftsMaterial.SetVector ("_SunThreshold", sunThreshold);
+		sunShaftsMaterial.SetVector ("_SunPosition", Vector4 (v.x, v.y, v.z, maxRadius));		
+		sunShaftsMaterial.SetFloat ("_NoSkyBoxMask", 1.0f - useSkyBoxAlpha);	
 		
-		if (!useDepthTexture) {
-			var format = GetComponent(Camera).hdr ? RenderTextureFormat.DefaultHDR: RenderTextureFormat.Default;
-			var tmpBuffer : RenderTexture = RenderTexture.GetTemporary (source.width, source.height, 0, format);					
+		if (!useDepthTexture) {		
+			var tmpBuffer : RenderTexture = RenderTexture.GetTemporary (source.width, source.height, 0);					
 			RenderTexture.active = tmpBuffer;
-			GL.ClearWithSkybox (false, GetComponent(Camera));
+			GL.ClearWithSkybox (false, camera);
 			
 			sunShaftsMaterial.SetTexture ("_Skybox", tmpBuffer);
 			Graphics.Blit (source, lrDepthBuffer, sunShaftsMaterial, 3);		

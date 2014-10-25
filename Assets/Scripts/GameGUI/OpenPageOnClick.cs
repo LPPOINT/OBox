@@ -19,7 +19,7 @@ namespace Assets.Scripts.GameGUI
                 return;
             }
 
-            Button.onClick.AddListener((wtfIsThisShit) => GUISupervisor.Instance.OpenPage(PageType)); // <- incorrect version
+            Button.onClick.AddListener(() => GUISupervisor.Instance.OpenPage(PageType)); // <- incorrect version
 
 
         }

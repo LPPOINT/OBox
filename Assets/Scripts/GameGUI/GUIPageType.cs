@@ -7,6 +7,6 @@
         LevelSelection,
         Shop,
         LevelLoading,
-        Test
+        Debug
     }
 }

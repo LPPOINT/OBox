@@ -42,6 +42,7 @@ MonoBehaviour:
   PagesPrefabs:
   - {fileID: 11400000, guid: 807269b0fcafe614d834c37999da5289, type: 2}
   - {fileID: 11400000, guid: 677316b29de503e4086bbabb23e812ba, type: 2}
+  - {fileID: 11400026, guid: c57d4d9a17530e04f968425aefba4faa, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

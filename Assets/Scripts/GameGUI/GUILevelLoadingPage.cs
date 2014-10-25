@@ -191,6 +191,12 @@ namespace Assets.Scripts.GameGUI
             if (!string.IsNullOrEmpty(LevelPath))
             {
                 LevelLoadingOperation = Application.LoadLevelAsync(LevelPath);
+                if (LevelLoadingOperation == null)
+                {
+                    Debug.Log("Somethig wrong while trying to lad level.");
+                    LevelPath = string.Empty;
+                    return;
+                }
                 LevelLoadingOperation.allowSceneActivation = false;
             }
         }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 25cd4fec2d4f07a4a860038cdb19fcf2
+guid: f3e0e1b6c6342f84a8d83bccb893c130
 TextureImporter:
   fileIDToRecycleName:
     21300000: iTweenIcon
@@ -21,20 +21,16 @@ TextureImporter:
   isReadable: 0
   grayScaleToAlpha: 0
   generateCubemap: 0
-  cubemapConvolution: 0
-  cubemapConvolutionSteps: 8
-  cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
   textureFormat: -1
   maxTextureSize: 1024
   textureSettings:
     filterMode: -1
-    aniso: 1
+    aniso: -1
     mipBias: -1
-    wrapMode: 1
+    wrapMode: -1
   nPOTScale: 0
   lightmap: 0
-  rGBM: 0
   compressionQuality: 50
   spriteMode: 1
   spriteExtrude: 1
@@ -50,4 +46,3 @@ TextureImporter:
     sprites: []
   spritePackingTag: 
   userData: 
-  assetBundleName: 

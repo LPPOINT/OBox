@@ -24,9 +24,11 @@ namespace Assets.Editor.Style
             SetFrontColor(newProvider.GetStyle().GetFrontColor());
 
             var gbg = Object.FindObjectOfType<GradientBackground>();
-
-            gbg.ColorProvider = newProvider;
-            gbg.Visualize();
+            if (gbg != null)
+            {
+                gbg.ColorProvider = newProvider;
+                gbg.Visualize();
+            }
 
         }
 

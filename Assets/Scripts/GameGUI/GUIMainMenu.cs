@@ -12,7 +12,7 @@ namespace Assets.Scripts.GameGUI
 
         public void OnPlayClick()
         {
-            Supervisor.OpenLevel("Level1", GUITranslation.CreateEmptyTranslation());
+            Supervisor.OpenLevel("Level1_1", GUITranslation.CreateEmptyTranslation());
         }
 
         public void OnShopClick()
