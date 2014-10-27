@@ -41,7 +41,7 @@ namespace Assets.Scripts.Levels
             return string.Format("Level{0}_{2}{4}{3}",
                 (int) WorldNumber,
                 openBuildLevel ? "Build/" : "Editor/"
-                , LevelNumber,
+                , (int)LevelNumber,
                 withExtension ? ".unity" : string.Empty,
                 openBuildLevel ? "B" : "E");
         }
