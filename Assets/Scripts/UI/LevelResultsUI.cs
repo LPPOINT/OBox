@@ -13,6 +13,11 @@ namespace Assets.Scripts.UI
             Level.ResetLevel();
         }
 
+        public void OnMenuClick()
+        {
+            Level.Exit();
+        }
+
 
     }
 }

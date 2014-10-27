@@ -27,7 +27,7 @@ namespace Assets.Scripts.Map.Decorations
         protected override void OnDecorationUpdate()
         {
             animator = GetComponent<Animator>();
-            if (isPlaying && animator != null && !animator.GetCurrentAnimatorStateInfo(0).IsName(AnimationName))
+            if (isPlaying && animator != null && animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !animator.IsInTransition(0))
             {
                 isPlaying = false;
                 OnDecorationEnd();

@@ -80,6 +80,28 @@ namespace Assets.Scripts.Map.Items
             SetIndex(startIndex);
         }
 
+
+        private void EnableRenderer(bool enable)
+        {
+            var mr = GetComponent<Renderer>();
+            if (mr != null) mr.enabled = enable;
+
+            foreach (var r in GetComponentsInChildren<Renderer>())
+            {
+                r.enabled = enable;
+            }
+        }
+
+        protected override void OnAfterplayBegin()
+        {
+            EnableRenderer(false);
+        }
+
+        protected override void OnPreplayBegin()
+        {
+            EnableRenderer(true);
+        }
+
         public void Move(Direction direction, MoveSource source = MoveSource.User)
         {
 

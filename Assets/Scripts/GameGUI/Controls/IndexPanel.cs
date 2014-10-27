@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.GameGUI
+namespace Assets.Scripts.GameGUI.Controls
 {
 
 
+    [ExecuteInEditMode]
     public class IndexPanel : MonoBehaviour
     {
 
@@ -25,9 +25,12 @@ namespace Assets.Scripts.GameGUI
 
         }
 
+        public bool EnableShaking = true;
+        public float ShakeAmount = 0.19f;
+        public float ShakeTime = 0.3f;
+
         public int TotalNodes { get; private set; }
         public int CurrentNode { get; private set; }
-
 
         public int FirstSelected;
 
@@ -74,7 +77,7 @@ namespace Assets.Scripts.GameGUI
             {
                 SwapNodes(CurrentNode, CurrentNode + 1);
             }
-            else
+            else if (EnableShaking)
             {
                 Shake();
             }
@@ -86,31 +89,19 @@ namespace Assets.Scripts.GameGUI
             {
                 SwapNodes(CurrentNode, CurrentNode-1);
             }
-            else
+            else if (EnableShaking)
             {
-                Shake();
+
+                    Shake();
             }
         }
 
         public void Shake()
         {
-            iTween.ShakePosition(gameObject, new Vector3(2, 2, 0), 0.3f);
+            iTween.ShakePosition(gameObject, new Vector3(ShakeAmount, ShakeAmount, 0), ShakeTime);
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                Next();
-            }
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                Prev();
-            }
 
-
-
-        }
 
     }
 }

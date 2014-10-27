@@ -30,6 +30,11 @@ namespace Assets.Scripts.GameGUI
 
         private void EstablishPage(GUIPage pageInstance)
         {
+            if (pageInstance == null || pageInstance.GetComponent<Canvas>() == null)
+            {
+                Debug.Log("Initial page not found");
+                return;
+            }
             var canvas = pageInstance.GetComponent<Canvas>();
             if (canvas != null)
             {

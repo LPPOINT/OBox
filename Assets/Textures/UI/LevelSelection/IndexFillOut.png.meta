@@ -14,6 +14,11 @@ TextureImporter:
     21300018: IndexFillOut_8
     21300020: IndexFillOut_9
     21300022: IndexFillOut_10
+    21300024: IndexFillOut_11
+    21300026: IndexFillOut_12
+    21300028: IndexFillOut_13
+    21300030: IndexFillOut_14
+    21300032: IndexFillOut_15
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -59,109 +64,159 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 888
-        width: 135
-        height: 130
+        y: 844
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_1
       rect:
         serializedVersion: 2
-        x: 162
-        y: 887
-        width: 137
-        height: 132
+        x: 180
+        y: 844
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_2
       rect:
         serializedVersion: 2
-        x: 323
-        y: 885
-        width: 139
-        height: 134
+        x: 360
+        y: 844
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_3
       rect:
         serializedVersion: 2
-        x: 1
-        y: 728
-        width: 142
-        height: 138
+        x: 540
+        y: 844
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_4
       rect:
         serializedVersion: 2
-        x: 162
-        y: 727
-        width: 144
-        height: 139
+        x: 720
+        y: 844
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_5
       rect:
         serializedVersion: 2
-        x: 323
-        y: 725
-        width: 147
-        height: 143
+        x: 0
+        y: 664
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_6
       rect:
         serializedVersion: 2
-        x: 1
-        y: 569
-        width: 149
-        height: 144
+        x: 180
+        y: 664
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_7
       rect:
         serializedVersion: 2
-        x: 162
-        y: 567
-        width: 152
-        height: 147
+        x: 360
+        y: 664
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_8
       rect:
         serializedVersion: 2
-        x: 323
-        y: 566
-        width: 155
-        height: 148
+        x: 540
+        y: 664
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_9
       rect:
         serializedVersion: 2
-        x: 1
-        y: 410
-        width: 157
-        height: 151
+        x: 720
+        y: 664
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: IndexFillOut_10
       rect:
         serializedVersion: 2
-        x: 162
-        y: 408
-        width: 160
-        height: 154
+        x: 0
+        y: 484
+        width: 180
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillOut_11
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 484
+        width: 180
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillOut_12
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 484
+        width: 180
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillOut_13
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 484
+        width: 180
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillOut_14
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 484
+        width: 180
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IndexFillOut_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 304
+        width: 180
+        height: 180
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

@@ -190,6 +190,12 @@ namespace Assets.Scripts.Levels
             var playmode = GetDecorationPlaymodeByContext(context);
             currentDecorationsContext = context;
             Decorator.Play(playmode);
+            
+            if(context == DecorationsContext.Afterplay)
+                FireAction(LevelActionEvent.LevelActionType.AfterplayBegin);
+            else if (context == DecorationsContext.Preplay)
+                FireAction(LevelActionEvent.LevelActionType.PreplayBegin);
+
         }
 
 
@@ -419,7 +425,9 @@ namespace Assets.Scripts.Levels
                 LevelEnd,
                 PauseMenuOpen,
                 PauseMenuClosed,
-                LevelInitialized
+                LevelInitialized,
+                PreplayBegin,
+                AfterplayBegin
             }
 
             public LevelActionType Type { get; private set; }
@@ -517,6 +525,10 @@ namespace Assets.Scripts.Levels
             
         }
 
+        public void Exit()
+        {
+            Application.LoadLevel("GUI");
+        }
 
         public void ShowPauseMenu()
         {
@@ -548,7 +560,16 @@ namespace Assets.Scripts.Levels
 
             if (currentLevelResultsUI.GetComponent<UIColored>() != null)
             {
-                currentLevelResultsUI.GetComponent<UIColored>().Color = StyleProvider.Main.GetStyle().GetFrontColor();
+                var styleProvider = StyleProvider.Main;
+                if(styleProvider != null)
+                {
+                    var style = styleProvider.GetStyle();
+                    if (style != null)
+                    {
+                        currentLevelResultsUI.GetComponent<UIColored>().Color = style.GetFrontColor();
+                    }
+                }
+
             }
 
             currentLevelResultsUI.Level = this;
@@ -620,6 +641,7 @@ namespace Assets.Scripts.Levels
 
         private void OnAfterplayEnd()
         {
+            HideLevel();
             FireAction(LevelActionEvent.LevelActionType.LevelEnd);
             OpenResultsMenu(new LevelResultsUIModel());
         }

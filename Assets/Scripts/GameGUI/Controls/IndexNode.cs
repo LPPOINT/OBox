@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.GameGUI
+namespace Assets.Scripts.GameGUI.Controls
 {
     public class IndexNode : MonoBehaviour
     {
-        private const string IdleMinAnimation = "IdleMin";
-        private const string IdleMaxAnimation = "IdleMax";
+        private const string IdleMinAnimation = "IndexNodeMinimized";
+        private const string IdleMaxAnimation = "IndexNode";
 
-        private const string FillInAnimation = "FillIn";
-        private const string FillOutAnimation = "FillOut";
+        private const string FillInAnimation = "IndexNodeMinimize";
+        private const string FillOutAnimation = "IndexNodeMaximize";
 
 
         private void Start()

@@ -39,6 +39,23 @@ namespace Assets.Scripts.Levels
             }
         }
 
+
+        /// <summary>
+        /// Вызывается при начале воспроизведения начальных декораций
+        /// </summary>
+        protected virtual void OnPreplayBegin()
+        {
+            
+        }
+
+        /// <summary>
+        /// Вызывается при начале воспроизведения конечных декораций
+        /// </summary>
+        protected virtual void OnAfterplayBegin()
+        {
+            
+        }
+
         /// <summary>
         /// Вызывается при перезагрузке уровня
         /// </summary>
@@ -244,6 +261,12 @@ namespace Assets.Scripts.Levels
                         break;
                     case Level.LevelActionEvent.LevelActionType.PauseMenuClosed:
                         OnPauseMenuClosed();
+                        break;
+                    case Level.LevelActionEvent.LevelActionType.AfterplayBegin:
+                        OnAfterplayBegin();
+                        break;
+                    case Level.LevelActionEvent.LevelActionType.PreplayBegin:
+                        OnPreplayBegin();
                         break;
                 }
                 OnLevelAction(ae.Type);

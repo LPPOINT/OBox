@@ -12,7 +12,7 @@ namespace Assets.Scripts.GameGUI
 
         public void OnPlayClick()
         {
-            Supervisor.OpenLevel(1, WorldNumber.World1);
+            Supervisor.OpenPage(GUIPageType.LevelSelection);
         }
 
         public void OnShopClick()
