@@ -2,10 +2,9 @@
 {
     public enum  LevelStatus
     {
-        NoStars,
-        OneStar,
-        TwoStar,
-        ThreeStar,
-        NotCompleted
+        OneStar = 3,
+        TwoStar = 2,
+        ThreeStar = 1,
+        NotCompleted = 0
     }
 }

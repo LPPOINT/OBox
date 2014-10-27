@@ -76,7 +76,7 @@ namespace Assets.Scripts.Levels
         }
 
         [SerializeField]
-        public LevelName Index;
+        public LevelIndex Index;
 
         #region Level core components 
         public LevelMission Mission { get; private set; }

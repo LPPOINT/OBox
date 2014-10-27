@@ -117,7 +117,7 @@ namespace Assets.Scripts.GameGUI
         }
         public void OpenLevel(int levelNumber, WorldNumber worldNumber, GUITranslation translation, bool openBuildLevel = false)
         {
-            var levelPath = LevelName.GetScenePath(levelNumber, worldNumber, false, openBuildLevel);
+            var levelPath = LevelIndex.GetScenePath(levelNumber, worldNumber, false, openBuildLevel);
             OpenLevel(levelPath, translation);
         }
 

@@ -74,5 +74,21 @@ namespace Assets.Scripts.GameGUI
             return new GUILevelIconModel(IconType.CompletedLevel, levelNumber, stars);
         }
 
+        public static GUILevelIconModel CreateFromGameModel(int levelNumber, WorldNumber worldNumber,
+            GameModel gameModel)
+        {
+            var status = gameModel.GetLevelStatus((LevelNumber)levelNumber, worldNumber);
+
+            if (status == LevelStatus.NotCompleted)
+            {
+                return gameModel.IsCurrentLevel((LevelNumber) levelNumber, worldNumber) ? CurrentLevelModel(levelNumber) : LockedLevelModel();
+            }
+            else
+            {
+                return CompletedLevelModel(levelNumber,  GameModel.GetStarsCountByLevelStatus(status));
+            }
+            return null;
+        }
+
     }
 }
