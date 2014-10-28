@@ -1,4 +1,6 @@
-﻿namespace Assets.Scripts.Model
+﻿using Assets.Scripts.Model.Numeration;
+
+namespace Assets.Scripts.Model.Constants
 {
     public static class Prices
     {

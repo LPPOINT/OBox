@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Assets.Scripts.Levels;
+using Assets.Scripts.Model.Constants;
+using Assets.Scripts.Model.Numeration;
+using Assets.Scripts.Model.Statuses;
+using Assets.Scripts.Model.Storage;
 using UnityEngine;
 
 namespace Assets.Scripts.Model
@@ -12,24 +16,56 @@ namespace Assets.Scripts.Model
         {
             get { return Instance != null; }
         }
-        public static GameModel Instance { get; private set; }
-        public static void Create()
-        {
-            if(Instance != null)
-                return;
 
-            Instance = new GameModel();
+        private static GameModel instance;
+        public static GameModel Instance
+        {
+            get
+            {
+                if(instance == null)
+                    Create();
+                return instance;
+            }
         }
 
-        public GameModel()
+        public static void Create()
         {
+            Create(!CustomStorage.IsExist ? new FullUnlockedModelStorage() : CustomStorage.Instance.Storage);
+        }
+
+        public static void Create(IModelStorage storage)
+        {
+            instance = new GameModel(storage);
+        }
+
+        public IModelStorage ModelStorage { get; private set; }
+
+        public GameModel(IModelStorage modelStorage)
+        {
+            ModelStorage = modelStorage;
             InvalidateStars();
+            ModelStorage.RegisterGameSession();
+
+            if (IsFirstLaunch)
+            {
+                ProcessFirstLaunch();
+            }
+            else
+            {
+                ProcessLaunch();
+            }
+        }
+
+        public GameModel() : this(new PlayerPrefsStorage())
+        {
         }
 
         #region Constants
         public static int Worlds = Enum.GetValues(typeof(WorldNumber)).Length;
         public static int LevelsInWorld = Enum.GetValues(typeof(LevelNumber)).Length;
         public static int TotalLevels = Worlds*LevelsInWorld;
+
+
         #endregion
 
         #region Current level info
@@ -50,6 +86,12 @@ namespace Assets.Scripts.Model
         {
             return IsCurrentLevel(index.LevelNumber, index.WorldNumber);
         }
+
+        public void SaveCurrentLevelIndex()
+        {
+            ModelStorage.SetCurrentWorld(CurrentWorld);
+            ModelStorage.SetCurrentLevel((int)CurrentLevel, CurrentWorld);
+        }
         #endregion
 
         #region Game progress processing
@@ -64,6 +106,7 @@ namespace Assets.Scripts.Model
             {
                 CurrentLevel++;
             }
+            SaveCurrentLevelIndex();
         }
 
         public void RegisterCurrentLevelResults(StarsCount stars)
@@ -177,6 +220,7 @@ namespace Assets.Scripts.Model
         {
             if(ModelStorage.GetWorldStatus(worldNumber) == WorldStatus.Locked)
                 ModelStorage.SetWorldStatus(worldNumber, WorldStatus.Unlocked);
+            SaveCurrentLevelIndex();
         }
 
         public void RegisterWorldUnlockAndAllInnerLevels(WorldNumber worldNumber)
@@ -242,11 +286,16 @@ namespace Assets.Scripts.Model
             ModelStorage.SetSkipsCount(SkipsCount + value);
         }
 
+        public void SetSkips(int value)
+        {
+            ModelStorage.SetSkipsCount(value);
+        }
+
         #endregion
 
         #region Enumerators
 
-        public IEnumerable<WorldNumber> EnumerateWorlds()
+        public static IEnumerable<WorldNumber> EnumerateWorlds()
         {
             yield return WorldNumber.World1;
             yield return WorldNumber.World2;
@@ -255,7 +304,7 @@ namespace Assets.Scripts.Model
             yield return WorldNumber.World5;
         }
 
-        public IEnumerable<LevelNumber> EnumerateLevels()
+        public static IEnumerable<LevelNumber> EnumerateLevels()
         {
             var names = Enum.GetNames(typeof (LevelNumber));
             for (var i = 0; i < names.Length; i++)
@@ -264,7 +313,7 @@ namespace Assets.Scripts.Model
             }
         }
 
-        public IEnumerable<WorldStatus> EnumerateWorldsStatuses()
+        public  IEnumerable<WorldStatus> EnumerateWorldsStatuses()
         {
             foreach (var w in EnumerateWorlds())
             {
@@ -272,7 +321,7 @@ namespace Assets.Scripts.Model
             }
         }
 
-        public IEnumerable<LevelStatus> EnumerateLevelsStatuses()
+        public  IEnumerable<LevelStatus> EnumerateLevelsStatuses()
         {
             foreach (var w in EnumerateWorlds())
             {
@@ -282,6 +331,34 @@ namespace Assets.Scripts.Model
                     yield return GetLevelStatus(l, w);
                 }
             }
+        }
+
+        #endregion
+
+        #region launch management
+        public bool IsFirstLaunch
+        {
+            get { return !ModelStorage.IsLatestGameSessionExist; }
+        }
+
+        private void ProcessFirstLaunch()
+        {
+            SetSkips(StartValues.StartSkips);
+            RegisterWorldUnlock(WorldNumber.World1);
+            CurrentLevel = LevelNumber.Level1;
+            CurrentWorld = WorldNumber.World1;
+            SaveCurrentLevelIndex();
+        }
+
+        private void ProcessLaunch()
+        {
+            CurrentWorld = ModelStorage.GetCurrentWorld();
+            CurrentLevel = (LevelNumber)ModelStorage.GetCurrentLevel(CurrentWorld);
+        }
+
+        public void UnregisterAllSessions()
+        {
+            ModelStorage.UnregisterAllSessions();
         }
 
         #endregion

@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.Model
+﻿namespace Assets.Scripts.Model.Statuses
 {
     public enum  LevelStatus
     {

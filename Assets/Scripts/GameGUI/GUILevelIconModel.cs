@@ -1,5 +1,8 @@
 ﻿using System;
+using Assets.Scripts.Levels;
 using Assets.Scripts.Model;
+using Assets.Scripts.Model.Numeration;
+using Assets.Scripts.Model.Statuses;
 
 namespace Assets.Scripts.GameGUI
 {

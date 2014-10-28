@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Model;
+using Assets.Scripts.Model.Numeration;
 
 namespace Assets.Scripts.GameGUI
 {
@@ -18,11 +19,13 @@ namespace Assets.Scripts.GameGUI
 
         private void Start()
         {
-            foreach (var i in transform.GetComponentsInChildren<GUILevelIcon>())
+            for (var i = 0; i < transform.GetComponentsInChildren<GUILevelIcon>().Length; i++)
             {
-                i.Page = this;
+                var icon = transform.GetComponentsInChildren<GUILevelIcon>()[i];
+                icon.Page = this;
+                icon.Model = GUILevelIconModel.CreateFromGameModel(i+1, World, GameModel.Instance);
+                icon.VisualizeByModel();
             }
         }
-
     }
 }

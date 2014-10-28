@@ -1,0 +1,148 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Assets.Scripts.Levels;
+using Assets.Scripts.Model.Numeration;
+using Assets.Scripts.Model.Statuses;
+
+namespace Assets.Scripts.Model.Storage
+{
+    public class RAMModelStorage : IModelStorage
+    {
+
+        private readonly Dictionary<LevelIndex, LevelStatus> levelStatuses = new Dictionary<LevelIndex, LevelStatus>();
+        private readonly Dictionary<WorldNumber, WorldStatus> worldStatuses = new Dictionary<WorldNumber, WorldStatus>();
+        private int Skips = 0;
+        private DateTime currentSessionTime;
+        private readonly Dictionary<WorldNumber, int> currentLevels = new Dictionary<WorldNumber, int>();
+        private WorldNumber currentWorld;
+
+        public LevelStatus GetLevelStatus(int levelNumber, WorldNumber worldNumber)
+        {
+            try
+            {
+                return
+                    levelStatuses.FirstOrDefault(
+                        pair => pair.Key.LevelNumber == (LevelNumber) levelNumber && pair.Key.WorldNumber == worldNumber)
+                        .Value;
+            }
+            catch 
+            {
+                return LevelStatus.NotCompleted;
+            }
+        }
+
+        public void SetLevelStatus(int levelNumber, WorldNumber worldNumber, LevelStatus status)
+        {
+            var index = new LevelIndex(levelNumber, worldNumber);
+            if (levelStatuses.ContainsKey(index))
+            {
+                levelStatuses[index] = status;
+            }
+            levelStatuses.Add(index, status);
+        }
+
+        public int GetSkipsCount()
+        {
+            return Skips;
+        }
+
+        public void SetSkipsCount(int count)
+        {
+            Skips = count;
+        }
+
+        public void SetCurrentLevel(int level, WorldNumber targetWorldNumber)
+        {
+            if (!currentLevels.ContainsKey(targetWorldNumber))
+            {
+                currentLevels.Add(targetWorldNumber, level);
+            }
+            else
+            {
+                currentLevels[targetWorldNumber] = level;
+            }
+        }
+
+        public int GetCurrentLevel(WorldNumber targetWorldNumber)
+        {
+            try
+            {
+                return (int) currentLevels[targetWorldNumber];
+            }
+            catch
+            {
+                return 1;
+            }
+        }
+
+        public void SetCurrentWorld(WorldNumber worldNumber)
+        {
+            currentWorld = worldNumber;
+        }
+
+        public WorldNumber GetCurrentWorld()
+        {
+            return currentWorld;
+        }
+
+        public void SetWorldStatus(WorldNumber worldNumber, WorldStatus status)
+        {
+            if(worldStatuses.ContainsKey(worldNumber)) worldStatuses.Add(worldNumber, status);
+            else worldStatuses.Add(worldNumber, status);
+        }
+
+        public WorldStatus GetWorldStatus(WorldNumber worldNumber)
+        {
+            try
+            {
+                return worldStatuses[worldNumber];
+            }
+            catch 
+            {
+                return WorldStatus.Locked;
+            }
+        }
+
+        public void Save()
+        {
+            
+        }
+
+        public void Clear()
+        {
+            levelStatuses.Clear();
+            worldStatuses.Clear();
+            currentWorld = WorldNumber.World1;
+            currentLevels.Clear();
+        }
+
+        public void RegisterGameSession(DateTime sessionStartTime)
+        {
+            currentSessionTime = sessionStartTime;
+        }
+
+        public void RegisterGameSession()
+        {
+            RegisterGameSession(DateTime.Now);
+        }
+
+        public void UnregisterAllSessions()
+        {
+            
+        }
+
+        public DateTime? GetCurrentGameSessionTime()
+        {
+            return currentSessionTime;
+        }
+
+        public DateTime? GetLatestGameSessionTime()
+        {
+            return null;
+        }
+
+        public bool IsCurrentGameSessionExist { get { return currentSessionTime != null; } }
+        public bool IsLatestGameSessionExist { get { return false; } }
+    }
+}

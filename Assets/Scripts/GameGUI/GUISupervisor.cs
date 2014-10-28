@@ -2,6 +2,7 @@
 using System.Linq;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Model;
+using Assets.Scripts.Model.Numeration;
 using UnityEngine;
 using UnityEngine.UI;
 

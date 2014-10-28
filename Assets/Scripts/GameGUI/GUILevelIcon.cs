@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Assets.Scripts.Model;
+using Assets.Scripts.Model.Numeration;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -102,6 +103,7 @@ namespace Assets.Scripts.GameGUI
                 LockImage.gameObject.SetActive(true);
                 CurrentLevelText.gameObject.SetActive(false);
                 CompletedLevelText.gameObject.SetActive(false);
+                SetStarsVisibility(false);
             }
             else 
             {
