@@ -8,7 +8,6 @@ namespace Assets.Scripts.GameGUI.Controls
     public class SlidePanelNode : MonoBehaviour
     {
         public Graphic Graphic;
-        public string Name;
         public RectTransform ActivePosition;
 
         private void Start()
