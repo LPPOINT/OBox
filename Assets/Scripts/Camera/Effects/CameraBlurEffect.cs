@@ -102,15 +102,22 @@ namespace Assets.Scripts.Camera.Effects
                 "oncompletetarget", gameObject));
         }
 
+        public static void Create()
+        {
+            if(Instance != null) return;
+            var go = new GameObject("Blur");
+            Instance = go.AddComponent<CameraBlurEffect>();
+        }
+
         public static void BlurIn()
         {
-            if(Instance == null) return;
+            if(Instance == null) Create();
             Instance.Blur(0, Instance.FullBlurMaxSize, Instance.FullBlurInTime, Instance.FullBlurInEaseType, true);
         }
 
         public static void BlurOut()
         {
-            if (Instance == null) return;
+            if (Instance == null) Create();
             Instance.Blur(Instance.FullBlurMaxSize, 0, Instance.FullBlurOutTime, Instance.FullBlurOutEaseType, false);
         }
     }

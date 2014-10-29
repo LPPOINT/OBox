@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 4921ce4d469a3134998a9f7230fc5e22
+guid: c7a5b284f8ef6e645a6a9a2af936b9de
 TextureImporter:
   fileIDToRecycleName:
-    21300000: LSLevelIconBox
+    21300000: Box
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -37,7 +37,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: .5, y: .5}
-  spriteBorder: {x: 49, y: 65, z: 74, w: 51}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 8
