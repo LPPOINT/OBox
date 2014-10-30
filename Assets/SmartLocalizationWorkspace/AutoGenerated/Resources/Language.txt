@@ -149,4 +149,22 @@
 	<data name="MissionHelp.Target" xml:space="preserve">
 		<value>To complite level, slide block to target</value>
 	</data>
+	<data name="Worlds.Names.World1" xml:space="preserve">
+		<value>World 1 Name</value>
+	</data>
+	<data name="Worlds.Names.World2" xml:space="preserve">
+		<value>World 2 Name</value>
+	</data>
+	<data name="Worlds.Names.World3" xml:space="preserve">
+		<value>World 3 Name</value>
+	</data>
+	<data name="Worlds.Names.World4" xml:space="preserve">
+		<value>World 4 Name</value>
+	</data>
+	<data name="Worlds.Names.World5" xml:space="preserve">
+		<value>World 5 Name</value>
+	</data>
+	<data name="Worlds.WorldNumber" xml:space="preserve">
+		<value>World {0}</value>
+	</data>
 </root>

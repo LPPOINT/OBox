@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
+using Assets.Scripts.Model;
 using Assets.Scripts.Model.Numeration;
 using Assets.Scripts.Model.Statuses;
+using Debug = UnityEngine.Debug;
 
 namespace Assets.Scripts.GameGUI
 {
@@ -9,12 +11,26 @@ namespace Assets.Scripts.GameGUI
     public class GUIWorldModel
     {
         public WorldStatus Status;
-        public string Name;
-        public WorldNumber Number;
+        public GUIWorldData Data;
         public int CurrentStars;
-        public int TotalStars;
-        public List<GUIWorldFeature> Features;
-        
+
+        public static GUIWorldModel FromGameModel(GUIWorldData data, GameModel model)
+        {
+            var wm = new GUIWorldModel();
+
+            if (data == null)
+            {
+                Debug.Log("Data == null");
+                return null;
+            }
+
+            wm.Data = data;
+            wm.CurrentStars = 0;
+            wm.Status = model.GetWorldStatus(data.Number);
+
+            return wm;
+
+        }
 
     }
 }

@@ -23,7 +23,7 @@ public class SL_NGUILabel : MonoBehaviour
 	void Start () 
 	{
 		//Subscribe to the change language event
-		LanguageManager thisLanguageManager = LanguageManager.Instance;
+		LanguageManager thisLanguageManager = LanguageManager.Main;
 		thisLanguageManager.OnChangeLanguage += OnChangeLanguage;
 
 		OnChangeLanguage(thisLanguageManager);
@@ -32,12 +32,12 @@ public class SL_NGUILabel : MonoBehaviour
 	void OnDestroy()
 	{
 		if(LanguageManager.HasInstance)
-			LanguageManager.Instance.OnChangeLanguage -= OnChangeLanguage;
+			LanguageManager.Main.OnChangeLanguage -= OnChangeLanguage;
 	}
 	
 	void OnChangeLanguage(LanguageManager thisLanguageManager)
 	{
-		uiLabel.text = LanguageManager.Instance.GetTextValue(localizedKey);
+		uiLabel.text = LanguageManager.Main.GetTextValue(localizedKey);
 	}	
 }
 #endif
