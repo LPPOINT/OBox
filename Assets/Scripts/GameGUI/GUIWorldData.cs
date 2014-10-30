@@ -10,5 +10,10 @@ namespace Assets.Scripts.GameGUI
         public WorldNumber Number;
         public int StarsForUnlock;
         public List<GUIWorldFeature> Features;
+
+        public override string ToString()
+        {
+            return Number.ToString();
+        }
     }
 }

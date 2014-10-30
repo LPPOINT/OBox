@@ -14,6 +14,8 @@ namespace Assets.Scripts.GameGUI
 
         [SerializeField] public WorldNumber TargetWorld;
 
+        public GUIWorldSelectionPage Page { get; set; }
+
         public GUIWorldModel Model { get;  set; }
 
         public Text WorldNumber;
@@ -58,7 +60,7 @@ namespace Assets.Scripts.GameGUI
             }
             else if(Model.Status == WorldStatus.Locked)
             {
-                GUIWorldUnlockPopup.Show(Model);
+                Page.ShowWorldUnlockPopup(Model.Data, null);
             }
         }
 

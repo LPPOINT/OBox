@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +11,7 @@ namespace Assets.Scripts.GameGUI.Controls
     {
         public IndexPanel Index;
         public GameObject Movable;
+        public RectTransform InputArea;
 
         public List<SlidePanelNode> Nodes { get; private set; }
         public SlidePanelNode ActiveNode { get; private set; }
@@ -88,17 +91,54 @@ namespace Assets.Scripts.GameGUI.Controls
             ActiveNode = StartNode;
         }
 
-        private void Update()
+        private float TotalOffset;
+
+        private void Offset(float horizontalOffset)
         {
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            TotalOffset += horizontalOffset;
+            Movable.transform.position = new Vector3(Movable.transform.position.x + horizontalOffset, Movable.transform.position.y, Movable.transform.position.z);
+        }
+
+        private void OffsetDrop()
+        {
+            if (IsTranslationOffset(TotalOffset))
+            {
+                OffsetNext(TotalOffset);
+            }
+            else
+                OffsetNext(TotalOffset);
+
+            TotalOffset = 0;
+        }
+
+        private void OffsetNext(float offset)
+        {
+            if (offset > 0)
             {
                 Next();
             }
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            else
             {
                 Prev();
             }
+        }
 
+        private void OffsetBack(float offset)
+        {
+            
+        }
+
+
+        private bool IsTranslationOffset(float offset)
+        {
+            return Math.Abs(offset) >= InputArea.rect.width/3;
+        }
+
+        private bool inOffset = false;
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.RightArrow)) Next();
+            if(Input.GetKeyDown(KeyCode.LeftArrow)) Prev();
 
         }
 

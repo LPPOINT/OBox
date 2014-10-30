@@ -44,6 +44,8 @@ namespace Assets.Scripts.Model
         {
             ModelStorage = modelStorage;
             InvalidateStars();
+            ModelStorage.Clear();
+            UnregisterAllSessions();
             ModelStorage.RegisterGameSession();
 
             if (IsFirstLaunch)

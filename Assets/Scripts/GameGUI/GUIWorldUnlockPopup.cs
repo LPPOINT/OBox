@@ -7,27 +7,16 @@ namespace Assets.Scripts.GameGUI
 {
     public class GUIWorldUnlockPopup : MonoBehaviour
     {
+
         public static GUIWorldUnlockPopup Current { get; private set; }
 
-        public static void Show(GUIWorldModel model)
+        public GUIWorldData Data;
+        public IGUIWorldUnlockHandler UnlockHandler;
+
+        private void Start()
         {
-            CloseIfExist();
-            var go = new GameObject("WorldUnlockPopup");
-            Current = go.AddComponent<GUIWorldUnlockPopup>();
-            Current.Model = model;
+            Current = this;
         }
-
-        public static void CloseIfExist()
-        {
-            if (Current != null)
-            {
-                Current.CloseWithoutBlur();
-                Current = null;
-            }
-        }
-
-
-        public GUIWorldModel Model;
 
         public void Close()
         {
@@ -35,19 +24,6 @@ namespace Assets.Scripts.GameGUI
             Destroy(gameObject);
         }
 
-        private void CloseWithoutBlur()
-        {
-            Destroy(gameObject);
-        }
-
-        private IEnumerator Start()
-        {
-            var canvas = GetComponent<Canvas>();
-            canvas.enabled = false;
-            CameraBlurEffect.BlurIn();
-            yield return new WaitForSeconds(0.3f);
-            canvas.enabled = true;
-        }
 
     }
 }

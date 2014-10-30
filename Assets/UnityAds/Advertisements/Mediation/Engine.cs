@@ -113,10 +113,7 @@ namespace UnityEngine.Advertisements {
 
       if(options != null) {
         if(options.pause) {
-          EventHandler showHandler = (object sender, EventArgs e) => {
-            PauseGame();
-            adapter.Unsubscribe(Adapter.EventType.adWillOpen, showHandler);
-          };
+          EventHandler showHandler = null;
           adapter.Subscribe(Adapter.EventType.adWillOpen, showHandler);
         }
 

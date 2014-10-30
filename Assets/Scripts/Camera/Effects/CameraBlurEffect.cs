@@ -105,8 +105,7 @@ namespace Assets.Scripts.Camera.Effects
         public static void Create()
         {
             if(Instance != null) return;
-            var go = new GameObject("Blur");
-            Instance = go.AddComponent<CameraBlurEffect>();
+           Instance = UnityEngine.Camera.main.gameObject.AddComponent<CameraBlurEffect>();
         }
 
         public static void BlurIn()
