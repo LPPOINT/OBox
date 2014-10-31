@@ -12,11 +12,12 @@ namespace Assets.Scripts.GameGUI
 
         private static void EstablishData(GUIWorldData data)
         {
-            foreach (var f in data.Features)
+            for (int i = 0; i < data.Features.Count; i++)
             {
+                var f = data.Features[i];
                 if (string.IsNullOrEmpty(f.Description))
                 {
-                    f.Description = "Worlds.Feature.World" + (int)data.Number;
+                    f.Description = "Worlds.Feature.World" + (int) data.Number + "." + (i + 1);
                 }
             }
         }

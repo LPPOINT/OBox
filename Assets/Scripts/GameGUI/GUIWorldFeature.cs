@@ -9,5 +9,8 @@ namespace Assets.Scripts.GameGUI
     {
         public string Description;
         public Sprite Image;
+
+
+
     }
 }

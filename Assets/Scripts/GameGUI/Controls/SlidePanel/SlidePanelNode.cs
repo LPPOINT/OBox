@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.GameGUI.Controls
+namespace Assets.Scripts.GameGUI.Controls.SlidePanel
 {
 
     [ExecuteInEditMode]
@@ -9,6 +9,8 @@ namespace Assets.Scripts.GameGUI.Controls
     {
         public Graphic Graphic;
         public RectTransform ActivePosition;
+
+        public bool IsSelected { get; set; }
 
         private void Start()
         {

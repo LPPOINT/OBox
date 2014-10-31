@@ -149,6 +149,24 @@
 	<data name="MissionHelp.Target" xml:space="preserve">
 		<value>To complite level, slide block to target</value>
 	</data>
+	<data name="Worlds.Feature.Title" xml:space="preserve">
+		<value>In this level</value>
+	</data>
+	<data name="Worlds.Feature.World1.1" xml:space="preserve">
+		<value>Feature of world 1</value>
+	</data>
+	<data name="Worlds.Feature.World2.1" xml:space="preserve">
+		<value>Feature of world 2</value>
+	</data>
+	<data name="Worlds.Feature.World3.1" xml:space="preserve">
+		<value>Feature of world 3</value>
+	</data>
+	<data name="Worlds.Feature.World4.1" xml:space="preserve">
+		<value>Feature of world 4</value>
+	</data>
+	<data name="Worlds.Feature.World5.1" xml:space="preserve">
+		<value>Feature of world 5</value>
+	</data>
 	<data name="Worlds.Names.World1" xml:space="preserve">
 		<value>World 1 Name</value>
 	</data>
@@ -164,7 +182,13 @@
 	<data name="Worlds.Names.World5" xml:space="preserve">
 		<value>World 5 Name</value>
 	</data>
+	<data name="Worlds.UnlockAll" xml:space="preserve">
+		<value>Unlock all worlds</value>
+	</data>
 	<data name="Worlds.WorldNumber" xml:space="preserve">
 		<value>World {0}</value>
+	</data>
+	<data name="Worlds.TapToUnlock" xml:space="preserve">
+		<value>Tap to unlock</value>
 	</data>
 </root>

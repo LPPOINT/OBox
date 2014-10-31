@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Camera.Effects;
+using Assets.Scripts.GameGUI.Controls.SlidePanel;
 using Assets.Scripts.Model;
 using Assets.Scripts.Model.Numeration;
+using Assets.Scripts.Model.Statuses;
 using UnityEngine;
 
 namespace Assets.Scripts.GameGUI
@@ -16,6 +18,8 @@ namespace Assets.Scripts.GameGUI
         }
 
         public GUIWorldUnlockPopup WorldUnlockPopupPrefab;
+        public SlidePanel WorldsSlider;
+        public GUIUnlockAllLevelsButton UnlockAllLevelsButton;
 
         public List<GUIWorld> Worlds;
 
@@ -32,6 +36,27 @@ namespace Assets.Scripts.GameGUI
                 world.Page = this;
                 world.VisualizeByModel();
             }
+
+            WorldsSlider.NodeChanged += (sender, args) =>
+                                        {
+                                            var w = args.CurrentNode.GetComponent<GUIWorld>();
+                                            if (w != null)
+                                            {
+                                                if (UnlockAllLevelsButton != null)
+                                                {
+                                                    if (w.Model.Status == WorldStatus.Locked &&
+                                                        !UnlockAllLevelsButton.IsVisible)
+                                                    {
+                                                        UnlockAllLevelsButton.Show();
+                                                    }
+                                                    else if (w.Model.Status == WorldStatus.Unlocked &&
+                                                             UnlockAllLevelsButton.IsVisible)
+                                                    {
+                                                        UnlockAllLevelsButton.Hide();
+                                                    }
+                                                }
+                                            }
+                                        };
 
         }
 

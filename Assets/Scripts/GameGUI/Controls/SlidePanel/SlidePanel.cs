@@ -1,21 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Assets.Scripts.GameGUI.Controls
+namespace Assets.Scripts.GameGUI.Controls.SlidePanel
 {
     public class SlidePanel : MonoBehaviour
     {
-        public IndexPanel Index;
+        public SlideIndexPanel SlideIndex;
         public GameObject Movable;
         public RectTransform InputArea;
 
         public List<SlidePanelNode> Nodes { get; private set; }
         public SlidePanelNode ActiveNode { get; private set; }
         public SlidePanelNode StartNode;
+
+        public class SlidePanelNodeChangedEventArgs : EventArgs
+        {
+            public SlidePanelNodeChangedEventArgs(SlidePanelNode prevNode, SlidePanelNode currentNode)
+            {
+                PrevNode = prevNode;
+                CurrentNode = currentNode;
+            }
+
+            public SlidePanelNode PrevNode { get; private set; }
+            public SlidePanelNode CurrentNode { get; private set; }
+        }
+
+        public event EventHandler<SlidePanelNodeChangedEventArgs> NodeChanged;
+
+        protected virtual void OnNodeChanged(SlidePanelNodeChangedEventArgs e)
+        {
+            var handler = NodeChanged;
+            if (handler != null) handler(this, e);
+        }
+
+        public void Add(GameObject obj)
+        {
+            
+        }
+
+        public void Remove(SlidePanelNode node)
+        {
+
+            Nodes.Remove(node);
+            
+        }
+
+        public int ActiveNodeIndex
+        {
+            get { return Nodes.IndexOf(ActiveNode); }
+        }
 
         public bool IsLocked { get; private set; }
 
@@ -36,7 +70,8 @@ namespace Assets.Scripts.GameGUI.Controls
 
         public void SetActiveNode(SlidePanelNode node, bool animated)
         {
-
+            var lastActive = ActiveNode;
+            ActiveNode.IsSelected = false;
             var lastX = ActiveNode.transform.position.x;
             ActiveNode = node;
             var activeX = ActiveNode.transform.position.x;
@@ -53,7 +88,8 @@ namespace Assets.Scripts.GameGUI.Controls
                             "onstart", "OnITweenSlideStart",
                             "onstarttarget", gameObject,
                             "easetype", iTween.EaseType.easeOutBack));
-
+            ActiveNode.IsSelected = true;
+            OnNodeChanged(new SlidePanelNodeChangedEventArgs(lastActive, ActiveNode));
 
         }
 
@@ -68,7 +104,7 @@ namespace Assets.Scripts.GameGUI.Controls
                 return;
 
             SetActiveNode(Nodes[currentIndex + 1], true);
-            if(Index != null) Index.Next();
+            if(SlideIndex != null) SlideIndex.Next();
         }
 
         public void Prev()
@@ -82,13 +118,14 @@ namespace Assets.Scripts.GameGUI.Controls
 
             SetActiveNode(Nodes[currentIndex - 1], true);
 
-            if (Index != null) Index.Prev();
+            if (SlideIndex != null) SlideIndex.Prev();
         }
 
-        private void Start()
+        private void Awake()
         {
             Nodes = new List<SlidePanelNode>(GetComponentsInChildren<SlidePanelNode>());
             ActiveNode = StartNode;
+            ActiveNode.IsSelected = true;
         }
 
         private float TotalOffset;
@@ -134,7 +171,6 @@ namespace Assets.Scripts.GameGUI.Controls
             return Math.Abs(offset) >= InputArea.rect.width/3;
         }
 
-        private bool inOffset = false;
         private void Update()
         {
             if(Input.GetKeyDown(KeyCode.RightArrow)) Next();

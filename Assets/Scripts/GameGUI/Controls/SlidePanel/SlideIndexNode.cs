@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.GameGUI.Controls
+namespace Assets.Scripts.GameGUI.Controls.SlidePanel
 {
-    public class IndexNode : MonoBehaviour
+    public class SlideIndexNode : MonoBehaviour
     {
         private const string IdleMinAnimation = "IndexNodeMinimized";
         private const string IdleMaxAnimation = "IndexNode";

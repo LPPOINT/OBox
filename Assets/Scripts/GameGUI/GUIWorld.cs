@@ -1,4 +1,6 @@
 ﻿
+using Assets.Scripts.GameGUI.Controls;
+using Assets.Scripts.GameGUI.Controls.SlidePanel;
 using Assets.Scripts.Model;
 using Assets.Scripts.Model.Numeration;
 using Assets.Scripts.Model.Statuses;
@@ -20,10 +22,14 @@ namespace Assets.Scripts.GameGUI
 
         public Text WorldNumber;
         public Text WorldName;
+
         public Image WorldIcon;
         public Image WorldLockedIcon;
+
         public Image StarsProgressIcon;
         public Text StarsProgress;
+        public Text TapToUnlock;
+
 
         public void VisualizeByModel()
         {
@@ -48,11 +54,39 @@ namespace Assets.Scripts.GameGUI
 
             StarsProgress.text = Model.CurrentStars + "/" + GameModel.LevelsInWorld*3;
 
+            if (Model.Status == WorldStatus.Locked)
+            {
+                WorldLockedIcon.gameObject.SetActive(true);
+                WorldIcon.gameObject.SetActive(false);
+
+                StarsProgressIcon.gameObject.SetActive(false);
+                StarsProgress.gameObject.SetActive(false);
+
+                TapToUnlock.gameObject.SetActive(true);
+            }
+            else
+            {
+                WorldLockedIcon.gameObject.SetActive(false);
+                WorldIcon.gameObject.SetActive(true);
+
+                StarsProgressIcon.gameObject.SetActive(true);
+                StarsProgress.gameObject.SetActive(true);
+
+                TapToUnlock.gameObject.SetActive(false);
+            }
+
         }
 
 
         public void OnClick()
         {
+
+            var node = GetComponent<SlidePanelNode>();
+            if (!node.IsSelected)
+            {
+                return;
+            }
+
             if (Model.Status == WorldStatus.Unlocked)
             {
                 GUISupervisor.Instance.OpenPage(GUIPageType.LevelSelection,

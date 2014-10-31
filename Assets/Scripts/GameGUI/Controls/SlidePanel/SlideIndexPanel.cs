@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Scripts.GameGUI.Controls
+namespace Assets.Scripts.GameGUI.Controls.SlidePanel
 {
 
 
     [ExecuteInEditMode]
-    public class IndexPanel : MonoBehaviour
+    public class SlideIndexPanel : MonoBehaviour
     {
 
         private IEnumerator Start()
         {
-            nodes = new List<IndexNode>(GetComponentsInChildren<IndexNode>());
+            nodes = new List<SlideIndexNode>(GetComponentsInChildren<SlideIndexNode>());
             TotalNodes = nodes.Count;
 
             yield return new WaitForEndOfFrame();
@@ -34,9 +34,9 @@ namespace Assets.Scripts.GameGUI.Controls
 
         public int FirstSelected;
 
-        private List<IndexNode> nodes; 
+        private List<SlideIndexNode> nodes; 
 
-        public IndexNode GetNodeByNumber(int number)
+        public SlideIndexNode GetNodeByNumber(int number)
         {
             return nodes[number];
         }
@@ -63,7 +63,7 @@ namespace Assets.Scripts.GameGUI.Controls
             {
                 if (i != currentMax)
                 {
-                    if (nodes[i].CurrentState == IndexNode.IndexNodeState.Max)
+                    if (nodes[i].CurrentState == SlideIndexNode.IndexNodeState.Max)
                     {
                         nodes[i].SetMin();
                     }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.GameGUI
+namespace Assets.Scripts.GameGUI.Common
 {
     public class OpenPageOnClick : MonoBehaviour
     {
