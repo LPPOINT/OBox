@@ -16,7 +16,7 @@ namespace Assets.Scripts.GameGUI.Controls.SlidePanel
 
         private void CheckVisibility()
         {
-            if (SlidePanel.ActiveNodeIndex == 0)
+            if (SlidePanel.ActiveNodeIndex == 0 )
             {
                 Prev.gameObject.SetActive(false);
             }

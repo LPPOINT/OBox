@@ -81,7 +81,13 @@ namespace Assets.Scripts.Model
         public WorldNumber CurrentWorld { get; private set; }
         public bool IsCurrentLevel(LevelNumber levelNumber, WorldNumber worldNumber)
         {
-            return CurrentLevelIndex.LevelNumber == levelNumber && CurrentLevelIndex.WorldNumber == worldNumber;
+            if (CurrentWorld == worldNumber)
+            {
+                return CurrentLevelIndex.LevelNumber == levelNumber && CurrentLevelIndex.WorldNumber == worldNumber;
+            }
+            if (levelNumber == LevelNumber.Level1) return true;
+            if(GetLevelStatus(levelNumber, worldNumber) == LevelStatus.NotCompleted && GetLevelStatus(levelNumber-1, worldNumber) != LevelStatus.NotCompleted) return true;
+            return false;
         }
         public bool IsCurrentLevel(LevelIndex index)
         {

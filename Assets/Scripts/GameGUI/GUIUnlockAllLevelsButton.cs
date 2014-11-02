@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Model.Unlocks;
+using UnityEngine;
 
 namespace Assets.Scripts.GameGUI
 {
@@ -26,7 +27,8 @@ namespace Assets.Scripts.GameGUI
 
         public void OnClick()
         {
-            Debug.Log("GUIUnlockAllLevelsButton OnClick()");
+            WorldUnlockHandler.UnlockAllWorlds();
+            GUIPage.Find<GUIWorldSelectionPage>().UpdateAllWorldsNodes();
         }
     }
 }

@@ -149,6 +149,12 @@
 	<data name="MissionHelp.Target" xml:space="preserve">
 		<value>To complite level, slide block to target</value>
 	</data>
+	<data name="Worlds.Feature.CancelUnlock" xml:space="preserve">
+		<value>Cancel</value>
+	</data>
+	<data name="Worlds.Feature.PerformUnlock" xml:space="preserve">
+		<value>Unlock for {0}</value>
+	</data>
 	<data name="Worlds.Feature.Title" xml:space="preserve">
 		<value>In this level</value>
 	</data>

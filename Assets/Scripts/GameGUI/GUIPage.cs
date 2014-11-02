@@ -40,5 +40,9 @@ namespace Assets.Scripts.GameGUI
             
         }
 
+        public static T Find<T>() where T : GUIPage
+        {
+            return FindObjectOfType<T>();
+        }
     }
 }

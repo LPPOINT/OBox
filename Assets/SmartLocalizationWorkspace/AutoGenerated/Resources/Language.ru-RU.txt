@@ -120,52 +120,58 @@
 		<value>xvideos.com</value>
 	</data>
 	<data name="Loading.Cutaway2" xml:space="preserve">
-		<value>Shoot</value>
+		<value>Купи</value>
 	</data>
 	<data name="Loading.Cutaway3" xml:space="preserve">
-		<value>Fuck</value>
+		<value>Расскажи друзьям</value>
 	</data>
 	<data name="Loading.Cutaway4" xml:space="preserve">
-		<value>Kill</value>
+		<value>Это весело</value>
 	</data>
 	<data name="Loading.Cutaway5" xml:space="preserve">
-		<value>Die</value>
+		<value>Играй</value>
 	</data>
 	<data name="Loading.Cutaway6" xml:space="preserve">
-		<value>Life</value>
+		<value>Поделись</value>
 	</data>
 	<data name="Loading.Cutaway7" xml:space="preserve">
-		<value>Play</value>
+		<value>Думай</value>
 	</data>
 	<data name="Loading.Cutaway8" xml:space="preserve">
-		<value>Wait</value>
+		<value>Ты победитель</value>
 	</data>
 	<data name="Loading.Cutaway9" xml:space="preserve">
-		<value>Jesus</value>
+		<value>Иисус</value>
 	</data>
 	<data name="Loading.Loading" xml:space="preserve">
-		<value>Loading...</value>
+		<value>Загрузка</value>
 	</data>
 	<data name="MissionHelp.Target" xml:space="preserve">
-		<value>To complite level, slide block to target</value>
+		<value>Чтобы пройти уровень, достигни цели</value>
+	</data>
+	<data name="Worlds.Feature.CancelUnlock" xml:space="preserve">
+		<value>Отмена</value>
+	</data>
+	<data name="Worlds.Feature.PerformUnlock" xml:space="preserve">
+		<value>Разблокировать за {0}</value>
 	</data>
 	<data name="Worlds.Feature.Title" xml:space="preserve">
 		<value>В этом уровне:</value>
 	</data>
 	<data name="Worlds.Feature.World1.1" xml:space="preserve">
-		<value>Feature of world 1</value>
+		<value>Кое-что, что будет в этом мире</value>
 	</data>
 	<data name="Worlds.Feature.World2.1" xml:space="preserve">
-		<value>Feature of world 2</value>
+		<value>Кое-что, что будет в этом мире</value>
 	</data>
 	<data name="Worlds.Feature.World3.1" xml:space="preserve">
-		<value>Feature of world 3</value>
+		<value>Кое-что, что будет в этом мире</value>
 	</data>
 	<data name="Worlds.Feature.World4.1" xml:space="preserve">
-		<value>Feature of world 4</value>
+		<value>Кое-что, что будет в этом мире</value>
 	</data>
 	<data name="Worlds.Feature.World5.1" xml:space="preserve">
-		<value>Feature of world 5</value>
+		<value>Кое-что, что будет в этом мире</value>
 	</data>
 	<data name="Worlds.Names.World1" xml:space="preserve">
 		<value>Обучение</value>

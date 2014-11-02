@@ -4,6 +4,7 @@ using Assets.Scripts.GameGUI.Controls.SlidePanel;
 using Assets.Scripts.Model;
 using Assets.Scripts.Model.Numeration;
 using Assets.Scripts.Model.Statuses;
+using Assets.Scripts.Model.Unlocks;
 using SmartLocalization;
 using UnityEngine;
 using UnityEngine.UI;
@@ -94,7 +95,7 @@ namespace Assets.Scripts.GameGUI
             }
             else if(Model.Status == WorldStatus.Locked)
             {
-                Page.ShowWorldUnlockPopup(Model.Data, null);
+                Page.ShowWorldUnlockPopup(Model.Data, new WorldUnlockHandler());
             }
         }
 

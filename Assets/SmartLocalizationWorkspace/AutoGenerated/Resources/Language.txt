@@ -182,13 +182,19 @@
 	<data name="Worlds.Names.World5" xml:space="preserve">
 		<value>World 5 Name</value>
 	</data>
+	<data name="Worlds.TapToUnlock" xml:space="preserve">
+		<value>Tap to unlock</value>
+	</data>
 	<data name="Worlds.UnlockAll" xml:space="preserve">
 		<value>Unlock all worlds</value>
 	</data>
 	<data name="Worlds.WorldNumber" xml:space="preserve">
 		<value>World {0}</value>
 	</data>
-	<data name="Worlds.TapToUnlock" xml:space="preserve">
-		<value>Tap to unlock</value>
+	<data name="Worlds.Feature.PerformUnlock" xml:space="preserve">
+		<value>Unlock for {0}</value>
+	</data>
+	<data name="Worlds.Feature.CancelUnlock" xml:space="preserve">
+		<value>Cancel</value>
 	</data>
 </root>

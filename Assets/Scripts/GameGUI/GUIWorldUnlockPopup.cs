@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.Camera.Effects;
 using Assets.Scripts.GameGUI.Controls.SlidePanel;
+using Assets.Scripts.Model.Unlocks;
 using SmartLocalization;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,55 +18,49 @@ namespace Assets.Scripts.GameGUI
         public SlidePanel FeatureSlider;
 
         public GUIWorldData Data;
-        public IGUIWorldUnlockHandler UnlockHandler;
+        public IWorldUnlockHandler UnlockHandler;
 
         private void SetupFeatureSlider()
         {
             var features = Data.Features;
             var featuresCount = features.Count;
             var featureNodes = FeatureSlider.Nodes;
-            var cutPosition = -1;
+            var isCuttings = false;
 
             for (var i = 0; i < featureNodes.Count; i++)
             {
                 if (i + 1 > featuresCount)
                 {
-                    cutPosition = i;
-                    break;
+                    isCuttings = true;
                 }
 
-                var feature = features[i];
-                var node = featureNodes[i];
-
-                var localizedText = LanguageManager.Instance.GetTextValue(feature.Description);
-                var image = feature.Image;
-
-                var targetImage = node.transform.FindChild("Image");
-                var targetText = node.transform.FindChild("Text");
-
-                targetImage.GetComponent<Image>().sprite = image;
-                targetText.GetComponent<Text>().text = localizedText;
-            }
-
-            try
-            {
-                if (cutPosition != -1)
+                if (!isCuttings)
                 {
-                    for (var i = cutPosition; i < featureNodes.Count; i++)
-                    {
+                    var feature = features[i];
+                    var node = featureNodes[i];
 
-                        Destroy(featureNodes[i].gameObject);
-                        //FeatureSlider.Remove(featureNodes[i]);
-                        FeatureSlider.Check();
-                    }
+                    var localizedText = LanguageManager.Instance.GetTextValue(feature.Description);
+                    var image = feature.Image;
 
+                    var targetImage = node.transform.FindChild("Image");
+                    var targetText = node.transform.FindChild("Text");
+
+                    targetImage.GetComponent<Image>().sprite = image;
+                    targetText.GetComponent<Text>().text = localizedText;
+                }
+                else
+                {
+                    
+                    featureNodes[i].gameObject.SetActive(false);
+                    FeatureSlider.Disable(featureNodes[i]);
+                    FeatureSlider.Check();
                 }
             }
-            catch (Exception e)
-            {
-                Debug.LogWarning("Error while cutting extra nodes");
-            }
+
+       
         }
+
+
 
         private void Start()
         {
@@ -75,13 +70,17 @@ namespace Assets.Scripts.GameGUI
 
         public void Unlock()
         {
-            
+            UnlockHandler.OnUnlockPerformed(new SingleWorldUnlockContext(Data.Number));
+            GUIPage.Find<GUIWorldSelectionPage>().UpdateWorldNode(Data.Number);
+            CameraBlurEffect.BlurOut();
+            Destroy(gameObject);
         }
 
         public void Close()
         {
             CameraBlurEffect.BlurOut();
             Destroy(gameObject);
+            UnlockHandler.OnUnlockCanceled();
         }
 
 

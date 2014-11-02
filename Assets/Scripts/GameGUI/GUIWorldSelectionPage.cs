@@ -6,6 +6,7 @@ using Assets.Scripts.GameGUI.Controls.SlidePanel;
 using Assets.Scripts.Model;
 using Assets.Scripts.Model.Numeration;
 using Assets.Scripts.Model.Statuses;
+using Assets.Scripts.Model.Unlocks;
 using UnityEngine;
 
 namespace Assets.Scripts.GameGUI
@@ -60,12 +61,12 @@ namespace Assets.Scripts.GameGUI
 
         }
 
-        public void ShowWorldUnlockPopup(GUIWorldData worldData, IGUIWorldUnlockHandler unlockHandler)
+        public void ShowWorldUnlockPopup(GUIWorldData worldData, IWorldUnlockHandler unlockHandler)
         {
             StartCoroutine(WaitAndShowPopup(0.3f, worldData, unlockHandler));
         }
 
-        private IEnumerator WaitAndShowPopup(float waitTime, GUIWorldData worldData, IGUIWorldUnlockHandler unlockHandler)
+        private IEnumerator WaitAndShowPopup(float waitTime, GUIWorldData worldData, IWorldUnlockHandler unlockHandler)
         {
             CameraBlurEffect.BlurIn();
             yield return new WaitForSeconds(waitTime);
@@ -81,5 +82,23 @@ namespace Assets.Scripts.GameGUI
             GUIWorldUnlockPopup.Current.Close();
         }
 
+        public void UpdateWorldNode(WorldNumber number)
+        {
+            var w = Worlds.FirstOrDefault(world => world.Model.Data.Number == number);
+            if (w != null)
+            {
+                w.Model = GUIWorldModel.FromGameModel(w.Model.Data, GameModel.Instance);
+                w.VisualizeByModel();
+            }
+
+        }
+
+        public void UpdateAllWorldsNodes()
+        {
+            foreach (var w in GameModel.EnumerateWorlds())
+            {
+                UpdateWorldNode(w);
+            }
+        }
     }
 }

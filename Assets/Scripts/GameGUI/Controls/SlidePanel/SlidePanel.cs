@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Advertisements;
 
 namespace Assets.Scripts.GameGUI.Controls.SlidePanel
 {
@@ -46,16 +47,33 @@ namespace Assets.Scripts.GameGUI.Controls.SlidePanel
             
         }
 
+        private readonly List<SlidePanelNode> disabledNodes = new List<SlidePanelNode>(); 
+
+        public void Disable(SlidePanelNode node)
+        {
+            disabledNodes.Add(node);
+        }
+
+        public void Enable(SlidePanelNode node)
+        {
+            disabledNodes.Remove(node);
+        }
+
+        public bool IsDisabled(SlidePanelNode node)
+        {
+            return disabledNodes.Contains(node);
+        }
+
+        public bool IsDisabled(int index)
+        {
+            var node = GetNodeByIndex(index);
+            if (node == null) return false;
+            return IsDisabled(node);
+        }
+
         public void Check()
         {
-            for (var i = 0; i < Nodes.Count; i++)
-            {
-                if (Nodes[i].gameObject == null || Nodes[i].gameObject == null)
-                {
-                    Debug.Log("Null node found");
-                    Nodes.Remove(Nodes[i]);
-                }
-            }
+            OnNodeChanged(new SlidePanelNodeChangedEventArgs(ActiveNode, ActiveNode));
         }
 
         public int ActiveNodeIndex
@@ -67,7 +85,14 @@ namespace Assets.Scripts.GameGUI.Controls.SlidePanel
 
         public SlidePanelNode GetNodeByIndex(int index)
         {
-            return Nodes[index];
+            try
+            {
+                return Nodes[index];
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         private void OnITweenSlideStart()
