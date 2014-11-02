@@ -46,6 +46,18 @@ namespace Assets.Scripts.GameGUI.Controls.SlidePanel
             
         }
 
+        public void Check()
+        {
+            for (var i = 0; i < Nodes.Count; i++)
+            {
+                if (Nodes[i].gameObject == null || Nodes[i].gameObject == null)
+                {
+                    Debug.Log("Null node found");
+                    Nodes.Remove(Nodes[i]);
+                }
+            }
+        }
+
         public int ActiveNodeIndex
         {
             get { return Nodes.IndexOf(ActiveNode); }

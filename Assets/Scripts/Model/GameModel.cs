@@ -42,10 +42,9 @@ namespace Assets.Scripts.Model
 
         public GameModel(IModelStorage modelStorage)
         {
+            Debug.Log("Creating GameModel. ModelStorage is " + modelStorage.GetType().Name);
             ModelStorage = modelStorage;
             InvalidateStars();
-            ModelStorage.Clear();
-            UnregisterAllSessions();
             ModelStorage.RegisterGameSession();
 
             if (IsFirstLaunch)

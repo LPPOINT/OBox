@@ -168,19 +168,19 @@
 		<value>Feature of world 5</value>
 	</data>
 	<data name="Worlds.Names.World1" xml:space="preserve">
-		<value>World 1 Name</value>
+		<value>Обучение</value>
 	</data>
 	<data name="Worlds.Names.World2" xml:space="preserve">
-		<value>World 2 Name</value>
+		<value>В движении</value>
 	</data>
 	<data name="Worlds.Names.World3" xml:space="preserve">
-		<value>World 3 Name</value>
+		<value>Временной скачок</value>
 	</data>
 	<data name="Worlds.Names.World4" xml:space="preserve">
-		<value>World 4 Name</value>
+		<value>Сквозь пространство</value>
 	</data>
 	<data name="Worlds.Names.World5" xml:space="preserve">
-		<value>World 5 Name</value>
+		<value>Превосходство</value>
 	</data>
 	<data name="Worlds.TapToUnlock" xml:space="preserve">
 		<value>Нажмите для разблокировки</value>

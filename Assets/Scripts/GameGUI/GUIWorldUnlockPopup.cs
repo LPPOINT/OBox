@@ -47,28 +47,35 @@ namespace Assets.Scripts.GameGUI
                 targetText.GetComponent<Text>().text = localizedText;
             }
 
-            //try
-            //{
-            //    if (cutPosition != -1)
-            //    {
-            //        for (var i = cutPosition; i < featureNodes.Count; i++)
-            //        {
-            //            FeatureSlider.Remove(featureNodes[i]);
-            //            Destroy(featureNodes[i].gameObject);
-            //        }
+            try
+            {
+                if (cutPosition != -1)
+                {
+                    for (var i = cutPosition; i < featureNodes.Count; i++)
+                    {
 
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    Debug.LogWarning("Error while cutting extra nodes");
-            //}
+                        Destroy(featureNodes[i].gameObject);
+                        //FeatureSlider.Remove(featureNodes[i]);
+                        FeatureSlider.Check();
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("Error while cutting extra nodes");
+            }
         }
 
         private void Start()
         {
             Current = this;
             SetupFeatureSlider();
+        }
+
+        public void Unlock()
+        {
+            
         }
 
         public void Close()
