@@ -2,6 +2,7 @@
 using Assets.Scripts.Common;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Assets.Editor.Utils.Screenshots
 {
@@ -10,6 +11,7 @@ namespace Assets.Editor.Utils.Screenshots
     {
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
             if (GUILayout.Button("Create"))
             {
                 var scr = (CreateScreenshot) target;

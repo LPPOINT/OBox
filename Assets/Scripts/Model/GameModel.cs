@@ -30,7 +30,7 @@ namespace Assets.Scripts.Model
 
         public static void Create()
         {
-            Create(!CustomStorage.IsExist ? new FullUnlockedModelStorage() : CustomStorage.Instance.Storage);
+            Create(!CustomStorage.IsExist ? new PlayerPrefsStorage() : CustomStorage.Instance.Storage);
         }
 
         public static void Create(IModelStorage storage)
@@ -221,6 +221,97 @@ namespace Assets.Scripts.Model
 
         #endregion
 
+        #region Currency
+
+        public void SetCurrency(int currency)
+        {
+            if(IsInfiniteCurrency()) return;
+
+            ModelStorage.SetGameCurrency(currency);
+        }
+
+        public int GetCurrency()
+        {
+            return ModelStorage.GetGameCurrency();
+        }
+
+        public void AddCurrency(int currency)
+        {
+
+            SetCurrency(GetCurrency() + currency);
+        }
+
+        public void RemoveCurrency(int currency)
+        {
+            SetCurrency(GetCurrency() - currency);
+        }
+
+        public bool IsEnoughCurrency(int targetCurrency)
+        {
+            return IsInfiniteCurrency() || GetCurrency() >= targetCurrency;
+        }
+
+        public bool IsInfiniteCurrency()
+        {
+            var c = GetCurrency();
+            return c < 0 || c > 999;
+        }
+
+        public void SetInfiniteCurrency()
+        {
+            SetCurrency(-1);
+        }
+
+        public DateTime? GetLatestCurrencyIncrementationDate(CurrencyIncrementation.CurrencyIncrementationSource source)
+        {
+            return ModelStorage.GetLatestCurrencyIncrementationDate(source);
+        }
+
+        public bool CanIncerementCurrency(CurrencyIncrementation.CurrencyIncrementationSource source)
+        {
+            if (source == CurrencyIncrementation.CurrencyIncrementationSource.AutorIncrementation)
+            {
+                var latest =
+                    GetLatestCurrencyIncrementationDate(
+                        CurrencyIncrementation.CurrencyIncrementationSource.AutorIncrementation);
+                return (!latest.HasValue &&
+                        (DateTime.Now - latest.Value) > CurrencyIncrementation.AutoincrementationTimeout);
+            }
+            if (source == CurrencyIncrementation.CurrencyIncrementationSource.Videobanner)
+            {
+                var latest =
+                    GetLatestCurrencyIncrementationDate(
+                    CurrencyIncrementation.CurrencyIncrementationSource.Videobanner);
+                return (!latest.HasValue &&
+                        (DateTime.Now - latest.Value) > CurrencyIncrementation.VideobannerTimeout);
+            }
+            return false;
+        }
+
+        public void AutoincrementCurrency(CurrencyIncrementation.CurrencyIncrementationSource source)
+        {
+            AddCurrency(source == CurrencyIncrementation.CurrencyIncrementationSource.AutorIncrementation
+                ? CurrencyIncrementation.CurrencyFromAutoincrementation
+                : CurrencyIncrementation.CurrencyFromVideobanner);
+
+            RegisterCurrencyIncrementationDate(source);
+        }
+
+        public bool TryAutoincrementCurrency()
+        {
+            if (!CanIncerementCurrency(CurrencyIncrementation.CurrencyIncrementationSource.AutorIncrementation))
+                return false;
+            AutoincrementCurrency(CurrencyIncrementation.CurrencyIncrementationSource.AutorIncrementation);
+            return true;
+        }
+
+        private void RegisterCurrencyIncrementationDate(CurrencyIncrementation.CurrencyIncrementationSource source)
+        {
+            ModelStorage.SetLatestCurrencyIncrementationDate(DateTime.Now, source);
+        }
+
+        #endregion
+
         #region Unlocks
 
         public void RegisterWorldUnlock(WorldNumber worldNumber)
@@ -265,37 +356,6 @@ namespace Assets.Scripts.Model
         {
             InvalidateStars();
             return Prices.GetStarsForWorld(world) <= TotalStars;
-        }
-
-        #endregion
-
-        #region Skips
-        public int SkipsCount
-        {
-            get { return ModelStorage.GetSkipsCount(); }
-        }
-
-        public void DecrementSkips()
-        {
-            DecrementSkips(1);
-        }
-        public void DecrementSkips(int value)
-        {
-            ModelStorage.SetSkipsCount(SkipsCount - value);
-        }
-
-        public void IncrementSkips()
-        {
-            IncrementSkips(1);
-        }
-        public void IncrementSkips(int value)
-        {
-            ModelStorage.SetSkipsCount(SkipsCount + value);
-        }
-
-        public void SetSkips(int value)
-        {
-            ModelStorage.SetSkipsCount(value);
         }
 
         #endregion
@@ -350,7 +410,7 @@ namespace Assets.Scripts.Model
 
         private void ProcessFirstLaunch()
         {
-            SetSkips(StartValues.StartSkips);
+            SetCurrency(StartValues.StartCurrency);
             RegisterWorldUnlock(WorldNumber.World1);
             CurrentLevel = LevelNumber.Level1;
             CurrentWorld = WorldNumber.World1;

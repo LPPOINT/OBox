@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Scripts.Model.Constants;
 using Assets.Scripts.Model.Numeration;
 using Assets.Scripts.Model.Statuses;
 using UnityEngine;
@@ -52,16 +53,30 @@ namespace Assets.Scripts.Model.Storage
             PlayerPrefs.SetInt(key, (int)status);
         }
 
-        public  int GetSkipsCount()
+        public int GetGameCurrency()
         {
-            return PlayerPrefs.GetInt("Skips");
+            return PlayerPrefs.GetInt("Currency");
         }
 
-        public  void SetSkipsCount(int count)
+        public void SetGameCurrency(int currency)
         {
-            PlayerPrefs.SetInt("Skips", count);
-          
+            PlayerPrefs.SetInt("Currency", currency);
         }
+
+        public void SetLatestCurrencyIncrementationDate(DateTime date, CurrencyIncrementation.CurrencyIncrementationSource source)
+        {
+            var time = date.ToBinary();
+            var key = "IncrementationDate" + (int) source;
+            PlayerPrefs.SetFloat(key, time);
+        }
+
+        public DateTime? GetLatestCurrencyIncrementationDate(CurrencyIncrementation.CurrencyIncrementationSource source)
+        {
+            var key = "IncrementationDate" + (int)source;
+            if (!PlayerPrefs.HasKey(key)) return null;
+            return DateTime.FromBinary((long)PlayerPrefs.GetFloat(key));
+        }
+
 
         public  void SetCurrentLevel(int level, WorldNumber targetWorldNumber)
         {

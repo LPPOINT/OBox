@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Levels;
+using Assets.Scripts.Model.Constants;
 using Assets.Scripts.Model.Numeration;
 using Assets.Scripts.Model.Statuses;
 
@@ -12,10 +13,12 @@ namespace Assets.Scripts.Model.Storage
 
         private readonly Dictionary<LevelIndex, LevelStatus> levelStatuses = new Dictionary<LevelIndex, LevelStatus>();
         private readonly Dictionary<WorldNumber, WorldStatus> worldStatuses = new Dictionary<WorldNumber, WorldStatus>();
-        private int Skips = 0;
+        private int currency = 0;
         private DateTime currentSessionTime;
         private readonly Dictionary<WorldNumber, int> currentLevels = new Dictionary<WorldNumber, int>();
         private WorldNumber currentWorld;
+
+        private Dictionary<CurrencyIncrementation.CurrencyIncrementationSource, DateTime> incrementationTimes = new Dictionary<CurrencyIncrementation.CurrencyIncrementationSource, DateTime>(); 
 
         public LevelStatus GetLevelStatus(int levelNumber, WorldNumber worldNumber)
         {
@@ -42,15 +45,29 @@ namespace Assets.Scripts.Model.Storage
             levelStatuses.Add(index, status);
         }
 
-        public int GetSkipsCount()
+        public int GetGameCurrency()
         {
-            return Skips;
+            return currency;
         }
 
-        public void SetSkipsCount(int count)
+        public void SetGameCurrency(int c)
         {
-            Skips = count;
+            currency = c;
         }
+
+        public void SetLatestCurrencyIncrementationDate(DateTime date, CurrencyIncrementation.CurrencyIncrementationSource source)
+        {
+            if(incrementationTimes.ContainsKey(source))
+                incrementationTimes[source] = date;
+            else incrementationTimes.Add(source, date);
+        }
+
+        public DateTime? GetLatestCurrencyIncrementationDate(CurrencyIncrementation.CurrencyIncrementationSource source)
+        {
+            if (!incrementationTimes.ContainsKey(source)) return null;
+            return incrementationTimes[source];
+        }
+
 
         public void SetCurrentLevel(int level, WorldNumber targetWorldNumber)
         {

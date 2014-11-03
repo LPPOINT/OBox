@@ -2,7 +2,7 @@
 {
     public static class StartValues
     {
-        public static int StartSkips = 3;
+        public static int StartCurrency = 15;
 
     }
 }

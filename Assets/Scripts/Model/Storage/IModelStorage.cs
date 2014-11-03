@@ -1,4 +1,5 @@
 using System;
+using Assets.Scripts.Model.Constants;
 using Assets.Scripts.Model.Numeration;
 using Assets.Scripts.Model.Statuses;
 
@@ -9,8 +10,11 @@ namespace Assets.Scripts.Model.Storage
         LevelStatus GetLevelStatus(int levelNumber, WorldNumber worldNumber);
         void SetLevelStatus(int levelNumber, WorldNumber worldNumber, LevelStatus status);
 
-        int GetSkipsCount();
-        void SetSkipsCount(int count);
+        int GetGameCurrency();
+        void SetGameCurrency(int currency);
+
+        void SetLatestCurrencyIncrementationDate(DateTime date, CurrencyIncrementation.CurrencyIncrementationSource source);
+        DateTime? GetLatestCurrencyIncrementationDate(CurrencyIncrementation.CurrencyIncrementationSource source);
 
         void SetCurrentLevel(int level, WorldNumber targetWorldNumber);
         int GetCurrentLevel(WorldNumber targetWorldNumber);

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Assets.Scripts.Camera;
 using Assets.Scripts.Camera.Effects;
+using Assets.Scripts.GameGUI.Shop;
 using Assets.Scripts.Levels.Style;
 using Assets.Scripts.Levels.Style.ElementsColorization;
 using Assets.Scripts.Map;
@@ -42,6 +43,7 @@ namespace Assets.Scripts.Levels
             LevelValidator.Validate(this);
 #endif
 
+            InitializeShopInteraction();
             ResetScore();
             UnhideLevel();
             InvalidateLevelElements();
@@ -68,6 +70,7 @@ namespace Assets.Scripts.Levels
         private void OnDisable()
         {
             current = null;
+            DropShopInteraction();
         }
 
         private static Level current;
@@ -90,6 +93,7 @@ namespace Assets.Scripts.Levels
             LevelMap = FindObjectOfType<GameMap>();
             OverlayUI = FindObjectOfType<OverlayUI>();
         }
+
 
 
         #endregion
@@ -162,7 +166,20 @@ namespace Assets.Scripts.Levels
 
         #endregion
 
+        #region Shop integration
 
+        private void InitializeShopInteraction()
+        {
+            ShopPopup.Opened += (sender, args) => LockInput();
+            ShopPopup.Closed += (sender, args) => Play();
+        }
+
+        private void DropShopInteraction()
+        {
+            
+        }
+
+        #endregion
 
         #region Decoration management
         private enum DecorationsContext

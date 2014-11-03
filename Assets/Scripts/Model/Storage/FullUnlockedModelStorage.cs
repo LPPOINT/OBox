@@ -15,7 +15,7 @@ namespace Assets.Scripts.Model.Storage
                 }
             }
 
-            SetSkipsCount(99);
+            SetGameCurrency(-1);
         }
     }
 }
