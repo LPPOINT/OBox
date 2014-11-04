@@ -5,6 +5,7 @@ using Assets.Scripts.Levels;
 using Assets.Scripts.Missions;
 using Assets.Scripts.Model;
 using Assets.Scripts.Model.Numeration;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -114,7 +115,6 @@ namespace Assets.Scripts.UI
         private void Start()
         {
             ResetShowMode();
-            startStarsContainerPosition = StarsContainer.transform.position;
             currentStars = StarsCount.ThreeStar;
 
             if (TopContainer != null && BottomContainer != null)
@@ -140,24 +140,22 @@ namespace Assets.Scripts.UI
 
             if (StepsProgress != null)
             {
-                if (stars != StarsCount.None)
+                if (stars != StarsCount.OneStar)
                 {
                     StepsProgress.gameObject.SetActive(true);
                     StepsProgress.SetValues(remainingSteps, maxSteps);
                 }
-                else StepsProgress.gameObject.SetActive(false);
-            }
-
-            if (StepsCount != null)
-            {
-                if (remainingSteps == -1)
-                {
-                    
-                }
                 else
                 {
-                    StepsCount.text = remainingSteps.ToString(CultureInfo.InvariantCulture);
+                    StepsProgress.gameObject.SetActive(false);
+                    StepsCount.gameObject.SetActive(false);
                 }
+            }
+
+            if (StepsCount != null && stars != StarsCount.OneStar && remainingSteps != -1)
+            {
+                StepsCount.gameObject.SetActive(true);
+                StepsCount.text = remainingSteps.ToString(CultureInfo.InvariantCulture);
             }
 
             SetStarsCount(stars);
@@ -189,64 +187,48 @@ namespace Assets.Scripts.UI
         #region stars management
 
 
-        private Vector2 startStarsContainerPosition;
         private StarsCount currentStars;
 
         private void SetStarsCount(StarsCount count)
         {
+            if (count == StarsCount.TwoStar && currentStars == StarsCount.ThreeStar)
+            {
+                OffsetStarsForward();
+                DisposeStar(StarsCount.ThreeStar);
+            }
+            else if (count == StarsCount.OneStar && currentStars == StarsCount.ThreeStar)
+            {
+                OffsetStarsForward(2);
+                DisposeStar(StarsCount.ThreeStar);
+                DisposeStar(StarsCount.TwoStar);
+            }
+            else if (count == StarsCount.OneStar && currentStars == StarsCount.TwoStar)
+            {
+                OffsetStarsForward();
+                DisposeStar(StarsCount.TwoStar);
+            }
+            else if (count == StarsCount.ThreeStar && currentStars == StarsCount.OneStar)
+            {
+                OffsetStarsBackward(2);
+                ShowStar(StarsCount.TwoStar);
+                ShowStar(StarsCount.ThreeStar);
+            }
+            else if (count == StarsCount.ThreeStar && currentStars == StarsCount.TwoStar)
+            {
+                OffsetStarsBackward();
+                ShowStar(StarsCount.ThreeStar);
+            }
+            else if (count == StarsCount.ThreeStar && currentStars == StarsCount.None)
+            {
+                OffsetStarsBackward(3);
+                ShowStar(StarsCount.OneStar);
+                ShowStar(StarsCount.TwoStar);
+                ShowStar(StarsCount.ThreeStar);
+            }
 
-            if(count == currentStars) return;
-
-
-            var lastCount = currentStars;
             currentStars = count;
-
-            if (lastCount > currentStars && lastCount != StarsCount.None)
-            {
-
-                if(lastCount == StarsCount.ThreeStar) DisposeStar(StarsCount.ThreeStar);
-                else if (lastCount == StarsCount.TwoStar) DisposeStar(StarsCount.TwoStar);
-                else if (lastCount == StarsCount.OneStar) DisposeStar(StarsCount.OneStar);
-
-
-            }
-            else if (lastCount < currentStars && lastCount != StarsCount.ThreeStar)
-            {
-                if (lastCount == StarsCount.None) ShowStar(StarsCount.OneStar);
-                else if (lastCount == StarsCount.OneStar) ShowStar(StarsCount.TwoStar);
-                else if (lastCount == StarsCount.TwoStar) ShowStar(StarsCount.ThreeStar);
-            }
-
         }
 
-        private void DecrementStars()
-        {
-            
-        }
-
-        private void OffsetStarsContainer()
-        {
-            var starWidth = FirstStar.rectTransform.rect.width;
-            if (StarsContainer == null)
-            {
-                Debug.LogWarning("OffsetStars(): StarsContainer == null");
-                return;
-            }
-
-            iTween.MoveTo(StarsContainer, 
-                new ITweenHash().
-                    EaseType(iTween.EaseType.easeInOutCirc).
-                    Time(0.3f).
-                    Position(new Vector3(StarsContainer.transform.position.x + starWidth, StarsContainer.transform.position.y, StarsContainer.transform.position.y))
-                .GetHashtable());
-            
-
-        }
-
-        private void ResetStarsContainer()
-        {
-            StarsContainer.transform.position = startStarsContainerPosition;
-        }
 
         private void PlayStarAnimation(GameObject starObject, string animationStateName)
         {
@@ -275,24 +257,41 @@ namespace Assets.Scripts.UI
 
         private void DisposeStar(GameObject starObject)
         {
-
-
             PlayStarAnimation(starObject, "StarDisposing");
 
         }
-
         private void DisposeStar(StarsCount star)
         {
 
             DisposeStar(GetStarObject(star));
         }
 
+        private void OffsetStars(float offset)
+        {
+            iTween.MoveTo(StarsContainer, new Vector3(StarsContainer.transform.position.x + offset, StarsContainer.transform.position.y, StarsContainer.transform.position.z), 0.2f);
+        }
+
+        private float GetStarsOffsetValue()
+        {
+            return 0.24f; // TODO: calculate this shit
+            //var starWidth = GetStarObject(StarsCount.OneStar).GetComponent<RectTransform>().rect.width;
+            //return starWidth;
+        }
+
+        private void OffsetStarsForward(int power = 1)
+        {
+            OffsetStars(Math.Abs(GetStarsOffsetValue() * power));
+        }
+
+        private void OffsetStarsBackward(int power = 1)
+        {
+            OffsetStars(-Math.Abs(GetStarsOffsetValue() * power));
+        }
 
         private void ShowStar(GameObject starObject)
         {
             PlayStarAnimation(starObject, "StarIdle");
         }
-
         private void ShowStar(StarsCount star)
         {
             ShowStar(GetStarObject(star));

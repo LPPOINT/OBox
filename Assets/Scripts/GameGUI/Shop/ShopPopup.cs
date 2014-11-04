@@ -1,6 +1,8 @@
 ﻿using System;
 using Assets.Scripts.Camera.Effects;
 using Assets.Scripts.Common;
+using Assets.Scripts.Model;
+using Assets.Scripts.Model.Constants;
 using UnityEngine;
 
 namespace Assets.Scripts.GameGUI.Shop
@@ -31,6 +33,15 @@ namespace Assets.Scripts.GameGUI.Shop
 
         public static bool IsOpened { get { return Current != null; } }
         public static ShopPopup Current { get; private set; }
+
+
+       
+        private void ExecutePurchase(ShopItemType item)
+        {
+            var currencyToAdd = Prices.GetCurrencyCountByShopItem(item);
+            GameModel.Instance.AddCurrency(currencyToAdd);
+            OnPurchasePerformed(item);
+        }
 
         private void Start()
         {

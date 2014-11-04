@@ -2,7 +2,7 @@
 {
     public enum ShopItemType
     {
-        GameCurrencyByAdverts,
+        GameCurrencyByVideobanner,
         GameCurrency1,
         GameCurrency2,
         GameCurrency3,

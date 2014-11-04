@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Model.Numeration;
+﻿using Assets.Scripts.GameGUI.Shop;
+using Assets.Scripts.Model.Numeration;
 
 namespace Assets.Scripts.Model.Constants
 {
@@ -15,6 +16,29 @@ namespace Assets.Scripts.Model.Constants
         public static int CurrencyForWorld5 = 60;
 
         public static int CurrencyForSkipLevel = 4;
+
+        public static int CurrencyPurchase1 = 10;
+        public static int CurrencyPurchase2 = 20;
+        public static int CurrencyPurchase3 = 30;
+
+        public static int GetCurrencyCountByShopItem(ShopItemType itemType)
+        {
+            switch (itemType)
+            {
+                case ShopItemType.GameCurrencyByVideobanner:
+                    return CurrencyIncrementation.CurrencyFromVideobanner;
+                case ShopItemType.GameCurrency1:
+                    return CurrencyPurchase1;
+                case ShopItemType.GameCurrency2:
+                    return CurrencyPurchase2;
+                case ShopItemType.GameCurrency3:
+                    return CurrencyPurchase3;
+                case ShopItemType.InfinityGameCurrency:
+                    return -1;
+            }
+
+            return 0;
+        }
 
         public static int GetCurrencyForWorld(WorldNumber world)
         {

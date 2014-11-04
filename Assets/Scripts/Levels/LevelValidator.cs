@@ -29,16 +29,7 @@ namespace Assets.Scripts.Levels
         }
         private static void ValidateSteps(Level level)
         {
-            if (level.StepsForOneStar == 0
-                || level.StepsForTwoStars == 0
-                || level.StepsForThreeStars == 0)
-            {
-                Debug.LogWarning("Invalid level step limits. EDIT steps limits in level inspector. Ащк this run steps limits will be sets by default.");
 
-                level.StepsForOneStar = 15;
-                level.StepsForTwoStars = 10;
-                level.StepsForThreeStars = 5;
-            }
         }
 
         private static void ValidateLevelIndex(Level level)

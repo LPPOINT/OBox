@@ -363,7 +363,6 @@ namespace Assets.Scripts.Levels
 
         public int StepsForThreeStars;
         public int StepsForTwoStars;
-        public int StepsForOneStar;
 
 
         public int CurrentSteps { get; private set; }
@@ -371,7 +370,10 @@ namespace Assets.Scripts.Levels
 
         public int RemainingSteps
         {
-            get { return CurrentMaxSteps - CurrentSteps ; }
+            get
+            {
+                if (CurrentMaxSteps == 0) return -1; 
+                return CurrentMaxSteps - CurrentSteps ; }
         }
 
         public StarsCount CurrentStars { get; private set; }
@@ -380,16 +382,15 @@ namespace Assets.Scripts.Levels
         {
             switch (star)
             {
-                case StarsCount.None:
-                    return -1;
+                case StarsCount.None:   
                 case StarsCount.OneStar:
-                    return StepsForOneStar;
+                    return -1;
                 case StarsCount.TwoStar:
                     return StepsForTwoStars;
                 case StarsCount.ThreeStar:
                     return StepsForThreeStars;
             }
-            return StepsForOneStar;
+            return -1;
         }
 
         private void ResetScore()
@@ -409,7 +410,7 @@ namespace Assets.Scripts.Levels
         private void RegisterPlayerStep()
         {
 
-            if (CurrentStars == StarsCount.None)
+            if (CurrentStars == StarsCount.OneStar)
                 return;
 
 
