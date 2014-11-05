@@ -9,6 +9,15 @@ namespace Assets.Scripts.UI
     {
 
 
+        public enum ProgressBarTranslation
+        {
+            None,
+            FromCurrent,
+            FromCenter,
+            FromBorders
+        }
+
+
         public Image Background;
         private float initialWidth;
 
@@ -18,7 +27,7 @@ namespace Assets.Scripts.UI
         private float lastMaxValue;
         private float lastCurrentValue;
 
-        public void SetValues(float current, float max)
+        public void SetLimit(float current, float max)
         {
             CurrentValue = current;
             MaxValue = max;
@@ -26,10 +35,10 @@ namespace Assets.Scripts.UI
 
         private void UpdateValues()
         {
-            SetCurrentValue(CurrentValue, false);
+            SetValue(CurrentValue);
         }
 
-        public float GetWidthForValue(float value)
+        private float GetWidthForValue(float value)
         {
             return ((initialWidth) - ((initialWidth)*(MaxValue/value))) / (MaxValue/value); // хуйня
         }
@@ -38,39 +47,51 @@ namespace Assets.Scripts.UI
             Background.rectTransform.sizeDelta = new Vector2(value, Background.rectTransform.sizeDelta.y);
         }
 
-        public void SetCurrentValue(float newValue, bool withTranslation)
+        private void OnITweenProgressBarDeltaUpdate(float value)
+        {
+            SetWidth(value);
+        }
+
+
+
+        public void SetValue(float newValue, ProgressBarTranslation translation = ProgressBarTranslation.FromCurrent)
         {
             if (MaxValue != 0)
             {
-                if (newValue > MaxValue) SetCurrentValue(MaxValue, withTranslation);
-                else if (newValue < 0) SetCurrentValue(0, withTranslation);
+                if (newValue > MaxValue) SetValue(MaxValue);
+                else if (newValue < 0) SetValue(0);
+
             }
 
             var targetWidth = GetWidthForValue(newValue);
             var currentWidth = Background.rectTransform.sizeDelta.x;
 
-            if (!withTranslation)
+            const iTween.EaseType easeType = iTween.EaseType.easeInOutCirc;
+            const float time = 0.2f;
+
+            if (translation == ProgressBarTranslation.FromCurrent)
+            {
+                iTween.ValueTo(gameObject,
+                    iTween.Hash("from", currentWidth, "to", targetWidth, "onupdate", "OnITweenProgressBarDeltaUpdate",
+                        "time", time, "easetype", easeType));
+            }
+            else if (translation == ProgressBarTranslation.None)
             {
                 SetWidth(targetWidth);
             }
-            else
+            else if (translation == ProgressBarTranslation.FromCenter)
             {
-                StartCoroutine(DoTranslation(0, 0)); //todo
+                SetValue(0, ProgressBarTranslation.None);
+                SetValue(newValue);
+            }
+            else if (translation == ProgressBarTranslation.FromBorders)
+            {
+                SetValue(MaxValue, ProgressBarTranslation.None);
+                SetValue(newValue);
             }
 
         }
 
-
-        private IEnumerator DoTranslation(int ticks, float offset)
-        {
-            for (var i = 0; i < ticks; i++)
-            {
-                var currentWidth = Background.rectTransform.sizeDelta.x;
-                var newWidth = currentWidth + offset;
-                SetWidth(newWidth);
-                yield return new WaitForEndOfFrame();
-            }
-        }
 
         private void Start ()
         {

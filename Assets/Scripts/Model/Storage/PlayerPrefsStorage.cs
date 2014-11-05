@@ -63,6 +63,21 @@ namespace Assets.Scripts.Model.Storage
             PlayerPrefs.SetInt("Currency", currency);
         }
 
+        public void SetAdsRemoveStatus(bool status)
+        {
+            PlayerPrefs.SetInt("AdsRemove", status ? 1 : 0);
+        }
+
+        public bool GetAdsRemoveStatus()
+        {
+            if (!PlayerPrefs.HasKey("AdsRemove"))
+            {
+                SetAdsRemoveStatus(false);
+                return false;
+            }
+            return (PlayerPrefs.GetInt("AdsRemove")) != 0;
+        }
+
         public void SetLatestCurrencyIncrementationDate(DateTime date, CurrencyIncrementation.CurrencyIncrementationSource source)
         {
             var time = date.ToBinary();

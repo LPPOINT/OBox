@@ -17,6 +17,7 @@ namespace Assets.Scripts.Model.Storage
         private DateTime currentSessionTime;
         private readonly Dictionary<WorldNumber, int> currentLevels = new Dictionary<WorldNumber, int>();
         private WorldNumber currentWorld;
+        private bool isAdsRemoved;
 
         private Dictionary<CurrencyIncrementation.CurrencyIncrementationSource, DateTime> incrementationTimes = new Dictionary<CurrencyIncrementation.CurrencyIncrementationSource, DateTime>(); 
 
@@ -53,6 +54,16 @@ namespace Assets.Scripts.Model.Storage
         public void SetGameCurrency(int c)
         {
             currency = c;
+        }
+
+        public void SetAdsRemoveStatus(bool status)
+        {
+            isAdsRemoved = status;
+        }
+
+        public bool GetAdsRemoveStatus()
+        {
+            return isAdsRemoved;
         }
 
         public void SetLatestCurrencyIncrementationDate(DateTime date, CurrencyIncrementation.CurrencyIncrementationSource source)

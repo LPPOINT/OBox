@@ -13,6 +13,9 @@ namespace Assets.Scripts.Model.Storage
         int GetGameCurrency();
         void SetGameCurrency(int currency);
 
+        void SetAdsRemoveStatus(bool status);
+        bool GetAdsRemoveStatus();
+
         void SetLatestCurrencyIncrementationDate(DateTime date, CurrencyIncrementation.CurrencyIncrementationSource source);
         DateTime? GetLatestCurrencyIncrementationDate(CurrencyIncrementation.CurrencyIncrementationSource source);
 

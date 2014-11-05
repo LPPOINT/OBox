@@ -315,6 +315,20 @@ namespace Assets.Scripts.Model
 
         #endregion
 
+        #region Ads
+
+        public bool IsAdsRemoved
+        {
+            get { return ModelStorage.GetAdsRemoveStatus(); }
+        }
+
+        public void RemoveAds()
+        {
+            ModelStorage.SetAdsRemoveStatus(true);
+        }
+
+        #endregion
+
         #region Unlocks
 
         public void RegisterWorldUnlock(WorldNumber worldNumber)

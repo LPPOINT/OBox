@@ -24,6 +24,7 @@ namespace Assets.Scripts.UI
         public Button MenuButton;
         public Image MissionIcon;
 
+
         public GameObject TopContainer;
         public GameObject BottomContainer;
 
@@ -74,6 +75,7 @@ namespace Assets.Scripts.UI
                     FirstStar.gameObject.SetActive(false);
                     //StepsProgress.gameObject.SetActive(false);
                     MenuButton.gameObject.SetActive(true);
+                    BottomContainer.gameObject.SetActive(false);
                 }
                 else if (mode == ShowMode.ShowAll)
                 {
@@ -85,6 +87,7 @@ namespace Assets.Scripts.UI
                     FirstStar.gameObject.SetActive(true);
                     StepsProgress.gameObject.SetActive(true);
                     MenuButton.gameObject.SetActive(true);
+                    BottomContainer.gameObject.SetActive(true);
                 }
             }
             catch 
@@ -142,19 +145,21 @@ namespace Assets.Scripts.UI
             {
                 if (stars != StarsCount.OneStar)
                 {
-                    StepsProgress.gameObject.SetActive(true);
-                    StepsProgress.SetValues(remainingSteps, maxSteps);
+                    
+                        StepsProgress.gameObject.SetActive(true);
+                    StepsProgress.SetLimit(remainingSteps, maxSteps);
                 }
                 else
                 {
-                    StepsProgress.gameObject.SetActive(false);
+                    StepsProgress.SetValue(StepsProgress.MaxValue);
                     StepsCount.gameObject.SetActive(false);
                 }
             }
 
             if (StepsCount != null && stars != StarsCount.OneStar && remainingSteps != -1)
             {
-                StepsCount.gameObject.SetActive(true);
+                if (CurrentMode == ShowMode.ShowAll)
+                    StepsCount.gameObject.SetActive(true);
                 StepsCount.text = remainingSteps.ToString(CultureInfo.InvariantCulture);
             }
 
