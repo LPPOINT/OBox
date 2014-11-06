@@ -35,6 +35,11 @@ namespace Assets.Scripts.GameGUI.Controls.SlidePanel
             if (handler != null) handler(this, e);
         }
 
+        public void Add(SlidePanelNode node)
+        {
+            Nodes.Add(node);
+        }
+
         public void Add(GameObject obj)
         {
             

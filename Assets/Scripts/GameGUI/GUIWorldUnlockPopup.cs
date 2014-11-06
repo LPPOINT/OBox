@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts.Camera.Effects;
 using Assets.Scripts.GameGUI.Controls.SlidePanel;
 using Assets.Scripts.Model.Unlocks;
@@ -20,44 +21,64 @@ namespace Assets.Scripts.GameGUI
         public GUIWorldData Data;
         public IWorldUnlockHandler UnlockHandler;
 
+
+        private void SetupNode(SlidePanelNode node, GUIWorldFeature feature)
+        {
+
+            var localizedText = LanguageManager.Instance.GetTextValue(feature.Description);
+            var image = feature.Image;
+
+            var targetImage = node.transform.FindChild("Image");
+            var targetText = node.transform.FindChild("Text");
+
+            targetImage.GetComponent<Image>().sprite = image;
+            targetText.GetComponent<Text>().text = localizedText;
+        }
+
         private void SetupFeatureSlider()
         {
             var features = Data.Features;
             var featuresCount = features.Count;
             var featureNodes = FeatureSlider.Nodes;
-            var isCuttings = false;
+            var templateNode = featureNodes.First();
+            var templateNodeTransform = templateNode.GetComponent<RectTransform>();
+            var templateNodePosition = templateNodeTransform.position;
+            var offset = templateNodeTransform.rect.width + 20;
 
-            for (var i = 0; i < featureNodes.Count; i++)
+            SetupNode(templateNode,  features.First());
+
+            if(featuresCount == 1) return;
+
+            for (var i = 1; i < featuresCount; i++)
             {
-                if (i + 1 > featuresCount)
-                {
-                    isCuttings = true;
-                }
+                var nodeFeature = features[i];
+                var node = (Instantiate(templateNode.gameObject) as GameObject).GetComponent<SlidePanelNode>();
 
-                if (!isCuttings)
-                {
-                    var feature = features[i];
-                    var node = featureNodes[i];
+                var rectTransform = node.GetComponent<RectTransform>();
 
-                    var localizedText = LanguageManager.Instance.GetTextValue(feature.Description);
-                    var image = feature.Image;
+                rectTransform.position = new Vector3(templateNodePosition.x + offset * i, templateNodePosition.y, templateNodePosition.z);
+                var scale = 0.8f; // calculate this shit
+                rectTransform.localScale = new Vector3(scale, scale, scale);
+                rectTransform.parent = templateNode.transform.parent;
 
-                    var targetImage = node.transform.FindChild("Image");
-                    var targetText = node.transform.FindChild("Text");
+                var nl = rectTransform.rect.xMin;
+                var nt = rectTransform.rect.yMin;
 
-                    targetImage.GetComponent<Image>().sprite = image;
-                    targetText.GetComponent<Text>().text = localizedText;
-                }
-                else
-                {
-                    
-                    featureNodes[i].gameObject.SetActive(false);
-                    FeatureSlider.Disable(featureNodes[i]);
-                    FeatureSlider.Check();
-                }
+                var sizeOffsetX = templateNodeTransform.rect.width - rectTransform.rect.width;
+                var sizeOffsetY = templateNodeTransform.rect.height - rectTransform.rect.height;
+
+                //rectTransform.rect.Set(templateNodeTransform.rect.xMin + (offset*i), templateNodeTransform.rect.yMin, templateNodeTransform.rect.width, templateNodeTransform.rect.height);
+                
+
+                SetupNode(node, nodeFeature);
+
+                FeatureSlider.Add(node);
+
+
+
             }
 
-       
+
         }
 
 
