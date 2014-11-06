@@ -19,6 +19,7 @@ namespace Assets.Scripts.Model.Storage
         private WorldNumber currentWorld;
         private bool isAdsRemoved;
 
+        private Dictionary<string, bool> purchases = new Dictionary<string, bool>(); 
         private Dictionary<CurrencyIncrementation.CurrencyIncrementationSource, DateTime> incrementationTimes = new Dictionary<CurrencyIncrementation.CurrencyIncrementationSource, DateTime>(); 
 
         public LevelStatus GetLevelStatus(int levelNumber, WorldNumber worldNumber)
@@ -64,6 +65,31 @@ namespace Assets.Scripts.Model.Storage
         public bool GetAdsRemoveStatus()
         {
             return isAdsRemoved;
+        }
+
+        public void SetPurchaseStatus(string purchaseId, bool status)
+        {
+            if (purchases.ContainsKey(purchaseId))
+            {
+                purchases[purchaseId] = status;
+            }
+            else
+            {
+                purchases.Add(purchaseId, status);
+            }
+        }
+
+        public bool GetPurchaseStatus(string purchaseId)
+        {
+            bool value;
+            if (purchases.TryGetValue(purchaseId, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void SetLatestCurrencyIncrementationDate(DateTime date, CurrencyIncrementation.CurrencyIncrementationSource source)

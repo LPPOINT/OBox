@@ -6,6 +6,8 @@ using Assets.Scripts.Model.Constants;
 using Assets.Scripts.Model.Numeration;
 using Assets.Scripts.Model.Statuses;
 using Assets.Scripts.Model.Storage;
+using Assets.Scripts.Purchases;
+using Assets.Scripts.Purchases.IOS;
 using UnityEngine;
 
 namespace Assets.Scripts.Model
@@ -238,7 +240,7 @@ namespace Assets.Scripts.Model
 
         public void AddCurrency(int currency)
         {
-
+            Debug.Log("Adding currency( "+ currency + ")");
             SetCurrency(GetCurrency() + currency);
         }
 
@@ -325,6 +327,20 @@ namespace Assets.Scripts.Model
         public void RemoveAds()
         {
             ModelStorage.SetAdsRemoveStatus(true);
+        }
+
+        #endregion
+
+        #region Purchases
+
+        public void RegisterPurchase(ShopItemType itemType)
+        {
+            ModelStorage.SetPurchaseStatus(IOSIntegration.GetProductIdByItemType(itemType), true);
+        }
+
+        public bool IsPurchasePerformed(ShopItemType itemType)
+        {
+            return ModelStorage.GetPurchaseStatus(IOSIntegration.GetProductIdByItemType(itemType));
         }
 
         #endregion

@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.GameGUI.Shop;
 using Assets.Scripts.Model.Numeration;
+using Assets.Scripts.Purchases;
 
 namespace Assets.Scripts.Model.Constants
 {

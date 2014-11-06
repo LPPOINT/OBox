@@ -3,11 +3,12 @@ using Assets.Scripts.Camera.Effects;
 using Assets.Scripts.Common;
 using Assets.Scripts.Model;
 using Assets.Scripts.Model.Constants;
+using Assets.Scripts.Purchases;
 using UnityEngine;
 
 namespace Assets.Scripts.GameGUI.Shop
 {
-    public class ShopPopup : MonoBehaviour
+    public class ShopPopup : MonoBehaviour, IPurchaseHandler
     {
         public static event EventHandler Opened;
         private static void OnOpened()
@@ -35,12 +36,19 @@ namespace Assets.Scripts.GameGUI.Shop
         public static ShopPopup Current { get; private set; }
 
 
-       
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                ExecutePurchase(ShopItemType.GameCurrency1);
+            }
+        }
+
         private void ExecutePurchase(ShopItemType item)
         {
-            var currencyToAdd = Prices.GetCurrencyCountByShopItem(item);
-            GameModel.Instance.AddCurrency(currencyToAdd);
-            OnPurchasePerformed(item);
+            var builder = PurchaseBuilderFactory.CreateForCurrentPlatform();
+            builder.Perform(item, this);
         }
 
         private void Start()
@@ -56,5 +64,17 @@ namespace Assets.Scripts.GameGUI.Shop
             OnClosed();
         }
 
+        public void OnPurchaseCompleted(ShopItemType itemType)
+        {
+            Debug.Log("OnPurchaseCompleted(" + itemType + ")");
+            var currencyToAdd = Prices.GetCurrencyCountByShopItem(itemType);
+            GameModel.Instance.AddCurrency(currencyToAdd);
+            OnPurchasePerformed(itemType);
+        }
+
+        public void OnPurchaseFailed(ShopItemType itemType)
+        {
+            
+        }
     }
 }

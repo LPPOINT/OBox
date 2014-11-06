@@ -154,14 +154,5 @@ namespace Assets.Scripts.Map.Decorations
                 PlayNewIndex();
             }
         }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                Debug.Log("Decorator.currentDecorations count = " + currentDecorations.Count);
-            }
-        }
-
     }
 }

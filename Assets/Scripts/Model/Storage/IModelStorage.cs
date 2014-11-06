@@ -16,6 +16,9 @@ namespace Assets.Scripts.Model.Storage
         void SetAdsRemoveStatus(bool status);
         bool GetAdsRemoveStatus();
 
+        void SetPurchaseStatus(string purchaseId, bool status);
+        bool GetPurchaseStatus(string purchaseId);
+
         void SetLatestCurrencyIncrementationDate(DateTime date, CurrencyIncrementation.CurrencyIncrementationSource source);
         DateTime? GetLatestCurrencyIncrementationDate(CurrencyIncrementation.CurrencyIncrementationSource source);
 
