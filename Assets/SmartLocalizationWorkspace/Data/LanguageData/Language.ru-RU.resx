@@ -116,6 +116,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+	<data name="Interactive.EndTimer.End" xml:space="preserve">
+		<value>Конец</value>
+	</data>
+	<data name="Interactive.EndTimer.EndIn" xml:space="preserve">
+		<value>Конец через</value>
+	</data>
+	<data name="Interactive.EndTimer.Seconds" xml:space="preserve">
+		<value>секунд</value>
+	</data>
 	<data name="Loading.Cutaway1" xml:space="preserve">
 		<value>xvideos.com</value>
 	</data>

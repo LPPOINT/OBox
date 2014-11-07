@@ -504,14 +504,14 @@ namespace Assets.Scripts.Levels
         public void HideLevel()
         {
             if(OverlayUI != null) OverlayUI.Disable();
-            GradientBackground.MainGradient.AlignToFrontAnchor();
+            LevelBackground.Main.AlignToFrontAnchor();
 
         }
 
         public void UnhideLevel()
         {
             if (OverlayUI != null) OverlayUI.Enable();
-            GradientBackground.MainGradient.AlignToBackAnchor();
+            LevelBackground.Main.AlignToBackAnchor();
         }
 
 

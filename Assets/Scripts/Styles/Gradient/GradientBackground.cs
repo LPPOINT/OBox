@@ -29,16 +29,6 @@ namespace Assets.Scripts.Styles.Gradient
         private SpriteRenderer spriteRenderer;
 
 
-        public void AlignToBackAnchor()
-        {
-            if(LevelDepth.IsExist)
-                LevelDepth.AlignToBack(transform);
-        }
-        public void AlignToFrontAnchor()
-        {
-            if (LevelDepth.IsExist)
-                LevelDepth.AlignToFront(transform);
-        }
 
         public void Visualize()
         {

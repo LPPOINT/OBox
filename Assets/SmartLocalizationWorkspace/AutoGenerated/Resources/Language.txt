@@ -149,6 +149,12 @@
 	<data name="MissionHelp.Target" xml:space="preserve">
 		<value>To complite level, slide block to target</value>
 	</data>
+	<data name="Worlds.Feature.CancelUnlock" xml:space="preserve">
+		<value>Cancel</value>
+	</data>
+	<data name="Worlds.Feature.PerformUnlock" xml:space="preserve">
+		<value>Unlock for {0}</value>
+	</data>
 	<data name="Worlds.Feature.Title" xml:space="preserve">
 		<value>In this level</value>
 	</data>
@@ -191,10 +197,13 @@
 	<data name="Worlds.WorldNumber" xml:space="preserve">
 		<value>World {0}</value>
 	</data>
-	<data name="Worlds.Feature.PerformUnlock" xml:space="preserve">
-		<value>Unlock for {0}</value>
+	<data name="Interactive.EndTimer.EndIn" xml:space="preserve">
+		<value>End in</value>
 	</data>
-	<data name="Worlds.Feature.CancelUnlock" xml:space="preserve">
-		<value>Cancel</value>
+	<data name="Interactive.EndTimer.Seconds" xml:space="preserve">
+		<value>seconds</value>
+	</data>
+	<data name="Interactive.EndTimer.End" xml:space="preserve">
+		<value>End</value>
 	</data>
 </root>
