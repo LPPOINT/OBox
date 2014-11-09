@@ -1,9 +1,12 @@
 ﻿using System;
 using Assets.Scripts.Levels;
+using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.UI
 {
+
+    [InitializeOnLoad]
     public class MenuUI : PopupUI
     {
 

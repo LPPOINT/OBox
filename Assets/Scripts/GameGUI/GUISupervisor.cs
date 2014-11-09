@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Assets.Scripts.GameGUI.Pages;
+using Assets.Scripts.GameGUI.Translations;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Model;
 using Assets.Scripts.Model.Numeration;
+using Assets.Scripts.Styles.Background;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,10 +20,25 @@ namespace Assets.Scripts.GameGUI
         {
             Instance = this;
         }
-        private void Start()
+        protected virtual void Start()
         {
             ActivePage = FindObjectOfType<GUIPage>();     
             EstablishPage(ActivePage);
+        }
+
+        public void EstablishBackground(SceneBackgroundBuilder backgroundBuilder, bool hasRestoreOpportunity = false)
+        {
+            var bg = FindObjectOfType<SceneBackground>();
+
+            if (hasRestoreOpportunity)
+            {
+                bg.Store();
+            }
+
+            if (bg != null)
+            {
+                backgroundBuilder.Build(bg);
+            }
         }
 
 
@@ -33,7 +51,6 @@ namespace Assets.Scripts.GameGUI
         {
             if (pageInstance == null || pageInstance.GetComponent<Canvas>() == null)
             {
-                Debug.Log("Initial page not found");
                 return;
             }
             var canvas = pageInstance.GetComponent<Canvas>();
@@ -96,9 +113,9 @@ namespace Assets.Scripts.GameGUI
 
         public void OpenLevel(string levelPath)
         {
-            OpenLevel(levelPath, GUITranslation.CreateDefaultTranslation());
+            OpenSceneWithLoading(levelPath, GUITranslation.CreateDefaultTranslation());
         }
-        public void OpenLevel(string levelPath, GUITranslation translation)
+        public void OpenSceneWithLoading(string scenePath, GUITranslation translation)
         {
             var levelPagePrefab = PagesPrefabs.FirstOrDefault(page => page.Type == GUIPageType.LevelLoading);
             if (levelPagePrefab == null)
@@ -109,7 +126,7 @@ namespace Assets.Scripts.GameGUI
 
             
 
-            OpenPage(levelPagePrefab, translation, page => (page as GUILevelLoadingPage).LevelPath = levelPath);
+            OpenPage(levelPagePrefab, translation, page => (page as GUILevelLoadingPage).LevelPath = scenePath);
 
         }
         public void OpenLevel(int levelNumber, WorldNumber worldNumber, bool openBuildLevel = false)
@@ -119,22 +136,39 @@ namespace Assets.Scripts.GameGUI
         public void OpenLevel(int levelNumber, WorldNumber worldNumber, GUITranslation translation, bool openBuildLevel = false)
         {
             var levelPath = LevelIndex.GetScenePath(levelNumber, worldNumber, false, openBuildLevel);
-            OpenLevel(levelPath, translation);
+            OpenSceneWithLoading(levelPath, translation);
         }
 
         private void OnTranslationDone(object sender, EventArgs eventArgs)
         {
-            ActiveTranslation.Done -= OnTranslationDone;
-            ActivePage.OnClose();
-            Destroy(ActivePage.gameObject);
-            ActivePage = InstantiatePage(ActiveTranslation.To);
-            if (newPageInitialization != null)
+            try
             {
-                newPageInitialization(ActivePage);
+                ActiveTranslation.Done -= OnTranslationDone;
+                if (ActivePage != null)
+                {
+                    ActivePage.OnClose();
+                    Destroy(ActivePage.gameObject);
+                }
+
+                if (ActiveTranslation.To == null)
+                {
+                    Debug.LogError("OnTranslationDone() ActiveTranslation.To == null");
+                    return;
+                }
+
+                ActivePage = InstantiatePage(ActiveTranslation.To);
+                if (newPageInitialization != null)
+                {
+                    newPageInitialization(ActivePage);
+                }
+                ActivePage.OnShow();
+                Destroy(ActiveTranslation.gameObject);
+                ActiveTranslation = null;
             }
-            ActivePage.OnShow();
-            Destroy(ActiveTranslation.gameObject);
-            ActiveTranslation = null;
+            catch (Exception e)
+            {
+                Debug.LogError("OnTranslationDone processing error");
+            }
         }
 
 

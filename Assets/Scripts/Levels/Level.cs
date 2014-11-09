@@ -5,9 +5,10 @@ using System.Diagnostics;
 using System.Linq;
 using Assets.Scripts.Camera;
 using Assets.Scripts.Camera.Effects;
+using Assets.Scripts.GameGUI;
 using Assets.Scripts.GameGUI.Shop;
-using Assets.Scripts.Levels.Style;
-using Assets.Scripts.Levels.Style.ElementsColorization;
+using Assets.Scripts.GameGUI.Translations;
+using Assets.Scripts.Levels.Common;
 using Assets.Scripts.Map;
 using Assets.Scripts.Map.Decorations;
 using Assets.Scripts.Map.Items;
@@ -15,18 +16,19 @@ using Assets.Scripts.Missions;
 using Assets.Scripts.Model;
 using Assets.Scripts.Model.Numeration;
 using Assets.Scripts.Styles;
+using Assets.Scripts.Styles.Background;
+using Assets.Scripts.Styles.ElementsColorization;
 using Assets.Scripts.UI;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using GradientBackground = Assets.Scripts.Styles.Gradient.GradientBackground;
 
 namespace Assets.Scripts.Levels
 {
-    public class Level : MonoBehaviour
+    public class Level : GUISupervisor
     {
 
 
-        private void Start()
+        protected override void Start()
         {
 
           
@@ -153,6 +155,15 @@ namespace Assets.Scripts.Levels
             else
             {
                
+            }
+        }
+
+        private void HideCurrentPopupImmediately()
+        {
+            if (currentPopup != null)
+            {
+                Destroy(currentPopup.gameObject);
+                currentPopup = null;
             }
         }
 
@@ -501,17 +512,28 @@ namespace Assets.Scripts.Levels
 
         #region Level actions (start, end, reset, open/close menu, results menu)
 
+
         public void HideLevel()
         {
             if(OverlayUI != null) OverlayUI.Disable();
-            LevelBackground.Main.AlignToFrontAnchor();
+            SceneBackground.Main.AlignToFrontAnchor();
+            IgnoreDepth.OnLevelHiding();
+            foreach (var item in LevelMap.Items)
+            {
+                item.renderer.enabled = false;
+            }
 
         }
 
         public void UnhideLevel()
         {
             if (OverlayUI != null) OverlayUI.Enable();
-            LevelBackground.Main.AlignToBackAnchor();
+            SceneBackground.Main.AlignToBackAnchor();
+            IgnoreDepth.OnLevelUnhiding();
+            foreach (var item in LevelMap.Items)
+            {
+                item.renderer.enabled = true;
+            }
         }
 
 
@@ -546,7 +568,9 @@ namespace Assets.Scripts.Levels
 
         public void Exit()
         {
-            Application.LoadLevel("GUI");
+            HideCurrentPopup();
+            HideLevel();
+            OpenSceneWithLoading("GUI", GUITranslation.CreateEmptyTranslation());
         }
 
         public void ShowPauseMenu()

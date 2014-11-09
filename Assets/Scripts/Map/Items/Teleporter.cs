@@ -117,6 +117,18 @@ namespace Assets.Scripts.Map.Items
 
         public override MapItemColliderType GetCollider(MapItem other)
         {
+
+            if(!(other is Player)) return MapItemColliderType.StopNear;
+            var player = other as Player;
+            var playerDir = player.GetLastDirection();
+
+            var otherNextWall = GameMap.GetNextItem(Other, playerDir);
+
+            if (otherNextWall != null && otherNextWall.GetCollider(Other) == MapItemColliderType.StopNear)
+            {
+                return MapItemColliderType.StopNear;
+            }
+
             return MapItemColliderType.GoInside;
         }
 

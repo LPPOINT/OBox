@@ -1,5 +1,5 @@
-﻿using Assets.Scripts.Levels.Style.ElementsColorization;
-using Assets.Scripts.Styles;
+﻿using Assets.Scripts.Styles;
+using Assets.Scripts.Styles.ElementsColorization;
 using Assets.Scripts.Styles.Gradient;
 using UnityEditor;
 using UnityEditor.Graphs;

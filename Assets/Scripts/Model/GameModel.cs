@@ -69,6 +69,19 @@ namespace Assets.Scripts.Model
         public static int LevelsInWorld = Enum.GetValues(typeof(LevelNumber)).Length;
         public static int TotalLevels = Worlds*LevelsInWorld;
 
+        public static LevelIndex GetLevelIndexByGlobalNumber(int globalNumber)
+        {
+            var worldNumber = globalNumber / Worlds;
+            var levelNumber = (globalNumber - (Worlds*worldNumber));
+            return new LevelIndex(levelNumber, (WorldNumber)worldNumber);
+        }
+
+        public static int GetLevelGlobalNumberByIndex(LevelIndex index)
+        {
+            if (index.WorldNumber == 0)
+                return (int)index.LevelNumber;
+            return (int)index.LevelNumber + ((int)index.WorldNumber - 1 * LevelsInWorld);
+        }
 
         #endregion
 

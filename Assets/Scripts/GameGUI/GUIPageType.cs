@@ -3,10 +3,7 @@
     public enum GUIPageType
     {
         MainMenu,
-        WorldSelection,
         LevelSelection,
-        Shop,
-        LevelLoading,
-        Debug
+        LevelLoading
     }
 }

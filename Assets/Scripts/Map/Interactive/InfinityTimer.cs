@@ -66,9 +66,9 @@ namespace Assets.Scripts.Map.Interactive
             var ts = TimeSpan.FromSeconds(value);
             var date = new DateTime(ts.Ticks);
             TimerText.text = date.ToString(TimeFormat);
+
             if (ts.Seconds != lastSoundTime && TickAudio != null)
             {
-                Debug.Log("PLay");
                 TickAudio.Play();
                 lastSoundTime = ts.Seconds;
             }

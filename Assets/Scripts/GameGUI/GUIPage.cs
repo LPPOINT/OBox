@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.GameGUI.Translations;
+using UnityEngine;
 
 namespace Assets.Scripts.GameGUI
 {
@@ -24,6 +25,10 @@ namespace Assets.Scripts.GameGUI
         } 
         }
 
+        private void Start()
+        {
+        }
+
         public virtual GUITranslation GetCustomTranslationTo(GUIPage newPage, GUIPageType newPageType)
         {
             return null;
@@ -32,7 +37,9 @@ namespace Assets.Scripts.GameGUI
 
         public virtual void OnShow()
         {
-            
+            var c = GetComponent<Canvas>();
+            if (c != null)
+                c.planeDistance = 1;
         }
 
         public virtual void OnClose()
