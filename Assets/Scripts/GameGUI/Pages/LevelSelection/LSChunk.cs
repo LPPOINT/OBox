@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Scripts.GameGUI.Pages.LevelSelection
 {
@@ -6,5 +7,7 @@ namespace Assets.Scripts.GameGUI.Pages.LevelSelection
     {
         public int StartLevel;
         public int LevelsInChunk;
+
+
     }
 }

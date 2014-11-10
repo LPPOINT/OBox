@@ -14,7 +14,10 @@ namespace Assets.Scripts.GameGUI.Pages.LevelSelection
 
         protected void SetDirty()
         {
-            LSActivitySupervisor.Instance.RegisterCameraMove();
+            if (USequencerPlayer.Instance != null)
+            {
+                USequencerPlayer.Instance.UpdateSequence();
+            }
         }
     }
 }
