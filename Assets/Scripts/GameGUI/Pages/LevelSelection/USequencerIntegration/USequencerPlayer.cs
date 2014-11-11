@@ -1,16 +1,29 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Advertisements;
 using WellFired;
 
-namespace Assets.Scripts.GameGUI.Pages.LevelSelection
+namespace Assets.Scripts.GameGUI.Pages.LevelSelection.USequencerIntegration
 {
+
+    [ExecuteInEditMode]
     public class USequencerPlayer : MonoBehaviour
     {
 
-        public static USequencerPlayer Instance { get; private set; }
+        public static List<USequencerPlayer> Instances { get; private set; }
 
         private void Awake()
         {
-            Instance = this;
+            if (Instances == null)
+            {
+                Instances = new List<USequencerPlayer>();
+            }
+            Instances.Add(this);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instances != null) Instances.Remove(this);
         }
 
         public USSequencer Sequencer;

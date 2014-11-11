@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.GameGUI.Pages.LevelSelection.USequencerIntegration;
+using UnityEngine;
 
 namespace Assets.Scripts.GameGUI.Pages.LevelSelection
 {
@@ -14,9 +15,9 @@ namespace Assets.Scripts.GameGUI.Pages.LevelSelection
 
         protected void SetDirty()
         {
-            if (USequencerPlayer.Instance != null)
+            foreach (var i in USequencerPlayer.Instances)
             {
-                USequencerPlayer.Instance.UpdateSequence();
+                i.UpdateSequence();
             }
         }
     }

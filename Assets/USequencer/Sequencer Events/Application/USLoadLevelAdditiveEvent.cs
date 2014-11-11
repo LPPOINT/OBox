@@ -21,15 +21,13 @@ namespace WellFired
 			}
 			
 			if(levelIndex >= Application.levelCount)
-			{
+			{                                       
 				Debug.LogError("You tried to load a level that is invalid, the level index is out of range.");
 				return;
 			}
 			
 			if(!Application.isPlaying && !fireInEditor)
-			{
-				Debug.Log("Load Level Fired, but it wasn't processed, since we are in the editor. Please set the fire In Editor flag in the inspector if you require this behaviour.");
-				return;
+			{                                                                                                             
 			}
 			
 			if(levelName.Length != 0)

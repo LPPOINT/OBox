@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.GameGUI.Pages.LevelSelection;
+using Assets.Scripts.GameGUI.Pages.LevelSelection.USequencerIntegration;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,6 +29,8 @@ namespace Assets.Editor.LevelSelection
             if (GUI.changed)
                 EditorUtility.SetDirty(target);
         }
+
+
 
         public  void OnSceneGUI()
         {
